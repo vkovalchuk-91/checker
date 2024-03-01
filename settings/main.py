@@ -3,7 +3,7 @@ from settings.base import *
 import socket
 
 from apps.celery import celery_app as apps
-from rest_framework.authtoken.apps import AuthTokenConfig
+# from rest_framework.authtoken.apps import AuthTokenConfig
 
 # third part
 INSTALLED_APPS += [
@@ -11,7 +11,7 @@ INSTALLED_APPS += [
     'django_extensions',
 
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
 
     # project
     'apps.accounts',
