@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <title>Checker</title>
+    <link href="{% static '/bootstrap/v5.3/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/bootstrap/v5.3/font/bootstrap-icons.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static '/jquery/3.7.1/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/bootstrap/v5.3/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static '/js/color-modes.js' %}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-body-tertiary">
+
+<div class="container-fluid sticky-top mb-2">
+    {% include "fragments/navigation.html" %}
+</div>
+
+<main class="container-fluid" id="main">
+    {% include "fragments/notify.html" %}
+    {% block main %} {% endblock %}
+</main>
+
+</body>
+{% include "fragments/footer.html" %}
+{% block extra_scripts %} {% endblock %}
+</html>
