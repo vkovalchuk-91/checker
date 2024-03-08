@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.managers import CustomUserManager
-from apps.common import TimeStampedMixin
+from apps.common.models import TimeStampedMixin
 
 
 class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):

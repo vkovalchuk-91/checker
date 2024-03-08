@@ -22,6 +22,8 @@ from apps.views import index
 
 urlpatterns = [
     path("", index, name="index"),
+    path("uz/", include('apps.booking_uz_gov_ua.urls'), name="uz"),
+
 
     path('admin/', admin.site.urls, name="admin"),
     path('accounts/', include('apps.accounts.urls'), name="accounts"),

@@ -2,8 +2,9 @@ function load(_url, _method, _data, success_func, before_func, complete_func) {
     $.ajax({
         url: _url,
         type: _method,
-        data: _data,
+        data: JSON.stringify(_data),
         dataType: "json",
+        contentType: 'application/json',
         headers:
             (_method.toUpperCase() !== 'GET')
                 ? {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value}
