@@ -43,6 +43,7 @@ $(document).ready(function () {
                                 '               data-checker_id="' + item.id + '" checked >' +
                                 '       </div>' +
                                 '   </td>' +
+                                '   <td></td>' +
                                 '   <td>' +
                                 '       <div class="input-group d-flex justify-content-center">' +
                                 '           <button title="trash" class="nav-link bi bi-trash mx-1 deleteCheckerButton"' +

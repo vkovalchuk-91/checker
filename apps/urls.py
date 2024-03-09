@@ -22,7 +22,7 @@ from apps.views import index
 
 urlpatterns = [
     path("", index, name="index"),
-    path("uz/", include('apps.booking_uz_gov_ua.urls'), name="uz"),
+    path("uz/", include('apps.tickets_ua.urls'), name="tickets_ua"),
 
 
     path('admin/', admin.site.urls, name="admin"),

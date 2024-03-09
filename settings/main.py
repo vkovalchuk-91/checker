@@ -15,7 +15,7 @@ INSTALLED_APPS += [
 
     # project
     'apps.accounts',
-    'apps.booking_uz_gov_ua',
+    'apps.tickets_ua',
 
     # project template tags
 

@@ -1,6 +1,5 @@
-from datetime import datetime
-
 from django.contrib.auth.tokens import default_token_generator
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -43,6 +42,6 @@ class ConfirmEmailSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = validated_data['user']
         user.is_email_verified = True
-        user.updated_at = datetime.now()
+        user.updated_at = timezone.now()
         user.save(update_fields=('is_email_verified', 'updated_at'))
         return user

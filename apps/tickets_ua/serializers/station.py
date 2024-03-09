@@ -1,8 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.booking_uz_gov_ua.models import Station
-from apps.booking_uz_gov_ua.tasks import scraping_uz_stations
+from apps.tickets_ua.models import Station
+from apps.tickets_ua.tasks import scraping_uz_stations
 
 DATA_FORMAT = "%Y-%m-%d"
 TIME_FORMAT = "%H:%M"

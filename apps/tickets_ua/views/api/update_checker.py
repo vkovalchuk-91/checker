@@ -3,8 +3,8 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.booking_uz_gov_ua.serializers.update_checker import CheckerUpdateSerializer
-from apps.booking_uz_gov_ua.serializers.delete_checker import CheckerDeleteSerializer
+from apps.tickets_ua.serializers.update_checker import CheckerUpdateSerializer
+from apps.tickets_ua.serializers.delete_checker import CheckerDeleteSerializer
 
 
 class CheckerUpdateAPIView(UpdateAPIView):

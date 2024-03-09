@@ -3,8 +3,8 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.booking_uz_gov_ua.serializers.create_station import StationCreateSerializer
-from apps.booking_uz_gov_ua.tasks import scraping_uz_stations
+from apps.tickets_ua.serializers.create_station import StationCreateSerializer
+from apps.tickets_ua.tasks import scraping_uz_stations
 
 
 class StationCreateAPIView(CreateAPIView):

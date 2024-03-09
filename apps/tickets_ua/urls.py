@@ -1,9 +1,9 @@
 from django.urls import path
 
-from apps.booking_uz_gov_ua.views import api
-from apps.booking_uz_gov_ua.views.checker import CheckerListView
+from apps.tickets_ua.views import api
+from apps.tickets_ua.views.checker import CheckerListView
 
-app_name = "uz"
+app_name = "tickets_ua"
 urlpatterns = [
     path("", CheckerListView.as_view(), name="index"),
 

@@ -10,7 +10,7 @@
             <ul class="navbar-nav me-auto mb-lg-0">
                 {% if request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'uz:index' %}">Tickets Uz</a>
+                        <a class="nav-link active" href="{% url 'tickets_ua:index' %}">Tickets UA</a>
                     </li>
                 {% endif %}
                 {% if request.user.is_superuser %}

@@ -2,10 +2,13 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.accounts.models import User
-from apps.booking_uz_gov_ua.models import Checker
+from apps.tickets_ua.models import Checker
+
+DATA_FORMAT = "%Y-%m-%d"
+TIME_FORMAT = "%H:%M"
 
 
-class CheckerDeleteSerializer(serializers.ModelSerializer):
+class CheckerUpdateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=True)
     user_id = serializers.IntegerField(required=True)
 
@@ -13,11 +16,12 @@ class CheckerDeleteSerializer(serializers.ModelSerializer):
         model = Checker
         fields = [
             'id',
+            'is_active',
             'user_id',
         ]
         extra_kwargs = {
             'id': {'required': True},
-            'user_id': {'required': True},
+            'is_active': {'required': True},
         }
 
     def validate(self, attrs):
@@ -39,7 +43,10 @@ class CheckerDeleteSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def delete(self):
+    def create(self, validated_data):
         instance_id = self.validated_data['id']
+        is_active = self.validated_data['is_active']
         instance = Checker.objects.get(id=instance_id)
-        instance.delete()
+        instance.is_active = is_active
+        instance.save(update_fields=['is_active'])
+        return instance

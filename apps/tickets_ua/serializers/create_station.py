@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import serializers
 
-from apps.booking_uz_gov_ua.models import Station
+from apps.tickets_ua.models import Station
 
 
 class StationCreateSerializer(serializers.ModelSerializer):
