@@ -140,16 +140,4 @@ GitHub.sublime-settings
 .history
 
 # Self #
-/HT_15/results/
-/HT_15/task_3_scrapy/task_3_scrapy/results/
-/HT_15/task_3_scrapy/results/
-/HT_16/output/
-
-/HT_20/.idea/inspectionProfiles/profiles_settings.xml
-/HT_20/.idea/inspectionProfiles/Project_Default.xml
-/HT_20/.idea/.gitignore
-/HT_20/.idea/HT_20.iml
-/HT_20/.idea/misc.xml
-/HT_20/.idea/modules.xml
-/HT_20/.idea/vcs.xml
-/HT_22/templates/gradle.xml
+db.sqlite3
