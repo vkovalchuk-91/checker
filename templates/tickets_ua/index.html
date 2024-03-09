@@ -30,14 +30,14 @@
                         <div class="col-auto">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title">Time at</h5>
+                                    <h5 class="card-title text-secondary ">Time at</h5>
                                     <div class="d-flex align-content-center">
-                                        <label class="m-2">time:</label>
+                                        <label class="m-2 text-secondary">time:</label>
                                         <input type="text" readonly class="form-control-plaintext"
                                                name="time_at" id="range-time-value"
                                                value="00:00" aria-label="timerange">
                                     </div>
-                                    <input type="range" class="form-range" id="range-time" min="0" max="23" step="1"
+                                    <input type="range" class="form-range py-2" id="range-time" min="0" max="23" step="1"
                                            value="0"
                                            aria-label="range-time" disabled>
                                     <p class="card-text">
@@ -47,25 +47,33 @@
                                     </p>
                                 </div>
                             </div>
-
-
                         </div>
                         <div class="col-auto">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title">Ticket class</h5>
-                                    {% for seat_type in seat_types %}
+                                    <div>
+                                        <h5 class="card-title text-secondary ">Seats:</h5>
+                                        {% for seat_type in seat_types %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" checked disabled
+                                                       aria-label="seat_type">
+                                                <label class="form-check-label">{{ seat_type }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="py-2">
+                                        <h5 class="card-title text-secondary ">Train:</h5>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" checked disabled
+                                            <input class="form-check-input" type="checkbox" disabled
                                                    aria-label="seat_type">
-                                            <label class="form-check-label">{{ seat_type }}</label>
+                                            <label class="form-check-label">intercity only</label>
                                         </div>
-                                    {% endfor %}
-                                    <p class="card-text">
-                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                            allowed with enhanced capabilities
-                                        </small>
-                                    </p>
+                                        <p class="card-text">
+                                            <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                                allowed with enhanced capabilities
+                                            </small>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
