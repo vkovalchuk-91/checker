@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.tickets_ua.serializers.create_checker import CheckerCreateSerializer
+from apps.tickets_ua.tasks import run_checkers
 
 
 class CheckerCreateAPIView(CreateAPIView):
@@ -12,10 +13,15 @@ class CheckerCreateAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = {**request.data, **self.kwargs, 'user_id': request.user.id}
-        data['from_station'] = {'title': data.get('from_station'), }
-        data['to_station'] = {'title': data.get('to_station'), }
+        data['from_station'] = {'name': data.get('from_station'), }
+        data['to_station'] = {'name': data.get('to_station'), }
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         save_data = serializer.save()
         serializer_data = self.serializer_class(save_data, many=True).data
+
+        if save_data:
+            run_checkers.apply_async(args=([i.id for i in save_data],))
+            # run_checkers([i.id for i in save_data])
+
         return Response(data=serializer_data, status=status.HTTP_200_OK)

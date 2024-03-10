@@ -8,11 +8,12 @@ from apps.common import TimeStampedMixin
 
 
 class Station(models.Model):
-    title = models.CharField(_('title'), max_length=100, blank=False)
-    value = models.IntegerField(_('value'), unique=True)
+    code = models.IntegerField(_('code'), unique=True)
+    name = models.CharField(_('title'), max_length=100, blank=False)
+    bus_name = models.CharField(_('bus name'), max_length=100, blank=True, default='')
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Checker(TimeStampedMixin, models.Model):

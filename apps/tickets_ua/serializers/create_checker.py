@@ -6,7 +6,6 @@ from rest_framework import serializers
 from apps.accounts.models import User
 from apps.tickets_ua.models import Station, Checker
 from apps.tickets_ua.serializers.station import StationSerializer
-from apps.tickets_ua.tasks import run_checkers
 
 DATA_FORMAT = "%Y-%m-%d"
 TIME_FORMAT = "%H:%M"
@@ -94,5 +93,4 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             time_at=validated_data['time_at'],
             user=validated_data['user'],
         )
-        run_checkers([i.id for i in checkers])
         return checkers

@@ -1,26 +1,35 @@
+import re
+
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.tickets_ua.models import Station
 
 
 class StationCreateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(required=True, min_length=2)
+    name = serializers.CharField(required=True, min_length=2)
 
     class Meta:
         model = Station
         fields = (
-            'title',
-            'value',
+            'name',
+            'code',
         )
         extra_kwargs = {
-            'title': {'required': True},
+            'name': {'required': True},
         }
 
     def validate(self, attrs):
-        title = attrs.get('title')
+        name = attrs.get('name')
+
+        pattern = re.compile(r'^[а-яії0-9\'. ]+$')
+        if not bool(pattern.match(name.lower())):
+            raise serializers.ValidationError(
+                {'name': _(f'Invalid name.')}
+            )
         stations = list(Station.objects.filter(
-            Q(title__contains=title) | Q(title__contains=title.capitalize())
+            Q(name__contains=name) | Q(name__contains=name.capitalize())
         ))
 
         attrs['stations'] = stations

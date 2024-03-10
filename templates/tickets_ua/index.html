@@ -37,12 +37,18 @@
                                                name="time_at" id="range-time-value"
                                                value="00:00" aria-label="timerange">
                                     </div>
-                                    <input type="range" class="form-range py-2" id="range-time" min="0" max="23" step="1"
+                                    <input type="range" class="form-range py-2" id="range-time" min="0" max="23"
+                                           step="1"
                                            value="0"
                                            aria-label="range-time" disabled>
+                                    <div class="form-check form-check-inline py-3">
+                                        <input class="form-check-input" type="checkbox" checked disabled
+                                               aria-label="seat_type">
+                                        <label class="form-check-label">detail info message</label>
+                                    </div>
                                     <p class="card-text">
                                         <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                            allowed with enhanced capabilities
+                                            with enhanced allows
                                         </small>
                                     </p>
                                 </div>
@@ -52,7 +58,7 @@
                             <div class="card h-100">
                                 <div class="card-body">
                                     <div>
-                                        <h5 class="card-title text-secondary ">Seats:</h5>
+                                        <h5 class="card-title text-secondary">Seats (train):</h5>
                                         {% for seat_type in seat_types %}
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" checked disabled
@@ -61,16 +67,21 @@
                                             </div>
                                         {% endfor %}
                                     </div>
-                                    <div class="py-2">
-                                        <h5 class="card-title text-secondary ">Train:</h5>
+                                    <div class="py-3">
+                                        <h5 class="card-title text-secondary ">Transport:</h5>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" checked disabled
+                                                   aria-label="seat_type">
+                                            <label class="form-check-label">train</label>
+                                        </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" disabled
                                                    aria-label="seat_type">
-                                            <label class="form-check-label">intercity only</label>
+                                            <label class="form-check-label">bus</label>
                                         </div>
                                         <p class="card-text">
                                             <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                                allowed with enhanced capabilities
+                                                with enhanced allows
                                             </small>
                                         </p>
                                     </div>
@@ -106,8 +117,8 @@
                             <tbody class="text-center" id="checkersBodyTable">
                             {% for checker in checkers %}
                                 <tr>
-                                    <td>{{ checker.from_station.title }}</td>
-                                    <td>{{ checker.to_station.title }}</td>
+                                    <td>{{ checker.from_station.name }}</td>
+                                    <td>{{ checker.to_station.name }}</td>
                                     <td>{{ checker.date_at|date:"Y-m-d" }} </td>
                                     <td>{{ checker.time_at|date:"H:i" }}</td>
                                     <td>

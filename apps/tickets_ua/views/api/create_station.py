@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.tickets_ua.serializers.create_station import StationCreateSerializer
-from apps.tickets_ua.tasks import scraping_uz_stations
+from apps.tickets_ua.tasks import scraping_train_stations
 
 
 class StationCreateAPIView(CreateAPIView):
@@ -16,10 +16,9 @@ class StationCreateAPIView(CreateAPIView):
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         save_date = serializer.save()
-        if len(save_date) == 0:
-            scraping_uz_stations.apply_async(args=(data['title'],))
-            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        if len(save_date) == 0 or (len(save_date) == 1 and save_date[0].name != data['name']):
+            scraping_train_stations.apply_async(args=(data['name'],))
 
         serializer_date = StationCreateSerializer(save_date, many=True).data
-
         return Response(data=serializer_date, status=status.HTTP_200_OK)

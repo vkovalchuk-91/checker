@@ -16,8 +16,8 @@ $(document).ready(function () {
             return
         }
         const data = {
-            title: searchTerm,
-            value: 0
+            name: searchTerm,
+            code: 0
         };
 
         load(
@@ -31,12 +31,12 @@ $(document).ready(function () {
                 }
 
                 results.forEach(result => {
-                    const listItem = $('<li>').text(result.title);
-                    listItem.val(result.value)
+                    const listItem = $('<li>').text(result.name);
+                    listItem.val(result.code)
 
                     listItem.on('click', function () {
-                        $searchFrom.val(result.title);
-                        $searchFrom.attr('data-value', result.value);
+                        $searchFrom.val(result.name);
+                        $searchFrom.attr('data-value', result.code);
                         $searchFromResults.hide();
                     });
 
@@ -64,8 +64,8 @@ $(document).ready(function () {
             return
         }
         const data = {
-            'title': searchTerm,
-            'value': 0
+            'name': searchTerm,
+            'code': 0
         };
 
         load(
@@ -79,12 +79,12 @@ $(document).ready(function () {
                 }
 
                 results.forEach(result => {
-                    const listItem = $('<li>').text(result.title);
-                    listItem.val(result.value)
+                    const listItem = $('<li>').text(result.name);
+                    listItem.val(result.code)
 
                     listItem.on('click', function () {
-                        $searchTo.val(result.title);
-                        $searchTo.attr('data-value', result.value);
+                        $searchTo.val(result.name);
+                        $searchTo.attr('data-value', result.code);
                         $searchToResults.hide();
                     });
 

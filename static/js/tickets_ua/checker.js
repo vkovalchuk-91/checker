@@ -32,8 +32,8 @@ $(document).ready(function () {
                             const timeParts = item.time_at.split(':');
                             table.append(
                                 '<tr>' +
-                                '   <td>' + item.from_station.title + '</td>' +
-                                '   <td>' + item.to_station.title + '</td>' +
+                                '   <td>' + item.from_station.name + '</td>' +
+                                '   <td>' + item.to_station.name + '</td>' +
                                 '   <td>' + dateParts[0] + '</td>' +
                                 '   <td>' + timeParts[0] + ':' + timeParts[1] + '</td>' +
                                 '   <td>' +
