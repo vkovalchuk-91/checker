@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from apps.tickets_ua.enums.seat_type import SeatType
+from apps.tickets_ua.enums.seat import SeatType
 
 
 @dataclass

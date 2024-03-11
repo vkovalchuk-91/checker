@@ -3,7 +3,7 @@ from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.list import ListView
 
-from apps.tickets_ua.enums.seat_type import SeatType
+from apps.tickets_ua.enums.seat import SeatType
 from apps.tickets_ua.models import Checker
 
 
