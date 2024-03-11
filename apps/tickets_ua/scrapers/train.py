@@ -23,7 +23,7 @@ class TrainScraper(_TransportScraper):
         self.time_at = time_at
 
     @property
-    def scraper_items(self):
+    def scrapy_items(self):
         session = requests.Session()
         try:
             response = session.get(self.MAIN_URL)

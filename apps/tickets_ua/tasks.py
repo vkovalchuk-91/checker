@@ -16,7 +16,7 @@ TIME_FORMAT = '%H:%M'
 @app.task(name='tickets_ua_scraping_train_stations')
 def scraping_train_stations(title: str):
     scraper = TrainStationScraper(data=title)
-    stations = scraper.scraper_items
+    stations = scraper.scrapy_items
     if stations:
         for station in stations:
             if not Station.objects.filter(code=station.code).exists():
@@ -35,7 +35,7 @@ def scraping_bus_station_name(station_id: int):
 
     station = Station.objects.get(id=station_id)
     scraper = BusStationScraper(data=station.name)
-    bus_stations = scraper.scraper_items
+    bus_stations = scraper.scrapy_items
     if bus_stations:
         for bus_station in bus_stations:
             if bus_station.name.lower().startswith(station.name.lower()):
@@ -59,7 +59,7 @@ def run_checkers(ids):
         }
 
         train_scraper = TrainScraper(**data)
-        trains = train_scraper.scraper_items
+        trains = train_scraper.scrapy_items
 
         data['from_station'] = checker.from_station.bus_name
         data['to_station'] = checker.to_station.bus_name

@@ -18,7 +18,7 @@ class BusStationScraper(_TransportScraper):
         self.data = data
 
     @property
-    def scraper_items(self):
+    def scrapy_items(self):
         try:
             data = {
                 'filter': self.data,

@@ -47,7 +47,7 @@ class _TransportScraper:
     parser_class = None
 
     @property
-    def scraper_items(self):
+    def scrapy_items(self):
         return []
 
     def _get_token(self, response_text: str):
