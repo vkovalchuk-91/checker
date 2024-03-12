@@ -23,7 +23,7 @@ class CheckerListView(ListView):
     def get(self, request, *args, **kwargs):
         user = self.request.user
         if not user.is_authenticated:
-            messages.warning(self.request, _('Unauthorized access. Please log in.'))
+            messages.warning(self.request, _('Invalid access. Please log in.'))
             return redirect(reverse('index'))
 
         return super().get(request, *args, **kwargs)
