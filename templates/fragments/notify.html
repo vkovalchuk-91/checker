@@ -1,8 +1,8 @@
-<div class="container my-5 fixed-top" id="errorMessages">
+<div class="row my-5 fixed-top justify-content-center" id="errorMessages">
     {% if messages %}
         {% for message in messages %}
             {% if message.level == 30 or message.level == 40 %}
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div class="alert alert-warning alert-dismissible fade show w-75" role="alert">
                     <strong>Exception:</strong> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -11,11 +11,11 @@
     {% endif %}
 </div>
 
-<div class="container my-5 fixed-top" id="infoMessages">
+<div class="row my-5 fixed-top justify-content-center" id="infoMessages">
     {% if messages %}
         {% for message in messages %}
             {% if message.level < 30 %}
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <div class="alert alert-info alert-dismissible fade show w-75" role="alert">
                     <strong>Message:</strong> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>

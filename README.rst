@@ -6,13 +6,24 @@ Checker
     pip install -r ./requirements/production.txt
 
 
-2. Migrate Database::
+2. Apply environment settings in file::
 
+    .env
+
+
+3. Migrate Database::
+
+    manage.py makemigrations
     python manage.py migrate
 
-3. Run Django server::
+4. Run Django server and Celery::
 
     python manage.py runserver
+    celery -A apps worker --loglevel=INFO -P solo
+
+    or:
+
+    docker-compose up --build
 
 
 Description

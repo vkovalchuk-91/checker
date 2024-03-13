@@ -19,6 +19,7 @@ class TrainStationScraper(_TransportScraper):
 
     @property
     def scrapy_items(self):
+        logger.info(f'Scrapy trains stations.')
         try:
             data = {
                 'filter': self.data,

@@ -11,15 +11,15 @@ class TrainParser(_TransportParser):
     def result_items(self):
         train_items = self.data['trains']
 
-        trains = []
-        for item in train_items:
-            train = self._parse_transports(item)
-            if train:
-                trains.append(train)
+        train_instances = []
+        for item_item in train_items:
+            train_instance = self._parse_instance(item_item)
+            if train_instance:
+                train_instances.append(train_instance)
 
-        return trains
+        return train_instances
 
-    def _parse_transports(self, json_data: dict):
+    def _parse_instance(self, json_data: dict):
         seats = self._parse_seats(json_data['seats'])
 
         number = r"{}".format(json_data['number'])

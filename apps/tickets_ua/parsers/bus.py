@@ -13,15 +13,15 @@ class BusParser(_TransportParser):
     def result_items(self):
         bus_items = self.data['items']
 
-        buses = []
+        bus_instances = []
         for item in bus_items:
-            train = self._parse_transports(item)
-            if train:
-                buses.append(train)
+            bus_instance = self._parse_instance(item)
+            if bus_instance:
+                bus_instances.append(bus_instance)
 
-        return buses
+        return bus_instances
 
-    def _parse_transports(self, json_data: dict):
+    def _parse_instance(self, json_data: dict):
         seats = self._parse_seats(json_data['placesInfo'])
         if not seats:
             return

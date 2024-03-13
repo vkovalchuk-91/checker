@@ -3,9 +3,9 @@ function notify_msg(message, messageType = 'error') {
 
     let items = '';
     if (messageType.toLowerCase() === 'error') {
-        items += '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+        items += '<div class="alert alert-warning alert-dismissible fade show w-75" role="alert">';
     } else {
-        items += '<div class="alert alert-info alert-dismissible fade show" role="alert">';
+        items += '<div class="alert alert-info alert-dismissible fade show w-75" role="alert">';
     }
     items += '<strong>Exception:</strong> ';
     items += message;

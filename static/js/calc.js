@@ -12,3 +12,16 @@ function getFormDataDict(form) {
 
     return formDataDict;
 }
+
+$(document).ready(function() {
+  var currentPageUrl = window.location.href;
+
+  $('.nav-link').each(function() {
+    var menuItemUrl = $(this).attr('href');
+    if (currentPageUrl.includes(menuItemUrl)) {
+      $(this).addClass('text-primary-emphasis active');
+    } else {
+        $(this).removeClass('text-primary-emphasis')
+    }
+  });
+});
