@@ -61,10 +61,10 @@ def run_checkers(ids):
         train_scraper = TrainScraper(**data)
         trains = train_scraper.scrapy_items
 
-        data['from_station'] = checker.from_station.bus_name
-        data['to_station'] = checker.to_station.bus_name
-        bus_scraper = BusScraper(**data)
-        buses = bus_scraper.scraper_items
+        # data['from_station'] = checker.from_station.bus_name
+        # data['to_station'] = checker.to_station.bus_name
+        # bus_scraper = BusScraper(**data)
+        # buses = bus_scraper.scraper_items
 
         checker.updated_at = timezone.now()
         checker.is_available = len(trains) > 0

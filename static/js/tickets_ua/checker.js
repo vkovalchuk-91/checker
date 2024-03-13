@@ -1,9 +1,4 @@
 $(document).ready(function () {
-    $('#range-time').on('input', function () {
-        const time = $('#range-time').val()
-        $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")
-    });
-
     $(document)
         .on(
             'click', '.CreateCheckerBtn', (evt) => {

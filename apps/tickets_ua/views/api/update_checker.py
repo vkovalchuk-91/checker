@@ -8,12 +8,14 @@ from apps.tickets_ua.serializers.delete_checker import CheckerDeleteSerializer
 
 
 class CheckerUpdateAPIView(UpdateAPIView):
+    serializer_class = CheckerUpdateSerializer
+    delete_serializer_class = CheckerDeleteSerializer
     permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
         data = {**request.data, 'user_id': request.user.id}
         data.update({'id': self.kwargs['pk']})
-        serializer = CheckerUpdateSerializer(data=data)
+        serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -21,7 +23,7 @@ class CheckerUpdateAPIView(UpdateAPIView):
     def delete(self, request, *args, **kwargs):
         _id = self.kwargs['pk']
         user_id = request.user.id
-        serializer = CheckerDeleteSerializer(data={'id': _id, 'user_id': user_id})
+        serializer = self.delete_serializer_class(data={'id': _id, 'user_id': user_id})
         serializer.is_valid(raise_exception=True)
         serializer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

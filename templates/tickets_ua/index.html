@@ -7,15 +7,15 @@
             <div class="my-3 p-3 bg-body rounded shadow-sm">
                 <h3 class="pb-2">Generated new checkers:</h3>
                 <div class="bg-body rounded shadow-sm py-3">
-                    <form class="row g-5 p-3" id="createCheckerForm">
-                        <div class="col-auto">
+                    <form class="row g-4 p-3" id="createCheckerForm">
+                        <div class="col-md-4 col-sm-12">
                             <div class="col-auto">
                                 <label for="search-from" class="form-label ms-2">from</label>
                                 <input type="text" class="form-control" name="from_station" id="search-from"
                                        placeholder="e.g. Київ...">
                                 <ul id="search-from-results" class="position-absolute text-bg-secondary pe-2"></ul>
                             </div>
-                            <div class="col-auto">
+                            <div class="col-auto py-2">
                                 <label for="search-to" class="form-label ms-2">to</label>
                                 <input type="text" class="form-control" name="to_station" id="search-to"
                                        placeholder="e.g. Львів...">
@@ -25,9 +25,13 @@
                                 <label class="form-label ms-2">dates</label>
                                 <input type="text" class="form-control" name="date_at" aria-label="datepicker"/>
                             </div>
+                            <div class="col-auto">
+                                <label class="form-label ms-2"></label>
+                                <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
+                            </div>
                         </div>
 
-                        <div class="col-auto">
+                        <div class="col-md-4 col-sm-12">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <h5 class="card-title text-secondary ">Time at</h5>
@@ -54,7 +58,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-auto">
+                        <div class="col-md-4 col-sm-12">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <div>
@@ -87,11 +91,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-auto">
-                            <label class="form-label ms-2"></label>
-                            <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
                         </div>
                     </form>
                 </div>
@@ -163,6 +162,13 @@
         <script>
             window.StationUrl = "{% url 'tickets_ua:api-station' %}"
             window.ChekerUrl = "{% url 'tickets_ua:api-checker' %}"
+        </script>
+
+        <script>
+            $('#range-time').on('input', function () {
+                const time = $('#range-time').val()
+                $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")
+            });
         </script>
 
         <script src="{% static '/js/moment.min.js' %}"></script>
