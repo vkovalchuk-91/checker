@@ -15,6 +15,7 @@ INSTALLED_APPS += [
 
     # project
     'apps.accounts',
+    'apps.hotline_ua',
     'apps.tickets_ua',
 
     # project template tags

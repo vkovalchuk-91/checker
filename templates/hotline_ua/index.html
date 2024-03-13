@@ -1,0 +1,200 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    {% if request.user.is_authenticated %}
+        <div class="container">
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2">Generated new checkers:</h3>
+                <div class="bg-body rounded shadow-sm py-3">
+                    <form class="row g-4 p-3" id="createCheckerForm">
+                        <div class="col-md-auto col-sm-12">
+                            <div class="col-auto">
+                                <label for="search-category" class="form-label ms-2">category</label>
+                                <input type="text" class="form-control" name="category" id="search-category"
+                                       placeholder="e.g. Холодильники...">
+                            </div>
+                            <div class="col-auto">
+                                <label for="search-category" class="form-label pt-3 ms-2">text</label>
+                                <input type="text" class="form-control" name="category" id="search-category"
+                                       placeholder="Search text...">
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label ms-2"></label>
+                                <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary ">Filters</h5>
+                                    <div>
+                                        <label for="dselect-brand" class="form-label ps-2 text-secondary">brand</label>
+                                        <select class="form-select" name="brand" id="dselect-brand" multiple>
+                                            <option value="chrome">Ardo</option>
+                                            <option value="firefox">Bosh</option>
+                                            <option value="safari">Braun</option>
+                                            <option value="edge">Whirlpool</option>
+                                            <option value="opera">Dekka</option>
+                                            <option value="brave">RZTK</option>
+                                        </select>
+                                    </div>
+                                    <div class="pt-2">
+                                        <label for="dselect-shop" class="form-label ps-2 text-secondary">shop</label>
+                                        <select class="form-select" name="shop" id="dselect-shop" multiple>
+                                            <option value="chrome">Allo</option>
+                                            <option value="firefox">Comfy</option>
+                                            <option value="safari">Citrus</option>
+                                            <option value="edge">Foxtrot</option>
+                                            <option value="opera">Епіцентр</option>
+                                            <option value="brave">Любава</option>
+                                        </select>
+                                    </div>
+                                    <div class="card-text pt-4">
+                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                            with enhanced allows
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-auto col-sm-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary ">Price</h5>
+                                    <div>
+                                        <div class=" pt-3 pb-2 ms-2 align-items-center">
+                                            <div class="d-flex align-content-center">
+                                                <div class="pt-4 px-4">
+                                                    <input type="text" id="rangePrice" aria-label=""/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <small class="text-secondary text-opacity-50  bottom-0 ps-3">
+                                                e.g. 50 000 and more
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="card-text pt-4">
+                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                            with enhanced allows
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2">Yours checkers:</h3>
+                <div class="bg-body rounded shadow-sm">
+                    <table class="table">
+                        <thead>
+                        <tr class="text-center">
+                            <th class="col-auto text-primary-emphasis">from</th>
+                            <th class="col-auto text-primary-emphasis">to</th>
+                            <th class="col-auto text-primary-emphasis">date</th>
+                            <th class="col-1 text-primary-emphasis">time</th>
+                            <th class="col-1 text-primary-emphasis">active</th>
+                            <th class="col-auto text-primary-emphasis">checked</th>
+                            <th class="col-1"></th>
+                        </tr>
+                        </thead>
+
+                        {% if checkers %}
+                            <tbody class="text-center" id="checkersBodyTable">
+                            {% for checker in checkers %}
+                                <tr>
+                                    <td>{{ checker.from_station.name }}</td>
+                                    <td>{{ checker.to_station.name }}</td>
+                                    <td>{{ checker.date_at|date:"Y-m-d" }} </td>
+                                    <td>{{ checker.time_at|date:"H:i" }}</td>
+                                    <td>
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input class="form-check-input activeCheckerButton" type="checkbox"
+                                                   value="{{ checker.is_active }}" aria-label="checker_active_state"
+                                                   data-checker_id="{{ checker.id }}"
+                                                    {% if checker.is_active %} checked {% endif %}>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <span class="fs-6 text-secondary text-opacity-50" title="last checked">
+                                                {{ checker.updated_at|date:"Y-m-d H:i" }}
+                                            </span>
+
+                                            {% if checker.is_available %}
+                                                <i class="p-2 text-success fs-5 bi bi-check2-all"
+                                                   title="available"></i>
+                                            {% else %}
+                                                <i class="p-2 text-danger bi bi-ban"
+                                                   title="not available"></i>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group d-flex justify-content-center">
+                                            <button title="trash" class="nav-link bi bi-trash mx-1 deleteCheckerButton"
+                                                    data-checker_id="{{ checker.id }}">
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static '/js/rSlider.min.js' %}"></script>
+        <script>
+            const mySlider = new rSlider({
+                target: '#rangePrice',
+                values: {min: 0, max: 50000},
+                step: 100,
+                range: true,
+                tooltip: true,
+                scale: false,
+                labels: false,
+                width: '150px',
+                {#minWidth:'300px'#}
+                {#set: [0, 50000]#}
+            });
+        </script>
+
+        <script src="{% static '/js/dselect.min.js' %}"></script>
+        {#        <script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>#}
+        <script>
+            const config = {
+                search: false, // Toggle search feature. Default: false
+                creatable: false, // Creatable selection. Default: false
+                clearable: false, // Clearable selection. Default: false
+                maxHeight: '360px', // Max height for showing scrollbar. Default: 360px
+                size: '', // Can be "sm" or "lg". Default ''
+            }
+            dselect(document.querySelector('#dselect-brand'), config);
+            dselect(document.querySelector('#dselect-shop'), config);
+
+
+        </script>
+        <script>
+            window.CategoryUrl = "{% url 'hotline_ua:api-category' %}"
+            {#window.ChekerUrl = "{% url 'hotline_ua:api-checker' %}"#}
+        </script>
+
+        <script src="{% static '/js/calc.js' %}"></script>
+        <script src="{% static '/js/ajax.js' %}"></script>
+        <script src="{% static '/js/notify.js' %}"></script>
+
+
+        {% csrf_token %}
+        <script src="{% static '/js/hotline_ua/category.js' %}"></script>
+        {#        <script src="{% static '/js/hotline_ua/checker.js' %}"></script>#}
+    {% endif %}
+{% endblock %}

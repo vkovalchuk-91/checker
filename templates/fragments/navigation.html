@@ -68,4 +68,17 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            const currentPageUrl = window.location.href;
+            $('.nav-link').each(function () {
+                const menuItemUrl = $(this).attr('href');
+                if (currentPageUrl.includes(menuItemUrl)) {
+                    $(this).addClass('text-primary-emphasis active');
+                } else {
+                    $(this).removeClass('text-primary-emphasis')
+                }
+            });
+        });
+    </script>
 </nav>
