@@ -54,7 +54,7 @@ class Filter(TimeStampedMixin, BaseFilter):
 
     category = models.ForeignKey(
         Category,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
         related_name='filters'

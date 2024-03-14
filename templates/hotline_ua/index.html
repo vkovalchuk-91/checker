@@ -13,50 +13,17 @@
                                 <label for="search-category" class="form-label ms-2">category</label>
                                 <input type="text" class="form-control" name="category" id="search-category"
                                        placeholder="e.g. Холодильники...">
+                                <ul id="search-category-results"
+                                    class="position-absolute text-bg-secondary pe-2 z-3"></ul>
                             </div>
                             <div class="col-auto">
-                                <label for="search-category" class="form-label pt-3 ms-2">text</label>
+                                <label for="search-category" class="form-label pt-3 ms-2">or text</label>
                                 <input type="text" class="form-control" name="category" id="search-category"
                                        placeholder="Search text...">
                             </div>
                             <div class="col-auto">
                                 <label class="form-label ms-2"></label>
                                 <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5 col-sm-12">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title text-secondary ">Filters</h5>
-                                    <div>
-                                        <label for="dselect-brand" class="form-label ps-2 text-secondary">brand</label>
-                                        <select class="form-select" name="brand" id="dselect-brand" multiple>
-                                            <option value="chrome">Ardo</option>
-                                            <option value="firefox">Bosh</option>
-                                            <option value="safari">Braun</option>
-                                            <option value="edge">Whirlpool</option>
-                                            <option value="opera">Dekka</option>
-                                            <option value="brave">RZTK</option>
-                                        </select>
-                                    </div>
-                                    <div class="pt-2">
-                                        <label for="dselect-shop" class="form-label ps-2 text-secondary">shop</label>
-                                        <select class="form-select" name="shop" id="dselect-shop" multiple>
-                                            <option value="chrome">Allo</option>
-                                            <option value="firefox">Comfy</option>
-                                            <option value="safari">Citrus</option>
-                                            <option value="edge">Foxtrot</option>
-                                            <option value="opera">Епіцентр</option>
-                                            <option value="brave">Любава</option>
-                                        </select>
-                                    </div>
-                                    <div class="card-text pt-4">
-                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                            with enhanced allows
-                                        </small>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-md-auto col-sm-12">
@@ -76,6 +43,28 @@
                                                 e.g. 50 000 and more
                                             </small>
                                         </div>
+                                    </div>
+                                    <div class="card-text pt-4">
+                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                            with enhanced allows
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 col-sm-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary ">Filters</h5>
+                                    <div>
+                                        <label for="dselect-brand" class="form-label ps-2 text-secondary">brand</label>
+                                        <select class="form-select" name="brand" id="dselect-brand" disabled>
+                                        </select>
+                                    </div>
+                                    <div class="pt-2">
+                                        <label for="dselect-shop" class="form-label ps-2 text-secondary">shop</label>
+                                        <select class="form-select" name="shop" id="dselect-shop" disabled>
+                                        </select>
                                     </div>
                                     <div class="card-text pt-4">
                                         <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
@@ -123,9 +112,9 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <span class="fs-6 text-secondary text-opacity-50" title="last checked">
+                                            <small class="text-secondary text-opacity-50" title="last checked">
                                                 {{ checker.updated_at|date:"Y-m-d H:i" }}
-                                            </span>
+                                            </small>
 
                                             {% if checker.is_available %}
                                                 <i class="p-2 text-success fs-5 bi bi-check2-all"
@@ -163,6 +152,7 @@
                 scale: false,
                 labels: false,
                 width: '150px',
+                disabled: true,
                 {#minWidth:'300px'#}
                 {#set: [0, 50000]#}
             });
@@ -172,19 +162,20 @@
         {#        <script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>#}
         <script>
             const config = {
-                search: false, // Toggle search feature. Default: false
-                creatable: false, // Creatable selection. Default: false
+                search: true, // Toggle search feature. Default: false
+                creatable: true, // Creatable selection. Default: false
                 clearable: false, // Clearable selection. Default: false
                 maxHeight: '360px', // Max height for showing scrollbar. Default: 360px
                 size: '', // Can be "sm" or "lg". Default ''
             }
-            dselect(document.querySelector('#dselect-brand'), config);
-            dselect(document.querySelector('#dselect-shop'), config);
+            {#dselect(document.querySelector('#dselect-brand'), config);#}
+            {#dselect(document.querySelector('#dselect-shop'), config);#}
 
 
         </script>
         <script>
             window.CategoryUrl = "{% url 'hotline_ua:api-category' %}"
+            window.FilterUrl = "{% url 'hotline_ua:api-filter' %}"
             {#window.ChekerUrl = "{% url 'hotline_ua:api-checker' %}"#}
         </script>
 
@@ -195,6 +186,7 @@
 
         {% csrf_token %}
         <script src="{% static '/js/hotline_ua/category.js' %}"></script>
+        <script src="{% static '/js/hotline_ua/filter.js' %}"></script>
         {#        <script src="{% static '/js/hotline_ua/checker.js' %}"></script>#}
     {% endif %}
 {% endblock %}

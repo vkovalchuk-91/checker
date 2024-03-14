@@ -10,7 +10,7 @@ from apps.hotline_ua.enums.filter import FilterType
 class Filter:
     code: int
     title: str
-    type_name: FilterType
+    type_name: str
 
 
 class FilterParser:
@@ -39,7 +39,7 @@ class FilterParser:
                 try:
                     key = a_element['href'].split('/')[-2] if a_element.get('href') else 0
                     value = a_element.span.get_text(strip=True)
-                    instance = Filter(code=int(key), title=value, type_name=filter_type)
+                    instance = Filter(code=int(key), title=value, type_name=filter_type.value)
                     if ((instance.code == 0 and instance.title not in [i.title for i in instances]) or
                             instance.code not in [i.code for i in instances]):
                         instances.append(instance)
@@ -60,7 +60,12 @@ class FilterParser:
         instances = []
         for item in items_dict:
             try:
-                instance = Filter(code=int(item[0]), title=item[2], type_name=filter_type)
+                title = item[2][1:-1]
+
+                if title == '':
+                    continue
+
+                instance = Filter(code=int(item[0]), title=title, type_name=filter_type.value)
                 if instance.code not in [i.code for i in instances]:
                     instances.append(instance)
             except (KeyError, TypeError, ValueError):

@@ -8,7 +8,7 @@ from apps.tickets_ua.models import Station
 
 
 class StationCreateSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required=True, min_length=2)
+    name = serializers.CharField(required=True, min_length=2, max_length=100)
 
     class Meta:
         model = Station
@@ -32,7 +32,7 @@ class StationCreateSerializer(serializers.ModelSerializer):
             Q(name__contains=name) | Q(name__contains=name.capitalize())
         ))
 
-        attrs['stations'] = stations
+        attrs['stations'] = stations if stations else []
         return attrs
 
     def create(self, validated_data):

@@ -1,5 +1,5 @@
 from apps.celery import celery_app as app
-from apps.hotline_ua.models import Category, Filter
+from apps.hotline_ua.models import Category, Filter, Checker
 from apps.hotline_ua.scrapers.category import CategoryScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
 
@@ -20,6 +20,9 @@ def scraping_categories():
 
 @app.task(name='hotline_ua_scraping_categories_filters')
 def scraping_categories_filters(category_ids):
+    if not all(isinstance(arg, int) for arg in category_ids):
+        return
+
     if not category_ids or len(category_ids) == 0:
         return
 
@@ -36,3 +39,32 @@ def scraping_categories_filters(category_ids):
             for filter_instance in filter_instances:
                 filter_instance.category = category_instance
             Filter.objects.save_all(filter_instances)
+
+
+@app.task(name='hotline_ua_run_checkers')
+def run_checkers(checker_ids):
+    if not all(isinstance(arg, int) for arg in checker_ids):
+        return
+
+    for checker in Checker.objects.filter(id__in=checker_ids):
+        data = {
+            'from_station': checker.from_station.code,
+            'to_station': checker.to_station.code,
+            'date_at': checker.date_at,
+            'time_at': checker.time_at,
+        }
+        #
+        # train_scraper = TrainScraper(**data)
+        # trains = train_scraper.scrapy_items
+        #
+        # # data['from_station'] = checker.from_station.bus_name
+        # # data['to_station'] = checker.to_station.bus_name
+        # # bus_scraper = BusScraper(**data)
+        # # buses = bus_scraper.scraper_items
+        #
+        # checker.updated_at = timezone.now()
+        # checker.is_available = len(trains) > 0
+        # checker.save(update_fields=['updated_at', 'is_available'])
+        #
+        # if trains:
+        #     logging.info('Checker has results.')

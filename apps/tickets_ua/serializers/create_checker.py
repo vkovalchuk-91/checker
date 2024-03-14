@@ -14,7 +14,7 @@ TIME_FORMAT = "%H:%M"
 class CheckerCreateSerializer(serializers.ModelSerializer):
     from_station = StationSerializer()
     to_station = StationSerializer()
-    date_at = serializers.CharField(required=True)
+    date_at = serializers.CharField(required=True, help_text=_(f'Period in format "{DATA_FORMAT} - {DATA_FORMAT}".'))
     user_id = serializers.IntegerField(required=True)
 
     class Meta:
@@ -36,7 +36,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             attrs['user'] = User.objects.get(id=attrs['user_id'])
         except (User.DoesNotExist, ValueError, TypeError, OverflowError):
             raise serializers.ValidationError(
-                {'user': _(f'Invalid to user.')}
+                {'user': _(f'Invalid user.')}
             )
 
         try:

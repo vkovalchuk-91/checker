@@ -33,6 +33,7 @@ $(document).ready(function () {
                         $searchCategory.val(result.title);
                         $searchCategory.attr('data-path', result.path);
                         $searchCategoryResults.hide();
+                        update_filter();
                     });
 
                     $searchCategoryResults.append(listItem);

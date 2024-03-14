@@ -5,10 +5,10 @@ from rest_framework import serializers
 from apps.hotline_ua.models import Category
 
 
-class CategoryCreateSerializer(serializers.ModelSerializer):
+class CreateCategorySerializer(serializers.ModelSerializer):
     title = serializers.RegexField(
         required=True,
-        regex=r'^[а-яії0-9\'. ]{2,}$',
+        regex=r'^[a-zа-яії0-9\'. ]{2,100}$',
         error_messages={'invalid': _('Invalid title.')}
     )
 
@@ -27,7 +27,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
         category_instances = list(Category.objects.filter(
             Q(is_active=True) & Q(is_link=False) & Q(parent_id__isnull=False) &
-            (Q(title__contains=title) | Q(title__contains=title.capitalize()))
+            (Q(title__contains=title.lower()) | Q(title__contains=title.capitalize()))
         ))
 
         attrs['categories'] = category_instances if category_instances else []

@@ -3,13 +3,13 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.hotline_ua.serializers.create_category import CategoryCreateSerializer
+from apps.hotline_ua.serializers import CreateCategorySerializer
 
 from apps.hotline_ua.tasks import scraping_categories
 
 
-class CategoryCreateAPIView(CreateAPIView):
-    serializer_class = CategoryCreateSerializer
+class CreateCategoryAPIView(CreateAPIView):
+    serializer_class = CreateCategorySerializer
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
