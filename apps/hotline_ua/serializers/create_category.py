@@ -8,7 +8,7 @@ from apps.hotline_ua.models import Category
 class CreateCategorySerializer(serializers.ModelSerializer):
     title = serializers.RegexField(
         required=True,
-        regex=r'^[a-zа-яії0-9\'. ]{2,100}$',
+        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
         error_messages={'invalid': _('Invalid title.')}
     )
 

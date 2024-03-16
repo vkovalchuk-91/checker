@@ -1,17 +1,21 @@
-import re
-
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Filter
 from apps.hotline_ua.serializers import CategorySerializer
 
 
 class FilterSerializer(serializers.Serializer):
     category = CategorySerializer(required=True)
-    title = serializers.CharField(required=True, min_length=2, max_length=100, )
-    code = serializers.IntegerField(required=False, )
+    type_name = serializers.CharField(required=False)
+    title = serializers.RegexField(
+        required=True,
+        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
+        error_messages={'invalid': _('Invalid title.')}
+    )
+    code = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:
         model = Filter
@@ -28,13 +32,14 @@ class FilterSerializer(serializers.Serializer):
         }
 
     def validate(self, attrs):
-        title = attrs['title']
-
-        pattern = re.compile(r'^[a-zа-яії0-9\'. ]+$')
-        if not bool(pattern.match(title.lower())):
-            raise serializers.ValidationError(
-                {'title': _(f'Invalid title.')}
-            )
+        type_name = attrs.get('type_name')
+        if type_name and type_name == FilterType.TEXT.value:
+            attrs['id'] = None
+            attrs['code'] = None
+            attrs['title'] = attrs['title']
+            attrs['category'] = None
+            attrs['type_name'] = type_name
+            return attrs
 
         category = attrs['category']
         try:
@@ -55,7 +60,7 @@ class FilterSerializer(serializers.Serializer):
                 )
             except (Filter.DoesNotExist, MultipleObjectsReturned, ValueError, TypeError, OverflowError):
                 raise serializers.ValidationError(
-                    {'title': _(f'Invalid title.')}
+                    {'filter': _(f'Invalid filter.')}
                 )
 
         attrs['id'] = filter_instance.id

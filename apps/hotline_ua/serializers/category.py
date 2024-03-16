@@ -1,5 +1,3 @@
-import re
-
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -11,8 +9,13 @@ TIME_FORMAT = "%H:%M"
 
 
 class CategorySerializer(serializers.Serializer):
-    title = serializers.CharField(required=True, min_length=2, max_length=100)
-    path = serializers.CharField(required=True, max_length=100)
+    title = serializers.RegexField(
+        required=True,
+        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
+        error_messages={'invalid': _('Invalid title.')},
+        allow_blank=True,
+    )
+    path = serializers.CharField(required=False, max_length=100)
 
     class Meta:
         model = Category
@@ -20,19 +23,16 @@ class CategorySerializer(serializers.Serializer):
             'id',
             'title',
             'path',
+            'is_link',
         ]
         extra_kwargs = {
-            'id': {'required': False}
+            'id': {'required': False},
+            'is_link': {'required': False},
         }
 
     def validate(self, attrs):
-        title = attrs['title']
-
-        pattern = re.compile(r'^[a-zа-яії0-9\'. ]+$')
-        if not bool(pattern.match(title.lower())):
-            raise serializers.ValidationError(
-                {'title': _(f'Invalid title.')}
-            )
+        if attrs.get('title') == '' and attrs.get('path') is None:
+            return attrs
 
         try:
             category = Category.objects.get(
@@ -57,8 +57,11 @@ class CategorySerializer(serializers.Serializer):
                     parent__isnull=False
                 )
             except (Category.DoesNotExist, ValueError, TypeError, OverflowError):
-                return attrs
+                raise serializers.ValidationError(
+                    {'category': _(f'Invalid category.')}
+                )
 
+        attrs['is_link'] = category.is_link
         attrs['title'] = category.title
         attrs['path'] = category.path
         attrs['id'] = category.id

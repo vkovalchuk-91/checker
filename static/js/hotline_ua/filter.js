@@ -35,6 +35,8 @@ function update_filter() {
                 dselect(document.querySelector('#dselect-shop'), config);
                 $selectBrand.disabled = false;
                 $selectShop.disabled = false;
+
+                notify_toast('Filters updated.');
             }
         },
         () => {

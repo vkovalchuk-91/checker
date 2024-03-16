@@ -17,9 +17,9 @@
                                     class="position-absolute text-bg-secondary pe-2 z-3"></ul>
                             </div>
                             <div class="col-auto">
-                                <label for="search-category" class="form-label pt-3 ms-2">or text</label>
-                                <input type="text" class="form-control" name="category" id="search-category"
-                                       placeholder="Search text...">
+                                <label for="search-text" class="form-label pt-3 ms-2">or product title</label>
+                                <input type="text" class="form-control" name="text" id="search-text"
+                                       placeholder="Search...">
                             </div>
                             <div class="col-auto">
                                 <label class="form-label ms-2"></label>
@@ -34,7 +34,7 @@
                                         <div class=" pt-3 pb-2 ms-2 align-items-center">
                                             <div class="d-flex align-content-center">
                                                 <div class="pt-4 px-4">
-                                                    <input type="text" id="rangePrice" aria-label=""/>
+                                                    <input type="text" name="rangePrice" id="rangePrice" aria-label=""/>
                                                 </div>
                                             </div>
                                         </div>
@@ -58,12 +58,12 @@
                                     <h5 class="card-title text-secondary ">Filters</h5>
                                     <div>
                                         <label for="dselect-brand" class="form-label ps-2 text-secondary">brand</label>
-                                        <select class="form-select" name="brand" id="dselect-brand" disabled>
+                                        <select class="form-select" name="brand" id="dselect-brand">
                                         </select>
                                     </div>
                                     <div class="pt-2">
                                         <label for="dselect-shop" class="form-label ps-2 text-secondary">shop</label>
-                                        <select class="form-select" name="shop" id="dselect-shop" disabled>
+                                        <select class="form-select" name="shop" id="dselect-shop">
                                         </select>
                                     </div>
                                     <div class="card-text pt-4">
@@ -84,10 +84,8 @@
                     <table class="table">
                         <thead>
                         <tr class="text-center">
-                            <th class="col-auto text-primary-emphasis">from</th>
-                            <th class="col-auto text-primary-emphasis">to</th>
-                            <th class="col-auto text-primary-emphasis">date</th>
-                            <th class="col-1 text-primary-emphasis">time</th>
+                            <th class="col-auto text-primary-emphasis">category</th>
+                            <th class="col-6 text-primary-emphasis">filters</th>
                             <th class="col-1 text-primary-emphasis">active</th>
                             <th class="col-auto text-primary-emphasis">checked</th>
                             <th class="col-1"></th>
@@ -95,13 +93,27 @@
                         </thead>
 
                         {% if checkers %}
-                            <tbody class="text-center" id="checkersBodyTable">
+                            <tbody id="checkersBodyTable">
                             {% for checker in checkers %}
                                 <tr>
-                                    <td>{{ checker.from_station.name }}</td>
-                                    <td>{{ checker.to_station.name }}</td>
-                                    <td>{{ checker.date_at|date:"Y-m-d" }} </td>
-                                    <td>{{ checker.time_at|date:"H:i" }}</td>
+                                    <td>
+                                        <small>
+                                            {% if checker.category %}
+                                                {{ checker.category.title }}
+                                            {% else %}
+                                                <small class="text-secondary text-opacity-50">
+                                                    search product title...
+                                                </small>
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        {% if checker.filters %}
+                                            {% for filter in checker.filters.all %}
+                                                <small title="{{ filter.type_name }}">{{ filter.title }},</small>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         <div class="form-check d-flex justify-content-center">
                                             <input class="form-check-input activeCheckerButton" type="checkbox"
@@ -110,7 +122,7 @@
                                                     {% if checker.is_active %} checked {% endif %}>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <div>
                                             <small class="text-secondary text-opacity-50" title="last checked">
                                                 {{ checker.updated_at|date:"Y-m-d H:i" }}
@@ -143,7 +155,7 @@
 
         <script src="{% static '/js/rSlider.min.js' %}"></script>
         <script>
-            const mySlider = new rSlider({
+            const priceSlider = new rSlider({
                 target: '#rangePrice',
                 values: {min: 0, max: 50000},
                 step: 100,
@@ -152,31 +164,27 @@
                 scale: false,
                 labels: false,
                 width: '150px',
-                disabled: true,
+                {#disabled: true,#}
                 {#minWidth:'300px'#}
                 {#set: [0, 50000]#}
             });
+            console.log(priceSlider.getValue())
         </script>
 
         <script src="{% static '/js/dselect.min.js' %}"></script>
-        {#        <script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>#}
         <script>
             const config = {
-                search: true, // Toggle search feature. Default: false
-                creatable: true, // Creatable selection. Default: false
-                clearable: false, // Clearable selection. Default: false
-                maxHeight: '360px', // Max height for showing scrollbar. Default: 360px
+                search: true,
+                creatable: true,
+                clearable: true,
+                maxHeight: '360px',
                 size: '', // Can be "sm" or "lg". Default ''
             }
-            {#dselect(document.querySelector('#dselect-brand'), config);#}
-            {#dselect(document.querySelector('#dselect-shop'), config);#}
-
-
         </script>
         <script>
             window.CategoryUrl = "{% url 'hotline_ua:api-category' %}"
             window.FilterUrl = "{% url 'hotline_ua:api-filter' %}"
-            {#window.ChekerUrl = "{% url 'hotline_ua:api-checker' %}"#}
+            window.ChekerUrl = "{% url 'hotline_ua:api-checker' %}"
         </script>
 
         <script src="{% static '/js/calc.js' %}"></script>
@@ -187,6 +195,6 @@
         {% csrf_token %}
         <script src="{% static '/js/hotline_ua/category.js' %}"></script>
         <script src="{% static '/js/hotline_ua/filter.js' %}"></script>
-        {#        <script src="{% static '/js/hotline_ua/checker.js' %}"></script>#}
+        <script src="{% static '/js/hotline_ua/checker.js' %}"></script>
     {% endif %}
 {% endblock %}

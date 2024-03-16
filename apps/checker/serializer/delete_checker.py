@@ -13,14 +13,6 @@ class BaseCheckerDeleteSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=True)
 
     class Meta:
-        fields = [
-            'id',
-            'user_id',
-        ]
-        extra_kwargs = {
-            'id': {'required': True},
-            'user_id': {'required': True},
-        }
         abstract = True
 
     def validate(self, attrs):

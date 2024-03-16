@@ -3,12 +3,18 @@ from rest_framework import serializers
 
 from apps.hotline_ua.models import Filter
 from apps.hotline_ua.serializers.category import CategorySerializer
+from apps.hotline_ua.tasks import scraping_categories_filters
 
 
 class CreateFilterSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     code = serializers.IntegerField(required=False, allow_null=True)
-    title = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    title = serializers.RegexField(
+        required=False,
+        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
+        allow_blank=True,
+        allow_null=True)
+    # title = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Filter
@@ -30,11 +36,14 @@ class CreateFilterSerializer(serializers.ModelSerializer):
         filters = list(Filter.objects.filter(
             Q(category__path=category['path'])
         ))
+        if not filters or len(filters) == 0:
+            scraping_categories_filters([category['id']])
+            filters = list(Filter.objects.filter(
+                Q(category__path=category['path'])
+            ))
+
         attrs['filters'] = filters if filters else []
         return attrs
 
     def create(self, validated_data):
-        return {
-            'filters': validated_data.pop('filters'),
-            'category': validated_data.pop('category')
-        }
+        return validated_data['filters']

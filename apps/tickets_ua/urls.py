@@ -9,5 +9,5 @@ urlpatterns = [
 
     path("api/station/", api.StationCreateAPIView.as_view(), name="api-station"),
     path("api/checker/", api.CheckerCreateAPIView.as_view(), name="api-checker"),
-    path("api/checker/<int:pk>/", api.CheckerUpdateAPIView.as_view(), name='api-checker-update'),
+    path("api/checker/<int:pk>/", api.CheckerUpdateAPIView.as_view(), name='api-update-checker'),
 ]

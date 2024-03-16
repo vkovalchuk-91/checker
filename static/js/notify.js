@@ -16,3 +16,9 @@ function notify_msg(message, messageType = 'error') {
     $errors.show();
 
 }
+
+function notify_toast(message) {
+    $('#textToast').text(message);
+    const toast = new bootstrap.Toast($('#infoToast'));
+    toast.show();
+}

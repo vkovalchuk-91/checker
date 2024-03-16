@@ -39,7 +39,7 @@ $(document).ready(function () {
                     $searchCategoryResults.append(listItem);
                 });
 
-                $searchCategoryResults.show();
+                $searchCategoryResults.show()
             },
             () => {
                 $searchCategory.disabled = true;

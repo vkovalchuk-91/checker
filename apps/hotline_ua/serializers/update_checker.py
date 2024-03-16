@@ -1,14 +1,24 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from apps.checker.serializer import BaseCheckerUpdateSerializer
 from apps.hotline_ua.models import Checker
 
 
-class UpdateCheckerSerializer(serializers.ModelSerializer):
+class UpdateCheckerSerializer(BaseCheckerUpdateSerializer):
     model_class = Checker
 
     class Meta:
         model = Checker
+        fields = [
+            'id',
+            'is_active',
+            'user_id',
+        ]
+        extra_kwargs = {
+            'id': {'required': True},
+            'is_active': {'required': True},
+        }
 
     # id = serializers.IntegerField(required=True)
     # user_id = serializers.IntegerField(required=True)

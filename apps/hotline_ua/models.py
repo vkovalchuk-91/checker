@@ -38,10 +38,14 @@ class Category(TimeStampedMixin, models.Model):
 
 
 class HotlineUaFilterTypeChoices(models.TextChoices):
-    BRAND = FilterType.BRAND.value, _('brand')
-    SHOP = FilterType.SHOP.value, _('shop')
-    LINK = FilterType.LINK.value, _('link')
-    TEXT = FilterType.TEXT.value, _('text')
+    BRAND = FilterType.BRAND.value, _(FilterType.BRAND.value)
+    LINK = FilterType.LINK.value, _(FilterType.LINK.value)
+    SHOP = FilterType.SHOP.value, _(FilterType.SHOP.value)
+
+    TEXT = FilterType.TEXT.value, _(FilterType.TEXT.value)
+
+    MAX_PRICE = FilterType.MAX_PRICE.value, _(FilterType.MAX_PRICE.value)
+    MIN_PRICE = FilterType.MIN_PRICE.value, _(FilterType.MIN_PRICE.value)
 
 
 class Filter(TimeStampedMixin, BaseFilter):
@@ -55,7 +59,6 @@ class Filter(TimeStampedMixin, BaseFilter):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        blank=True,
         null=True,
         related_name='filters'
     )
@@ -72,14 +75,13 @@ class Checker(TimeStampedMixin, BaseChecker):
 
     filters = models.ManyToManyField(
         filter_class,
-        blank=True,
         related_name='checkers',
     )
 
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        blank=False,
+        null=True,
         related_name='checkers'
     )
 

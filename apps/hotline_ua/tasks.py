@@ -43,16 +43,19 @@ def scraping_categories_filters(category_ids):
 
 @app.task(name='hotline_ua_run_checkers')
 def run_checkers(checker_ids):
-    if not all(isinstance(arg, int) for arg in checker_ids):
-        return
+    print(checker_ids)
+    return
 
-    for checker in Checker.objects.filter(id__in=checker_ids):
-        data = {
-            'from_station': checker.from_station.code,
-            'to_station': checker.to_station.code,
-            'date_at': checker.date_at,
-            'time_at': checker.time_at,
-        }
+    # if not all(isinstance(arg, int) for arg in checker_ids):
+    #     return
+
+    # for checker in Checker.objects.filter(id__in=checker_ids):
+    #     data = {
+    #         'from_station': checker.from_station.code,
+    #         'to_station': checker.to_station.code,
+    #         'date_at': checker.date_at,
+    #         'time_at': checker.time_at,
+    #     }
         #
         # train_scraper = TrainScraper(**data)
         # trains = train_scraper.scrapy_items

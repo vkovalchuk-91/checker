@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -13,16 +14,7 @@ class BaseCheckerUpdateSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=True)
 
     class Meta:
-        model = BaseChecker
-        fields = [
-            'id',
-            'is_active',
-            'user_id',
-        ]
-        extra_kwargs = {
-            'id': {'required': True},
-            'is_active': {'required': True},
-        }
+        abstract = True
 
     def validate(self, attrs):
         try:
@@ -48,5 +40,6 @@ class BaseCheckerUpdateSerializer(serializers.ModelSerializer):
         is_active = self.validated_data['is_active']
         instance = self.model_class.objects.get(id=instance_id)
         instance.is_active = is_active
-        instance.save(update_fields=['is_active'])
+        instance.updated_at = timezone.now()
+        instance.save(update_fields=('is_active', 'updated_at',))
         return instance
