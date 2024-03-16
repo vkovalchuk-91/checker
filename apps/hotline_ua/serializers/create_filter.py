@@ -1,4 +1,3 @@
-from django.db.models import Q
 from rest_framework import serializers
 
 from apps.hotline_ua.models import Filter
@@ -14,7 +13,6 @@ class CreateFilterSerializer(serializers.ModelSerializer):
         regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
         allow_blank=True,
         allow_null=True)
-    # title = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Filter
@@ -33,14 +31,10 @@ class CreateFilterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         category = attrs.get('category')
-        filters = list(Filter.objects.filter(
-            Q(category__path=category['path'])
-        ))
+        filters = Filter.objects.filter(category__path=category['path'])
         if not filters or len(filters) == 0:
             scraping_categories_filters([category['id']])
-            filters = list(Filter.objects.filter(
-                Q(category__path=category['path'])
-            ))
+            filters = Filter.objects.filter(category__path=category['path'])
 
         attrs['filters'] = filters if filters else []
         return attrs
