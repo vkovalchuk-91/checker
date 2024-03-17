@@ -1,21 +1,18 @@
-from django.core.exceptions import MultipleObjectsReturned
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Filter
 from apps.hotline_ua.serializers import CategorySerializer
+from apps.hotline_ua.serializers.base_filter import BaseFilterSerializer
+from apps.hotline_ua.serializers.range_filter import RangeFilterSerializer
+from apps.hotline_ua.serializers.text_filter import TextFilterSerializer
 
 
 class FilterSerializer(serializers.Serializer):
-    category = CategorySerializer(required=True)
-    type_name = serializers.CharField(required=False)
-    title = serializers.RegexField(
-        required=True,
-        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
-        error_messages={'invalid': _('Invalid title.')}
-    )
-    code = serializers.IntegerField(required=False, allow_null=True)
+    title = serializers.CharField(required=True, )
+    category = CategorySerializer(required=False)
+    code = serializers.IntegerField(required=False, min_value=0, allow_null=True)
+    type_name = serializers.CharField(required=False, max_length=20)
 
     class Meta:
         model = Filter
@@ -28,44 +25,21 @@ class FilterSerializer(serializers.Serializer):
         ]
         extra_kwargs = {
             'id': {'required': False},
-            'type_name': {'required': False},
+            # 'type_name': {'required': False},
         }
 
     def validate(self, attrs):
-        type_name = attrs.get('type_name')
-        if type_name and type_name == FilterType.TEXT.value:
-            attrs['id'] = None
-            attrs['code'] = None
-            attrs['title'] = attrs['title']
-            attrs['category'] = None
-            attrs['type_name'] = type_name
-            return attrs
+        type_name = FilterType.find_filter_by_value(attrs.get('type_name'))
+        if type_name and type_name == FilterType.TEXT:
+            text_serializer = TextFilterSerializer(data=attrs)
+            text_serializer.is_valid(raise_exception=True)
+            return text_serializer.validated_data
 
-        category = attrs['category']
-        try:
-            filter_instance = Filter.objects.get(
-                code=attrs['code'],
-                category_id=category['id'],
-            )
-        except MultipleObjectsReturned:
-            filter_instance = Filter.objects.filter(
-                codet=attrs['code'],
-                category_id=category['id'],
-            )[0]
-        except (Filter.DoesNotExist, ValueError, TypeError, OverflowError):
-            try:
-                filter_instance = Filter.objects.get(
-                    title__iexact=attrs['title'],
-                    category_id=category['id'],
-                )
-            except (Filter.DoesNotExist, MultipleObjectsReturned, ValueError, TypeError, OverflowError):
-                raise serializers.ValidationError(
-                    {'filter': _(f'Invalid filter.')}
-                )
+        if type_name and type_name in [FilterType.MAX, FilterType.MIN]:
+            range_serializer = RangeFilterSerializer(data=attrs)
+            range_serializer.is_valid(raise_exception=True)
+            return range_serializer.validated_data
 
-        attrs['id'] = filter_instance.id
-        attrs['code'] = filter_instance.code
-        attrs['title'] = filter_instance.title
-        attrs['type_name'] = filter_instance.type_name
-
-        return attrs
+        base_serializer = BaseFilterSerializer(data=attrs)
+        base_serializer.is_valid(raise_exception=True)
+        return base_serializer.validated_data

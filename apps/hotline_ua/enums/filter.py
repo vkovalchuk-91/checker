@@ -6,5 +6,16 @@ class FilterType(Enum):
     SHOP = 'shop'
     LINK = 'link'
     TEXT = 'text'
-    MIN_PRICE = 'min price'
-    MAX_PRICE = 'max price'
+    MIN = 'min'
+    MAX = 'max'
+
+    @staticmethod
+    def find_filter_by_value(value):
+        if not value:
+            return None
+
+        for filter_type in FilterType:
+            if filter_type.value == value:
+                return filter_type
+
+        return None

@@ -85,7 +85,7 @@
                         <thead>
                         <tr class="text-center">
                             <th class="col-auto text-primary-emphasis">category</th>
-                            <th class="col-6 text-primary-emphasis">filters</th>
+                            <th class="col-5 text-primary-emphasis">filters</th>
                             <th class="col-1 text-primary-emphasis">active</th>
                             <th class="col-auto text-primary-emphasis">checked</th>
                             <th class="col-1"></th>
@@ -110,7 +110,11 @@
                                     <td>
                                         {% if checker.filters %}
                                             {% for filter in checker.filters.all %}
-                                                <small title="{{ filter.type_name }}">{{ filter.title }},</small>
+                                                {% if filter.type_name == "min" or filter.type_name == "max" %}
+                                                    <small title="{{ filter.type_name }}">[{{ filter.code }}],</small>
+                                                {% else %}
+                                                    <small title="{{ filter.type_name }}">{{ filter.title }},</small>
+                                                {% endif %}
                                             {% endfor %}
                                         {% endif %}
                                     </td>
@@ -155,9 +159,10 @@
 
         <script src="{% static '/js/rSlider.min.js' %}"></script>
         <script>
+            const maxRange = 50000;
             const priceSlider = new rSlider({
                 target: '#rangePrice',
-                values: {min: 0, max: 50000},
+                values: {min: 0, max: maxRange},
                 step: 100,
                 range: true,
                 tooltip: true,

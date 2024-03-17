@@ -25,7 +25,7 @@ class DeleteCheckerSerializer(BaseCheckerDeleteSerializer):
         instance_id = self.validated_data['id']
         filter_instances = self.filter_model_class.objects.filter(
             checkers__id=instance_id,
-            type_name__in=[FilterType.TEXT.value, FilterType.MIN_PRICE.value, FilterType.MAX_PRICE.value]
+            type_name__in=[FilterType.TEXT.value, FilterType.MIN.value, FilterType.MAX.value]
         )
         with transaction.atomic():
             for filter_instance in filter_instances:

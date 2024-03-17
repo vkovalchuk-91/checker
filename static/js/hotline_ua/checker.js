@@ -35,6 +35,30 @@ $(document).ready(function () {
                         category: category,
                     });
                 }
+
+                const priceRange = priceSlider.getValue()
+                const priceArray = $.map(priceRange.split(','), function (num) {
+                    return parseInt(num, 10);
+                });
+                if (priceArray[0] <= priceArray[1]) {
+                    if (priceArray[0] > 0) {
+                        selectedFilters.push({
+                            code: priceArray[0],
+                            title: 'min',
+                            type_name: 'min',
+                            category: category,
+                        });
+                    }
+                    if (priceArray[1] <= maxRange) {
+                        selectedFilters.push({
+                            code: priceArray[1],
+                            title: 'max',
+                            type_name: 'max',
+                            category: category,
+                        });
+                    }
+                }
+
                 const data = {
                     category: category,
                     filters: selectedFilters,
@@ -50,13 +74,16 @@ $(document).ready(function () {
                             let item_filters = '';
                             if (item.filters !== null)
                                 item.filters.forEach(item_filter => {
-                                    item_filters += item_filter.title + '-';
+                                    item_filters += '' +
+                                        '   <small title="' + item_filter.type_name + '">' +
+                                        '       ' + item_filter.title + ',' +
+                                        '   </small>';
                                 });
 
                             table.append(
                                 '<tr>' +
                                 '   <td><small>' + (item.category === null ? '' : item.category.title) + '</small></td>' +
-                                '   <td><small>' + item_filters + '</small></td>' +
+                                '   <td>' + item_filters + '</td>' +
                                 '   <td>' +
                                 '       <div class="form-check d-flex justify-content-center">' +
                                 '           <input class="form-check-input activeCheckerButton" type="checkbox"' +

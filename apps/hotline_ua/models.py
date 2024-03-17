@@ -44,8 +44,8 @@ class HotlineUaFilterTypeChoices(models.TextChoices):
 
     TEXT = FilterType.TEXT.value, _(FilterType.TEXT.value)
 
-    MAX_PRICE = FilterType.MAX_PRICE.value, _(FilterType.MAX_PRICE.value)
-    MIN_PRICE = FilterType.MIN_PRICE.value, _(FilterType.MIN_PRICE.value)
+    MAX_PRICE = FilterType.MAX.value, _(FilterType.MAX.value)
+    MIN_PRICE = FilterType.MIN.value, _(FilterType.MIN.value)
 
 
 class Filter(TimeStampedMixin, BaseFilter):
@@ -67,7 +67,8 @@ class Filter(TimeStampedMixin, BaseFilter):
         return self.title
 
     class Meta:
-        unique_together = ('code', 'category')
+        verbose_name = _("filter")
+        verbose_name_plural = _("filters")
 
 
 class Checker(TimeStampedMixin, BaseChecker):
