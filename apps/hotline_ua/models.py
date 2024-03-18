@@ -2,8 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
-from apps.checker.models import BaseFilter, BaseChecker
 from apps.common import TimeStampedMixin
+from apps.common.models import StateMixin
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.managers import CategoryManager, FilterManager
 
@@ -48,13 +48,19 @@ class HotlineUaFilterTypeChoices(models.TextChoices):
     MIN_PRICE = FilterType.MIN.value, _(FilterType.MIN.value)
 
 
-class Filter(TimeStampedMixin, BaseFilter):
+class Filter(models.Model):
     objects = FilterManager()
-
     type_choices_class = HotlineUaFilterTypeChoices
 
     code = models.IntegerField(_('code'))
     title = models.CharField(_('title'), max_length=100, blank=False)
+
+    type_name = models.CharField(
+        _('type'),
+        max_length=20,
+        blank=False,
+        choices=type_choices_class.choices,
+    )
 
     category = models.ForeignKey(
         Category,
@@ -71,7 +77,7 @@ class Filter(TimeStampedMixin, BaseFilter):
         verbose_name_plural = _("filters")
 
 
-class Checker(TimeStampedMixin, BaseChecker):
+class Checker(TimeStampedMixin, StateMixin, models.Model):
     filter_class = Filter
 
     filters = models.ManyToManyField(
@@ -84,6 +90,13 @@ class Checker(TimeStampedMixin, BaseChecker):
         on_delete=models.CASCADE,
         null=True,
         related_name='checkers'
+    )
+
+    user = models.ForeignKey(
+        User,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name='hotline_ua_checkers',
     )
 
     class Meta:

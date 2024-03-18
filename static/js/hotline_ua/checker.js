@@ -40,7 +40,7 @@ $(document).ready(function () {
                 const priceArray = $.map(priceRange.split(','), function (num) {
                     return parseInt(num, 10);
                 });
-                if (priceArray[0] <= priceArray[1]) {
+                if (category.title.length > 0 && priceArray[0] <= priceArray[1]) {
                     if (priceArray[0] > 0) {
                         selectedFilters.push({
                             code: priceArray[0],
@@ -49,7 +49,7 @@ $(document).ready(function () {
                             category: category,
                         });
                     }
-                    if (priceArray[1] <= maxRange) {
+                    if (priceArray[1] < maxRange) {
                         selectedFilters.push({
                             code: priceArray[1],
                             title: 'max',
@@ -62,6 +62,11 @@ $(document).ready(function () {
                 const data = {
                     category: category,
                     filters: selectedFilters,
+                }
+
+                if (selectedFilters.length === 0) {
+                    notify_msg("No filters")
+                    return
                 }
 
                 load(

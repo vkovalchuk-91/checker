@@ -3,13 +3,13 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.hotline_ua.serializers import DeleteCheckerSerializer
-from apps.hotline_ua.serializers import UpdateCheckerSerializer
+from apps.hotline_ua.serializers import CheckerDeleteSerializer
+from apps.hotline_ua.serializers import CheckerUpdateSerializer
 
 
 class UpdateCheckerAPIView(UpdateAPIView):
-    serializer_class = UpdateCheckerSerializer
-    delete_serializer_class = DeleteCheckerSerializer
+    serializer_class = CheckerUpdateSerializer
+    delete_serializer_class = CheckerDeleteSerializer
     permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):

@@ -25,8 +25,7 @@ $(document).ready(function () {
                         $.each(result, function (i, item) {
                             const dateParts = item.date_at.split(' ');
                             const timeParts = item.time_at.split(':');
-                            table.append(
-                                '<tr>' +
+                            const newRow = '<tr>' +
                                 '   <td>' + item.from_station.name + '</td>' +
                                 '   <td>' + item.to_station.name + '</td>' +
                                 '   <td>' + dateParts[0] + '</td>' +
@@ -46,8 +45,8 @@ $(document).ready(function () {
                                 '       </div>' +
                                 '   </td>' +
 
-                                '</tr>'
-                            );
+                                '</tr>';
+                            table.append(newRow);
                         });
                         notify_msg("Checkers save successful", 'info')
                     },

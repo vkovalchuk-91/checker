@@ -1,12 +1,12 @@
 from django.db import transaction
 
-from apps.checker.serializer import BaseCheckerDeleteSerializer
+from apps.common.serializer import InstanceDeleteSerializer
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Checker
 from apps.hotline_ua.models import Filter
 
 
-class DeleteCheckerSerializer(BaseCheckerDeleteSerializer):
+class CheckerDeleteSerializer(InstanceDeleteSerializer):
     model_class = Checker
     filter_model_class = Filter
 

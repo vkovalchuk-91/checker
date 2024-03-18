@@ -5,7 +5,7 @@ from rest_framework import serializers
 from apps.hotline_ua.models import Category
 
 
-class CreateCategorySerializer(serializers.ModelSerializer):
+class CategoryCreateSerializer(serializers.ModelSerializer):
     title = serializers.RegexField(
         required=True,
         regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",

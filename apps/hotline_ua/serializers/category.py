@@ -3,9 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.hotline_ua.models import Category
-
-DATA_FORMAT = "%Y-%m-%d"
-TIME_FORMAT = "%H:%M"
+from apps.hotline_ua.tasks import scraping_categories
 
 
 class CategorySerializer(serializers.Serializer):
@@ -50,6 +48,7 @@ class CategorySerializer(serializers.Serializer):
             )[0]
         except (Category.DoesNotExist, ValueError, TypeError, OverflowError):
             try:
+                scraping_categories()
                 category = Category.objects.get(
                     title__iexact=attrs['title'],
                     is_active=True,

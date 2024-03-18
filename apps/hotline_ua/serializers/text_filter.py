@@ -12,7 +12,7 @@ class TextFilterSerializer(serializers.Serializer):
         regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
         error_messages={'invalid': _('Invalid title.')}
     )
-    # category = serializers.CharField(read_only=True, required=False)
+    category = serializers.CharField(read_only=True, required=False)
 
     class Meta:
         model = Filter

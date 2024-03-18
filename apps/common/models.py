@@ -9,3 +9,11 @@ class TimeStampedMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class StateMixin(models.Model):
+    is_active = models.BooleanField(_('active'), default=True)
+    is_available = models.BooleanField(_('available'), default=False)
+
+    class Meta:
+        abstract = True

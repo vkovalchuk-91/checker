@@ -5,7 +5,7 @@ from apps.hotline_ua.serializers.category import CategorySerializer
 from apps.hotline_ua.tasks import scraping_categories_filters
 
 
-class CreateFilterSerializer(serializers.ModelSerializer):
+class FilterCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     code = serializers.IntegerField(required=False, allow_null=True)
     title = serializers.RegexField(

@@ -10,7 +10,7 @@ from apps.hotline_ua.serializers import CategorySerializer
 from apps.hotline_ua.serializers.filter import FilterSerializer
 
 
-class CreateCheckerSerializer(serializers.ModelSerializer):
+class CheckerCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     filters = FilterSerializer(required=True, many=True)
     user_id = serializers.IntegerField(required=True)
@@ -116,16 +116,17 @@ class CreateCheckerSerializer(serializers.ModelSerializer):
                 checker.save(update_fields=('updated_at',))
                 checkers.append(checker)
 
-            for filter_instance in filter_instances:
-                if filter_instance.type_name in [FilterType.MAX.value, FilterType.MIN.value]:
-                    filter_instance.save()
+            if filter_instances:
+                for filter_instance in filter_instances:
+                    if filter_instance.type_name in [FilterType.MAX.value, FilterType.MIN.value]:
+                        filter_instance.save()
 
-            checker = Checker(category=category_instance, user=user, )
-            checker.save()
+                checker = Checker(category=category_instance, user=user, )
+                checker.save()
 
-            checker.filters.set(filter_instances)
-            checker.updated_at = timezone.now()
-            checker.save(update_fields=('updated_at',))
-            checkers.append(checker)
+                checker.filters.set(filter_instances)
+                checker.updated_at = timezone.now()
+                checker.save(update_fields=('updated_at',))
+                checkers.append(checker)
 
         return checkers
