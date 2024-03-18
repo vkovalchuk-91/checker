@@ -35,6 +35,6 @@ class BusStationScraper(_TransportScraper):
             parser = self.parser_class(data=json_data)
             stations = parser.result_items
             return stations
-        except (requests.RequestException, ValueError, TypeError) as e:
+        except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError) as e:
             logger.error(f"Can't scraping: {self.data}: {e}")
             return []

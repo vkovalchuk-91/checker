@@ -29,6 +29,6 @@ class CategoryScraper(_BaseScraper):
             instances = parser.result_items
 
             return instances
-        except (requests.RequestException, ValueError, TypeError):
+        except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError):
             logger.error("Invalid scraping categories.")
             return []

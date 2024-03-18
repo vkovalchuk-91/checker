@@ -33,7 +33,7 @@ class TextSearchScraper(_BaseScraper):
             response = requests.post(self._SEARCH_URL, headers=self._HEADERS, json=json_data)
             response.raise_for_status()
             json_data = json.loads(response.text)
-            parser = self.parser_class(data=json_data)
+            parser = self.parser_class(data=json_data['result'])
             return parser.result_items
         except (requests.RequestException, ValueError, TypeError):
             logger.error(f'Invalid scraping "{self.data}" search result.')

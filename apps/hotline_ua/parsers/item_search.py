@@ -18,6 +18,9 @@ class ItemSearchParser:
     def result_items(self):
         stations = []
         for item in self.data:
+            if not item.get('imagePath'):
+                continue
+
             station = self.result_class(
                 code=item['id'],
                 title=item['title'],

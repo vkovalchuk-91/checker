@@ -1,10 +1,14 @@
+import logging
+
+from django.utils import timezone
+
 from apps.celery import celery_app as app
+from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Category, Filter, Checker
 from apps.hotline_ua.scrapers.category import CategoryScraper
+from apps.hotline_ua.scrapers.count import CountScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
-
-DATE_FORMAT = '%Y-%m-%d'
-TIME_FORMAT = '%H:%M'
+from apps.hotline_ua.scrapers.text_search import TextSearchScraper
 
 
 @app.task(name='hotline_ua_scraping_categories')
@@ -13,19 +17,10 @@ def scraping_categories():
     items = scraper.scrapy_items
     for item in items:
         Category.objects.save_with_children(item.__dict__)
-        # categories = Category.objects.save_with_children(item.__dict__)
-        # scraping_categories_filters.apply_async(args=([i.id for i in categories if i.is_active and i.parent and not i.is_link],))
-        # scraping_categories_filters([i.id for i in categories if i.is_active and i.parent and not i.is_link], )
 
 
 @app.task(name='hotline_ua_scraping_categories_filters')
-def scraping_categories_filters(category_ids):
-    if not all(isinstance(arg, int) for arg in category_ids):
-        return
-
-    if not category_ids or len(category_ids) == 0:
-        return
-
+def scraping_categories_filters(category_ids: list[int]):
     category_instances = Category.objects.filter(id__in=category_ids)
     for category_instance in category_instances:
         if category_instance.is_active and category_instance.parent and not category_instance.is_link:
@@ -42,32 +37,38 @@ def scraping_categories_filters(category_ids):
 
 
 @app.task(name='hotline_ua_run_checkers')
-def run_checkers(checker_ids):
+def run_checkers(checker_ids: list[int]):
     print(checker_ids)
-    return
 
-    # if not all(isinstance(arg, int) for arg in checker_ids):
-    #     return
+    for checker in Checker.objects.filter(id__in=checker_ids, is_active=True, ):
+        filter_instances = checker.filters.all()
+        if len(filter_instances) == 1 and filter_instances[0].type_name == FilterType.TEXT.value:
+            scraper = TextSearchScraper(data=filter_instances[0].title)
+            items = scraper.scrapy_items
+            is_available = len(items) > 0
+        else:
+            data = {
+                'url': checker.category.url,
+                'path': checker.category.path,
+            }
+            filters = []
+            for filter_instance in filter_instances:
+                if filter_instance.type_name == FilterType.MIN.value:
+                    data['price_min'] = filter_instance.code
+                elif filter_instance.type_name == FilterType.MAX.value:
+                    data['price_max'] = filter_instance.code
+                else:
+                    filters.append(filter_instance.code)
+            if len(filters) > 0:
+                data['filters'] = '-'.join(str(item) for item in filters)
 
-    # for checker in Checker.objects.filter(id__in=checker_ids):
-    #     data = {
-    #         'from_station': checker.from_station.code,
-    #         'to_station': checker.to_station.code,
-    #         'date_at': checker.date_at,
-    #         'time_at': checker.time_at,
-    #     }
-        #
-        # train_scraper = TrainScraper(**data)
-        # trains = train_scraper.scrapy_items
-        #
-        # # data['from_station'] = checker.from_station.bus_name
-        # # data['to_station'] = checker.to_station.bus_name
-        # # bus_scraper = BusScraper(**data)
-        # # buses = bus_scraper.scraper_items
-        #
-        # checker.updated_at = timezone.now()
-        # checker.is_available = len(trains) > 0
-        # checker.save(update_fields=['updated_at', 'is_available'])
-        #
-        # if trains:
-        #     logging.info('Checker has results.')
+            scraper = CountScraper(data=data)
+            count = scraper.scrapy_items
+            is_available = count > 0
+
+        checker.updated_at = timezone.now()
+        checker.is_available = is_available
+        checker.save(update_fields=['updated_at', 'is_available'])
+
+        if is_available:
+            logging.info('Checker has results.')
