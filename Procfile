@@ -5,4 +5,5 @@
 
 release: ./manage.py migrate
 web: gunicorn apps.wsgi
-celery: celery -A apps worker --loglevel=INFO -P solo
+# celery: celery -A apps worker --loglevel=INFO -P solo
+worker: celery -A apps worker --loglevel=INFO -P solo
