@@ -58,7 +58,7 @@ MIDDLEWARE += [
 ]
 
 # redis
-REDIS_URL = env("REDIS_URL", default="redis://localhost:6379")
+REDIS_URL = env("REDIS_URL", default="redis://redis:6379")
 
 # Celery
 CELERY_TIMEZONE = "Europe/Kiev"

@@ -9,11 +9,11 @@ x-base: &base-backend
   volumes:
     - .:/code:delegated
   depends_on:
-    - db-redis
+    - redis
 
 services:
 
-  db-redis:
+  redis:
     image: "redis:6.0"
     volumes:
       - redis:/data
