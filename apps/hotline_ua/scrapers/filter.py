@@ -19,7 +19,7 @@ class FilterScraper(_BaseScraper):
     def scrapy_items(self):
         logger.info(f'Scrapy filters from:{self.url}.')
         try:
-            url = urljoin(self._BASE_URL, 'ua' + self.url)
+            url = urljoin(self._MAIN_URL, 'ua' + self.url)
             response = requests.get(url, headers=self._HEADERS)
             response.raise_for_status()
             parser = self.parser_class(data=response.text)
