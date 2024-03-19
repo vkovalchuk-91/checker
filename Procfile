@@ -3,7 +3,7 @@
 # https://docs.djangoproject.com/en/5.0/topics/migrations/
 # https://devcenter.heroku.com/articles/release-phase
 
-release: ./manage.py migrate
+# release: ./manage.py migrate
 web: gunicorn apps.wsgi
 # celery: celery -A apps worker --loglevel=INFO -P solo
 worker: celery -A apps worker --loglevel=INFO -P solo

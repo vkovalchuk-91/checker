@@ -1,5 +1,0 @@
-release: ./manage.py migrate
-web: gunicorn apps.wsgi
-# web: python manage.py runserver %PORT%
-# celery: celery -A apps worker --loglevel=INFO -P solo
-worker: celery -A apps worker --loglevel=INFO -P solo
