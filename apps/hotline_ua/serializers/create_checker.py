@@ -61,7 +61,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                 type_name=text_filter_dict['type_name'],
                 checkers__user_id=user.id).exists():
             raise serializers.ValidationError(
-                {'filter': _(f'Filter exist.')}
+                {'filter': _(f'Filter "{text_filter_dict["title"]}" exist.')}
             )
 
         if not text_filter_dict and len(filter_ids) == 0 and len(range_filter_dicts) == 0:
@@ -80,7 +80,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         category_instance = Category.objects.get(id=category['id'])
         if not category_instance.is_active or category_instance.is_link:
             raise serializers.ValidationError(
-                {'category': _(f'Invalid category type or active state.')}
+                {'category': _(f'Invalid category id:{category["id"]} type or active state.')}
             )
 
         attrs['category'] = category_instance

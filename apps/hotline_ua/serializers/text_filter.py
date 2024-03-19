@@ -2,7 +2,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.hotline_ua.enums.filter import FilterType
-from apps.hotline_ua.models import Filter
 
 
 class TextFilterSerializer(serializers.Serializer):
@@ -13,19 +12,6 @@ class TextFilterSerializer(serializers.Serializer):
         error_messages={'invalid': _('Invalid title.')}
     )
     category = serializers.CharField(read_only=True, required=False)
-
-    class Meta:
-        model = Filter
-        fields = [
-            'id',
-            'code',
-            'title',
-            'type_name',
-            'category',
-        ]
-        extra_kwargs = {
-            'id': {'required': False},
-        }
 
     def validate(self, attrs):
         type_name = FilterType.find_filter_by_value(attrs.get('type_name'))

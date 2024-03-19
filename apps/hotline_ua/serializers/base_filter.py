@@ -12,23 +12,23 @@ class BaseFilterSerializer(serializers.Serializer):
         regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
         error_messages={'invalid': _('Invalid title.')}
     )
-    category = CategorySerializer(required=False)
+    category = CategorySerializer(required=True)
     type_name = serializers.CharField(required=False)
     code = serializers.IntegerField(required=False, allow_null=True)
 
-    class Meta:
-        model = Filter
-        fields = [
-            'id',
-            'code',
-            'title',
-            'type_name',
-            'category',
-        ]
-        extra_kwargs = {
-            'id': {'required': False},
-            'type_name': {'required': False},
-        }
+    # class Meta:
+    #     model = Filter
+    #     fields = [
+    #         'id',
+    #         'code',
+    #         'title',
+    #         'type_name',
+    #         'category',
+    #     ]
+    #     extra_kwargs = {
+    #         'id': {'required': False},
+    #         'type_name': {'required': False},
+    #     }
 
     def validate(self, attrs):
         category = attrs.get('category')
@@ -42,7 +42,7 @@ class BaseFilterSerializer(serializers.Serializer):
                 codet=attrs['code'],
                 category_id=category['id'],
             )[0]
-        except (Filter.DoesNotExist, ValueError, TypeError, OverflowError):
+        except (Filter.DoesNotExist, ValueError, TypeError, OverflowError, KeyError):
             try:
                 filter_instance = Filter.objects.get(
                     title__iexact=attrs['title'],
@@ -50,7 +50,7 @@ class BaseFilterSerializer(serializers.Serializer):
                 )
             except (Filter.DoesNotExist, MultipleObjectsReturned, ValueError, TypeError, OverflowError):
                 raise serializers.ValidationError(
-                    {'filter': _(f'Invalid filter.')}
+                    {'filter': _(f'Invalid filter:{attrs["title"]}.')}
                 )
 
         attrs['id'] = filter_instance.id

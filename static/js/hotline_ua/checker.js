@@ -12,19 +12,23 @@ $(document).ready(function () {
 
                 let selectedFilters = [];
                 $('#dselect-shop option:selected').each(function () {
-                    selectedFilters.push({
-                        title: $(this).text(),
-                        code: $(this).val(),
-                        category: category,
-                    });
+                    const titleContent = $(this).text();
+                    const codeContent = $(this).val();
+                    let selectedFilter = {title: titleContent, category: category,};
+                    if (Number.isInteger(parseInt(codeContent))) {
+                        selectedFilter.code = parseInt(codeContent);
+                    }
+                    selectedFilters.push(selectedFilter);
                 });
 
                 $('#dselect-brand option:selected').each(function () {
-                    selectedFilters.push({
-                        title: $(this).text(),
-                        code: $(this).val(),
-                        category: category,
-                    });
+                    const titleContent = $(this).text();
+                    const codeContent = $(this).val();
+                    let selectedFilter = {title: titleContent, category: category,};
+                    if (Number.isInteger(parseInt(codeContent))) {
+                        selectedFilter.code = parseInt(codeContent);
+                    }
+                    selectedFilters.push(selectedFilter);
                 });
 
                 const search_text = $('#search-text').val()

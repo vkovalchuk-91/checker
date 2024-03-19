@@ -2,7 +2,6 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.hotline_ua.enums.filter import FilterType
-from apps.hotline_ua.models import Filter
 from apps.hotline_ua.serializers import CategorySerializer
 
 
@@ -10,22 +9,6 @@ class RangeFilterSerializer(serializers.Serializer):
     type_name = serializers.CharField(required=True, max_length=20)
     code = serializers.IntegerField(required=True, min_value=0)
     category = CategorySerializer(required=True)
-
-    class Meta:
-        model = Filter
-        fields = [
-            'id',
-            'code',
-            'title',
-            'type_name',
-            'category',
-        ]
-        extra_kwargs = {
-            'id': {'required': False},
-            'title': {'required': False},
-            # 'category': {'required': False},
-            # 'type_name': {'required': True},
-        }
 
     def validate(self, attrs):
         type_name = FilterType.find_filter_by_value(attrs.get('type_name'))

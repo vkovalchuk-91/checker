@@ -12,7 +12,6 @@ class CreateCheckerAPIView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
-        run_checkers([7,])
         data = request.data
         data['user_id'] = request.user.id
         serializer = self.serializer_class(data=data)
