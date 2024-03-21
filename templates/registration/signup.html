@@ -69,12 +69,12 @@
         </div>
     </section>
     <script>
-        window.SignUpUrl =  "{% url 'accounts:signup' %}"
+        window.SignUpUrl = "{% url 'accounts:signup' %}"
     </script>
 
     {% csrf_token %}
+    <script src="{% static 'js/registration/signup.js' %}"></script>
     <script src="{% static 'js/calc.js' %}"></script>
-    <script src="{% static 'js/signup.js' %}"></script>
     <script src="{% static 'js/ajax.js' %}"></script>
     <script src="{% static 'js/notify.js' %}"></script>
 

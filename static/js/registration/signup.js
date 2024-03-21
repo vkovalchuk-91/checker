@@ -4,7 +4,8 @@ $(document).ready(function () {
             'click', '.SignUpBtn', (evt) => {
                 const target = evt.target;
                 const form = $('#signUpForm');
-                const data = form.serialize()
+                const data = getFormDataDict(form);
+                // const data = form.serialize()
                 // const contentType = 'application/json'
                 load(
                     window.SignUpUrl,

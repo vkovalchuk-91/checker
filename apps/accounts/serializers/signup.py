@@ -8,6 +8,8 @@ from apps.accounts.models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(required=True, min_length=3, )
+
     class Meta:
         model = User = get_user_model()
         fields = (

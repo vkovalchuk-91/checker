@@ -129,7 +129,12 @@ if ENVIRONMENT == DEVELOPMENT_ENVIRONMENT:
 else:
     EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 
+ANYMAIL = {
+    "MAILGUN_API_KEY": env('MAILGUN_API_KEY'),
+    "MAILGUN_SENDER_DOMAIN": env('MAILGUN_SENDER_DOMAIN'),
+}
 DEFAULT_FROM_EMAIL = env("FROM_EMAIL", default="prodaction@example.com")
+
 FRONTEND_HOST = env("FRONTEND_HOST", default="http://localhost:8000")
 FRONTEND_CONFIRM_EMAIL_PATH = "/accounts/confirm-email/{uid}/{token}/"
 
