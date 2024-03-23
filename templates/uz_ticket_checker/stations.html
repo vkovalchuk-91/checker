@@ -1,0 +1,200 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    {% if request.user.is_authenticated %}
+        <div class="container">
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2">Generated new checkers:</h3>
+                <div class="bg-body rounded shadow-sm py-3">
+                    <form class="row g-4 p-3" id="createCheckerForm">
+                        <div class="col-md-4 col-sm-12">
+                            <div class="col-auto">
+                                <label for="search-from" class="form-label ms-2">from</label>
+                                <input type="text" class="form-control" name="from_station" id="search-from"
+                                       placeholder="e.g. Київ...">
+                                <ul id="search-from-results" class="position-absolute text-bg-secondary pe-2"></ul>
+                            </div>
+                            <div class="col-auto py-2">
+                                <label for="search-to" class="form-label ms-2">to</label>
+                                <input type="text" class="form-control" name="to_station" id="search-to"
+                                       placeholder="e.g. Львів...">
+                                <ul id="search-to-results" class="position-absolute text-bg-secondary pe-2"></ul>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label ms-2">dates</label>
+                                <input type="text" class="form-control" name="date_at" aria-label="datepicker"/>
+                            </div>
+                            <div class="col-auto">
+                                <label class="form-label ms-2"></label>
+                                <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary ">Time at</h5>
+                                    <div class="d-flex align-content-center">
+                                        <label class="m-2 text-secondary">time:</label>
+                                        <input type="text" readonly class="form-control-plaintext"
+                                               name="time_at" id="range-time-value"
+                                               value="00:00" aria-label="timerange">
+                                    </div>
+                                    <input type="range" class="form-range py-2" id="range-time" min="0" max="23"
+                                           step="1"
+                                           value="0"
+                                           aria-label="range-time" disabled>
+                                    <div class="form-check form-check-inline py-3">
+                                        <input class="form-check-input" type="checkbox" checked disabled
+                                               aria-label="seat_type">
+                                        <label class="form-check-label">detail info message</label>
+                                    </div>
+                                    <p class="card-text">
+                                        <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                            with enhanced allows
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div>
+                                        <h5 class="card-title text-secondary">Seats (train):</h5>
+                                        {% for seat_type in seat_types %}
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" checked disabled
+                                                       aria-label="seat_type">
+                                                <label class="form-check-label">{{ seat_type }}</label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="py-3">
+                                        <h5 class="card-title text-secondary ">Transport:</h5>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" checked disabled
+                                                   aria-label="seat_type">
+                                            <label class="form-check-label">train</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" disabled
+                                                   aria-label="seat_type">
+                                            <label class="form-check-label">bus</label>
+                                        </div>
+                                        <p class="card-text">
+                                            <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
+                                                with enhanced allows
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2">Yours checkers:</h3>
+                <div class="bg-body rounded shadow-sm">
+                    <table class="table">
+                        <thead>
+                        <tr class="text-center">
+                            <th class="col-auto text-primary-emphasis">from</th>
+                            <th class="col-auto text-primary-emphasis">to</th>
+                            <th class="col-auto text-primary-emphasis">date</th>
+                            <th class="col-1 text-primary-emphasis">time</th>
+                            <th class="col-1 text-primary-emphasis">active</th>
+                            <th class="col-auto text-primary-emphasis">checked</th>
+                            <th class="col-1"></th>
+                        </tr>
+                        </thead>
+
+                        {% if checkers %}
+                            <tbody class="text-center" id="checkersBodyTable">
+                            {% for checker in checkers %}
+                                <tr>
+                                    <td>{{ checker.from_station.name }}</td>
+                                    <td>{{ checker.to_station.name }}</td>
+                                    <td>{{ checker.date_at|date:"Y-m-d" }} </td>
+                                    <td>{{ checker.time_at|date:"H:i" }}</td>
+                                    <td>
+                                        <div class="form-check d-flex justify-content-center">
+                                            <input class="form-check-input activeCheckerButton" type="checkbox"
+                                                   value="{{ checker.is_active }}" aria-label="checker_active_state"
+                                                   data-checker_id="{{ checker.id }}"
+                                                    {% if checker.is_active %} checked {% endif %}>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <small class="text-secondary text-opacity-50" title="last checked">
+                                                {{ checker.updated_at|date:"Y-m-d H:i" }}
+                                            </small>
+
+                                            {% if checker.is_available %}
+                                                <i class="p-2 text-success fs-5 bi bi-check2-all"
+                                                   title="available"></i>
+                                            {% else %}
+                                                <i class="p-2 text-danger bi bi-ban"
+                                                   title="not available"></i>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group d-flex justify-content-center">
+                                            <button title="trash" class="nav-link bi bi-trash mx-1 deleteCheckerButton"
+                                                    data-checker_id="{{ checker.id }}">
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            window.StationUrl = "{% url 'tickets_ua:api-station' %}"
+            window.ChekerUrl = "{% url 'tickets_ua:api-checker' %}"
+        </script>
+
+        <script>
+            $('#range-time').on('input', function () {
+                const time = $('#range-time').val()
+                $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")
+            });
+        </script>
+
+        <script src="{% static '/js/moment.min.js' %}"></script>
+        <script src="{% static '/js/daterangepicker.js' %}"></script>
+        <script>
+            $(function () {
+                $('input[name="date_at"]').daterangepicker({
+                    opens: 'left',
+                    startDate: moment(),
+                    minDate: moment(),
+                    endDate: moment(),
+                    maxDate: moment().add(10, 'day'),
+                    locale: {
+                        format: 'YYYY-MM-DD'
+                    }
+                });
+            });
+        </script>
+
+        <script src="{% static '/js/calc.js' %}"></script>
+        <script src="{% static '/js/ajax.js' %}"></script>
+        <script src="{% static '/js/notify.js' %}"></script>
+
+        {% csrf_token %}
+        <script src="{% static '/js/tickets_ua/station.js' %}"></script>
+        <script src="{% static '/js/tickets_ua/checker.js' %}"></script>
+
+    {% endif %}
+{% endblock %}

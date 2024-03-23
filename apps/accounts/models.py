@@ -9,6 +9,7 @@ from apps.common import TimeStampedMixin
 
 
 class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
+    db = 'default'
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -33,6 +34,15 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     is_email_verified = models.BooleanField(_("email verified"), default=False)
+    telegram_user_id = models.IntegerField(_("telegram user ID"), default=0)
+    user_account_type = models.ForeignKey(
+        'UserAccountType',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='user_account_type',
+        verbose_name=_("user account type"))
+    update_period = models.IntegerField(_("update period (minutes)"), default=0)
 
     def __str__(self):
         return self.email
@@ -51,3 +61,10 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
         """
         full_name = "%s %s" % (self.first_name, self.last_name)
         return full_name.strip()
+
+
+class UserAccountType(models.Model):
+    db = 'default'
+    name = models.CharField(_("user account type name"), max_length=150)
+    max_query_number = models.IntegerField(_("max query number"), default=0)
+    update_period = models.IntegerField(_("update period (minutes)"), default=0)

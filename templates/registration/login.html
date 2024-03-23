@@ -1,4 +1,5 @@
 {% extends 'fragments/base.html' %}
+{% load socialaccount %}
 
 {% block main %}
     <div class="container my-5 fixed-top">
@@ -50,13 +51,16 @@
                                     </div>
                                 </div>
                             </form>
+                            
                             <div class="row">
                                 <div class="col-12">
                                     <hr class="mt-5 mb-4 border-secondary-subtle">
                                     <div class="d-flex text-center justify-content-center">
-                                        <form method="post" action="{% url 'google_login' %}?next=/">{% csrf_token %}
-                                            <span class="me-2">or login with</span>
-                                            <button class="item border-0 bg-body bi bi-google fs-3" type="submit"></button>
+                                        <form method="post" action="{% provider_login_url 'google' %}">{% csrf_token %}
+                                            <button class="item border-0 bg-body" type="submit">
+                                                Login with Google
+                                                <span class="bi bi-google me-2  fs-3"></span>
+                                            </button>
                                         </form>
                                     </div>
                                 </div>

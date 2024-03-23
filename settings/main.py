@@ -15,6 +15,7 @@ INSTALLED_APPS += [
 
     # project
     'apps.accounts',
+    'apps.uz_ticket_checker',
 
     # project template tags
 
