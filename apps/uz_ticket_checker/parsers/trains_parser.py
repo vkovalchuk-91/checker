@@ -103,7 +103,6 @@ def get_checker_matches_by_train_number(train_checker_info, current_date, train_
     )
 
     checker_matches = []
-
     wagon_types = []
     checker_matches.append({
         'departure_station': response_details.json()['departureCode'],
@@ -144,7 +143,6 @@ def get_checker_matches_by_train_number(train_checker_info, current_date, train_
                             'seat_type': response_seat,
                             'available_seats': seats_qty,
                         })
-    print(checker_matches)
     return checker_matches
 
 

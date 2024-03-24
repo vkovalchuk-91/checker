@@ -33,7 +33,7 @@ def get_checker_matches(train_checker_info):
     start_date = datetime.strptime(train_checker_info['start_date'], "%Y-%m-%d")
     end_date = datetime.strptime(train_checker_info['end_date'], "%Y-%m-%d")
 
-    train_matches = []
+    tickets_matches = []
     current_date = start_date
     while current_date <= end_date:
         # if train_checker_info['train_number'] is None:
@@ -44,9 +44,9 @@ def get_checker_matches(train_checker_info):
                 current_date.strftime("%Y-%m-%d")
             )
             for train_number in train_numbers:
-                train_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
         else:
             for train_number in train_checker_info['train_number']:
-                train_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
         current_date += timedelta(days=1)
-    return train_matches
+    return tickets_matches
