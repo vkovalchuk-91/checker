@@ -1,6 +1,53 @@
 import requests
 
 
+def get_current_search_tickets(departure_station_code, arrival_station_code, departure_date):
+    body_search = {
+        'language': 'uk',
+        'supplier': 'uz_train',
+        'transactionId': '3835b4beef23',
+        'sourceType': 'FRONTEND',
+        'arrivalCode': arrival_station_code,
+        'departureCode': departure_station_code,
+        'departureDate': departure_date,
+    }
+    response_search = requests.post(
+        'https://de-prod-lb.cashalot.in.ua/rest/supplier/search',
+        json=body_search)
+    current_search_tickets = []
+    search_direction = \
+        f"{response_search.json()['departureStation']['name']} - {response_search.json()['arrivalStation']['name']}"
+    for trip in response_search.json()['trips']:
+        for leg in trip['legs']:
+
+            departure_date = leg['departureStation']['departureDate']
+            departure_time = leg['departureStation']['departureTime']
+            arrival_date = leg['arrivalStation']['arrivalDate']
+            arrival_time = leg['arrivalStation']['arrivalTime']
+            train_category = leg['transInfo']['categoryName']
+            train_number = leg['transInfo']['number']
+            train_name = \
+                f"{leg['transInfo']['departureStation']['name']} - {leg['transInfo']['arrivalStation']['name']}"
+            wagon_details = get_wagon_type_details(
+                departure_station_code,
+                arrival_station_code,
+                departure_date,
+                train_number
+            )
+            current_search_tickets.append({
+                'departure_date': departure_date,
+                'arrival_date': arrival_date,
+                'departure_time': departure_time,
+                'arrival_time': arrival_time,
+                'train_category': train_category,
+                'train_number': train_number,
+                'train_name': train_name,
+                'wagon_details': wagon_details,
+                'rowspan': len(wagon_details),
+            })
+    return current_search_tickets, search_direction
+
+
 def get_wagon_type_details(departure_station_code, arrival_station_code, departure_date, train_number):
     request_body = {
         'language': 'uk',
@@ -18,7 +65,7 @@ def get_wagon_type_details(departure_station_code, arrival_station_code, departu
         json=request_body
     )
 
-    details = {}
+    details = []
     for wagon_type in response_details.json()['wagonTypes']:
         wagon_type_name = wagon_type['name']
         for wagon_class in wagon_type['classes']:
@@ -30,84 +77,13 @@ def get_wagon_type_details(departure_station_code, arrival_station_code, departu
             available_seats = wagon_class['availableSeats']
             seat_types = wagon_class['seatsDetails']
 
-            details[f"{wagon_type_name}{wagon_class_name}"] = {
+            details.append({
+                'wagon_type': f"{wagon_type_name}{wagon_class_name}",
                 'min_price': min_price,
                 'available_seats': available_seats,
                 'seat_types': seat_types
-            }
-    return details
-
-
-def get_current_search_tickets(departure_station_code, arrival_station_code, departure_date):
-    body_search = {
-        'language': 'uk',
-        'supplier': 'uz_train',
-        'transactionId': '3835b4beef23',
-        'sourceType': 'FRONTEND',
-        'arrivalCode': arrival_station_code,
-        'departureCode': departure_station_code,
-        'departureDate': departure_date,
-    }
-    response_search = requests.post(
-        'https://de-prod-lb.cashalot.in.ua/rest/supplier/search',
-        json=body_search)
-    current_search_tickets = []
-    for trip in response_search.json()['trips']:
-        for leg in trip['legs']:
-            departure_station = response_search.json()['departureStation']['name']
-            arrival_station = response_search.json()['arrivalStation']['name']
-            departure_date = leg['departureStation']['departureDate']
-            departure_time = leg['departureStation']['departureTime']
-            arrival_date = leg['arrivalStation']['arrivalDate']
-            arrival_time = leg['arrivalStation']['arrivalTime']
-            train_category = leg['transInfo']['categoryName']
-            train_number = leg['transInfo']['number']
-            train_name = f"{leg['transInfo']['departureStation']['name']} - {leg['transInfo']['arrivalStation']['name']}"
-            wagon_types = get_wagon_type_details(
-                departure_station_code,
-                arrival_station_code,
-                departure_date,
-                train_number
-            )
-            current_search_tickets.append({
-                'departure_station': departure_station,
-                'arrival_station': arrival_station,
-                'departure_date': departure_date,
-                'arrival_date': arrival_date,
-                'departure_time': departure_time,
-                'arrival_time': arrival_time,
-                'train_category': train_category,
-                'train_number': train_number,
-                'train_name': train_name,
-                'wagon_types': wagon_types,
             })
-    return current_search_tickets
-
-
-# print(get_tickets('2200001', '2210800', '2024-03-20'))
-
-
-def get_all_train_numbers_by_date(departure_station_code, arrival_station_code, departure_date):
-    request_body = {
-        'language': 'uk',
-        'supplier': 'uz_train',
-        'transactionId': '3835b4beef23',
-        'sourceType': 'FRONTEND',
-        'arrivalCode': arrival_station_code,
-        'departureCode': departure_station_code,
-        'departureDate': departure_date,
-    }
-    response_search = requests.post(
-        'https://de-prod-lb.cashalot.in.ua/rest/supplier/search',
-        json=request_body
-    )
-    train_numbers = []
-    print(response_search.json())
-    for trip in response_search.json()['trips']:
-        for leg in trip['legs']:
-            train_number = leg['transInfo']['number']
-            train_numbers.append(train_number)
-    return train_numbers
+    return details
 
 
 def get_checker_matches_by_train_number(train_checker_info, current_date, train_number):
@@ -170,3 +146,26 @@ def get_checker_matches_by_train_number(train_checker_info, current_date, train_
                         })
     print(checker_matches)
     return checker_matches
+
+
+def get_all_train_numbers_by_date(departure_station_code, arrival_station_code, departure_date):
+    request_body = {
+        'language': 'uk',
+        'supplier': 'uz_train',
+        'transactionId': '3835b4beef23',
+        'sourceType': 'FRONTEND',
+        'arrivalCode': arrival_station_code,
+        'departureCode': departure_station_code,
+        'departureDate': departure_date,
+    }
+    response_search = requests.post(
+        'https://de-prod-lb.cashalot.in.ua/rest/supplier/search',
+        json=request_body
+    )
+    train_numbers = []
+    print(response_search.json())
+    for trip in response_search.json()['trips']:
+        for leg in trip['legs']:
+            train_number = leg['transInfo']['number']
+            train_numbers.append(train_number)
+    return train_numbers

@@ -1,0 +1,135 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    {% if request.user.is_authenticated %}
+        <div class="container">
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2">Пошук залізничних квитків</h3>
+                <div class="bg-body rounded shadow-sm py-3">
+                    <form class="row g-4 p-3" id="createCheckerForm">
+                        <div class="row">
+                            <div class="col-md-auto col-sm-12">
+                                <div class="col-auto">
+{#                                    <label for="search-from" class="form-label ms-2">from</label>#}
+                                    <input type="text" class="form-control" name="from_station" id="search-from" placeholder="Звідки виїзд?">
+                                    <ul id="search-from-results" class="position-absolute text-bg-secondary pe-2"></ul>
+                                </div>
+                            </div>
+                            <div class="col-md-auto col-sm-12">
+                                <div class="col-auto">
+{#                                    <label for="search-to" class="form-label ms-2">to</label>#}
+                                    <input type="text" class="form-control" name="to_station" id="search-to" placeholder="Куди прямуєте?">
+                                    <ul id="search-to-results" class="position-absolute text-bg-secondary pe-2"></ul>
+                                </div>
+                            </div>
+                            <div class="col-md-auto col-sm-12">
+                                <div class="col-auto">
+{#                                    <label class="form-label ms-2">dates</label>#}
+                                    <input type="text" class="form-control" name="date_at" aria-label="datepicker" placeholder="Дата"/>
+                                </div>
+                            </div>
+                            <div class="col-md-auto col-sm-12">
+                                <div class="col-auto">
+{#                                    <label class="form-label ms-2"></label>#}
+                                    <button class="btn btn-primary form-control CreateCheckerBtn">Пошук</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        
+            {% if search_results %}
+                <div class="my-3 p-3 bg-body rounded shadow-sm">
+                    <h3 class="pb-2">Квитки за напрямком {{ search_summary }}</h3>
+                    <div class="bg-body rounded shadow-sm">
+                        <table class="table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>
+                                    <th class="col-1 text-primary-emphasis border" colspan="2">Час</th>
+                                    <th class="col-1 text-primary-emphasis border" colspan="3">Потяг</th>
+                                    <th class="col-auto text-primary-emphasis border" rowspan="2">Тип вагону</th>
+                                    <th class="col-auto text-primary-emphasis border" rowspan="2">Мінімальна ціна</th>
+                                    <th class="col-auto text-primary-emphasis border" rowspan="2">Доступно місць</th>
+                                </tr>
+                                <tr class="text-center">
+                                    <th class="col-auto text-primary-emphasis border">Відправлення</th>
+                                    <th class="col-auto text-primary-emphasis border">Прибуття</th>
+                                    <th class="col-auto text-primary-emphasis border">Відправлення</th>
+                                    <th class="col-auto text-primary-emphasis border">Прибуття</th>
+                                    <th class="col-auto text-primary-emphasis border">Номер</th>
+                                    <th class="col-auto text-primary-emphasis border">Сполучення</th>
+                                    <th class="col-auto text-primary-emphasis border">Категорія</th>
+                                </tr>
+                            </thead>
+                        
+                            <tbody class="text-center" id="checkersBodyTable">
+                            {% for result in search_results %}
+                                <tr class="border">
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.departure_date }}</td>
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.arrival_date }}</td>
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.departure_time }} </td>
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.arrival_time }}</td>
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.train_number }}</td>
+                                    <td class="border" rowspan="{{ result.rowspan }}">{{ result.train_name }}</td>
+                                    <td class="border" rowspan="{{ result.rowspan }}" nowrap>{{ result.train_category }}</td>
+                                
+                                    {% for wagon_detail in result.wagon_details %}
+                                        {% if not forloop.first %}
+                                            <tr>
+                                        {% endif %}
+                                        <td class="border" nowrap>{{ wagon_detail.wagon_type }}</td>
+                                        <td class="border" nowrap>{{ wagon_detail.min_price }}</td>
+                                        <td class="border" nowrap>{{ wagon_detail.available_seats }}</td>
+                                        </tr>
+                                    {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+{#        <script>#}
+{#            window.StationUrl = "{% url 'tickets_ua:api-station' %}"#}
+{#            window.ChekerUrl = "{% url 'tickets_ua:api-checker' %}"#}
+{#        </script>#}
+
+{#        <script>#}
+{#            $('#range-time').on('input', function () {#}
+{#                const time = $('#range-time').val()#}
+{#                $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")#}
+{#            });#}
+{#        </script>#}
+
+{#        <script src="{% static '/js/moment.min.js' %}"></script>#}
+{#        <script src="{% static '/js/daterangepicker.js' %}"></script>#}
+{#        <script>#}
+{#            $(function () {#}
+{#                $('input[name="date_at"]').daterangepicker({#}
+{#                    opens: 'left',#}
+{#                    startDate: moment(),#}
+{#                    minDate: moment(),#}
+{#                    endDate: moment(),#}
+{#                    maxDate: moment().add(10, 'day'),#}
+{#                    locale: {#}
+{#                        format: 'YYYY-MM-DD'#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#        </script>#}
+
+{#        <script src="{% static '/js/calc.js' %}"></script>#}
+{#        <script src="{% static '/js/ajax.js' %}"></script>#}
+{#        <script src="{% static '/js/notify.js' %}"></script>#}
+
+{#        {% csrf_token %}#}
+{#        <script src="{% static '/js/tickets_ua/station.js' %}"></script>#}
+{#        <script src="{% static '/js/tickets_ua/checker.js' %}"></script>#}
+
+    {% endif %}
+{% endblock %}

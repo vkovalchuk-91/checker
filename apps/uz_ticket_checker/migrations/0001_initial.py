@@ -57,17 +57,4 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'stations',
             },
         ),
-        migrations.CreateModel(
-            name='TicketSearchParameter',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateTimeField(verbose_name='start date')),
-                ('end_date', models.DateTimeField(verbose_name='end date')),
-                ('arrival_station', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='arrivals', to='uz_ticket_checker.station', verbose_name='arrival station')),
-                ('departure_station', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='departures', to='uz_ticket_checker.station', verbose_name='departure station')),
-                ('seat_type', models.ManyToManyField(to='uz_ticket_checker.seattype')),
-                ('train_number', models.ManyToManyField(to='uz_ticket_checker.trainnumber')),
-                ('wagon_type', models.ManyToManyField(to='uz_ticket_checker.wagontype')),
-            ],
-        ),
     ]

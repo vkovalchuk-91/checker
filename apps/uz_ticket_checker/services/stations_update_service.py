@@ -5,6 +5,7 @@ UKRAINIAN_ALPHABET = ['А', 'Б', 'В', 'Г', 'Ґ', 'Д', 'Е', 'Є', 'Ж', 'З'
 
 
 def run_all_stations_update():
-    for letter1 in UKRAINIAN_ALPHABET:
-        for letter2 in UKRAINIAN_ALPHABET:
-            run_stations_scraping_task.delay(phrase=letter1+letter2)
+    run_stations_scraping_task.delay(phrase="ГОРО")
+    # for letter1 in UKRAINIAN_ALPHABET:
+    #     for letter2 in UKRAINIAN_ALPHABET:
+    #         run_stations_scraping_task.delay(phrase=letter1+letter2)

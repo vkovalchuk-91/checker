@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import TimeStampedMixin
+from apps.accounts.models import BaseParameter
 
 
 class Station(TimeStampedMixin):
@@ -41,7 +42,7 @@ class Country(models.Model):
     name = models.CharField(_("country name"), max_length=150)
 
 
-class TicketSearchParameter(models.Model):
+class TicketSearchParameter(BaseParameter):
     departure_station = models.ForeignKey(
         "Station",
         on_delete=models.CASCADE,
@@ -56,9 +57,9 @@ class TicketSearchParameter(models.Model):
         verbose_name=_("arrival station"))
     start_date = models.DateTimeField(_("start date"), null=False)
     end_date = models.DateTimeField(_("end date"), null=False)
-    train_number = models.ManyToManyField("TrainNumber")
-    wagon_type = models.ManyToManyField("WagonType")
-    seat_type = models.ManyToManyField("SeatType")
+    train_number = models.ManyToManyField("TrainNumber", related_name="train_numbers")
+    wagon_type = models.ManyToManyField("WagonType", related_name="wagon_types")
+    seat_type = models.ManyToManyField("SeatType", related_name="seat_types")
 
 
 class TrainNumber(models.Model):

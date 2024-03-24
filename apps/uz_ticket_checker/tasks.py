@@ -1,8 +1,38 @@
+from datetime import timedelta, datetime
+
 from django.utils import timezone
 
 from apps.celery import celery_app as app
 from apps.uz_ticket_checker.models import Station, Country
 from apps.uz_ticket_checker.parsers.stations_parser import handle_one_phrase_stations
+from apps.uz_ticket_checker.parsers.trains_parser import get_current_search_tickets
+
+
+@app.task(name='run_tickets_search')
+def run_tickets_search_task(**kwargs):
+    from_station = kwargs.get('from_station')
+    to_station = kwargs.get('to_station')
+    from_date = kwargs.get('from_date')
+    to_date = kwargs.get('to_date')
+    search_results = []
+    search_summary = []
+
+    start_date = datetime.strptime(from_date, "%Y-%m-%d")
+    end_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+    current_date = start_date
+    while current_date <= end_date:
+        current_search_results, search_direction = (
+            get_current_search_tickets(from_station, to_station, current_date.strftime("%Y-%m-%d")))
+        search_results += current_search_results
+        if not search_summary:
+            search_summary = search_direction
+        current_date += timedelta(days=1)
+    if start_date == end_date:
+        search_summary += f" ({start_date.strftime("%Y-%m-%d")})"
+    else:
+        search_summary += f" ({start_date.strftime("%Y-%m-%d")} - {end_date.strftime("%Y-%m-%d")})"
+    return search_results, search_summary
 
 
 @app.task(name='run_stations_scraping')

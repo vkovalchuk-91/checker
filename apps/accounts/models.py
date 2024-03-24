@@ -68,3 +68,31 @@ class UserAccountType(models.Model):
     name = models.CharField(_("user account type name"), max_length=150)
     max_query_number = models.IntegerField(_("max query number"), default=0)
     update_period = models.IntegerField(_("update period (minutes)"), default=0)
+
+
+class CheckerTask(TimeStampedMixin):
+    is_active = models.BooleanField(_("active"), default=True)
+    user = models.ForeignKey('User', on_delete=models.CASCADE, null=False, related_name='user', verbose_name='user')
+    update_period = models.IntegerField(verbose_name='update period (minutes)')
+    last_run_at = models.DateTimeField(default=timezone.now, verbose_name='last run date')
+    task_params = models.ForeignKey(
+        'BaseParameter',
+        on_delete=models.CASCADE,
+        null=False,
+        related_name='parameters',
+        verbose_name='parameters'
+    )
+
+
+class BaseParameter(models.Model):
+    param_type = models.ForeignKey(
+        'ParameterCategory',
+        on_delete=models.CASCADE,
+        null=False,
+        related_name='parameter_category',
+        verbose_name='Parameter category'
+    )
+
+
+class ParameterCategory(models.Model):
+    param_category_name = models.CharField(max_length=150, verbose_name='parameter category name')
