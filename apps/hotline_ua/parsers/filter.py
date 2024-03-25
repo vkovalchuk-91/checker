@@ -49,12 +49,12 @@ class FilterParser:
         return instances
 
     def parse_shop_from_script(self, filter_type: FilterType = FilterType.SHOP):
-        matches = re.search(r'title:"Магазин",description:(.*?),type:"firm",weight:(.*?),values:(.*?),topValues',
+        matches = re.search(r'title:"(.*?)",description:(.*?),type:"firm",weight:(.*?),values:(.*?),topValues',
                             self.data)
         if not matches:
             return []
 
-        extracted_text = matches.group(3).replace("'", "")
+        extracted_text = matches.group(4).replace("'", "")
         items_dict = re.findall(rf'_id:(.*?),isNoFollow(.*?),title:(.*?),alias', extracted_text)
 
         instances = []
