@@ -12,7 +12,7 @@ from apps.hotline_ua.serializers.filter import FilterSerializer
 
 class CheckerCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    filters = FilterSerializer(required=True, many=True)
+    filters = FilterSerializer(required=False, many=True)
     user_id = serializers.IntegerField(required=True)
 
     class Meta:
@@ -64,24 +64,26 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                 {'filter': _(f'Filter "{text_filter_dict["title"]}" exist.')}
             )
 
-        if not text_filter_dict and len(filter_ids) == 0 and len(range_filter_dicts) == 0:
-            raise serializers.ValidationError(
-                {'filter': _(f"Filters can't be empty.")}
-            )
-
         if text_filter_dict:
             attrs['text_filter'] = Filter(**text_filter_dict)
 
-        if len(filter_ids) == 0 and len(range_filter_dicts) == 0:
-            attrs['category'] = None
-            attrs['filters'] = None
-            return attrs
+        category_instance = None
+        if category.get('id'):
+            category_instance = Category.objects.get(id=category['id'])
+            if not category_instance.is_active or category_instance.is_link:
+                raise serializers.ValidationError(
+                    {'category': _(f'Invalid category id:{category["id"]} type or active state.')}
+                )
 
-        category_instance = Category.objects.get(id=category['id'])
-        if not category_instance.is_active or category_instance.is_link:
-            raise serializers.ValidationError(
-                {'category': _(f'Invalid category id:{category["id"]} type or active state.')}
-            )
+        if len(filter_ids) == 0 and len(range_filter_dicts) == 0:
+            if text_filter_dict:
+                attrs['category'] = category_instance
+                attrs['filters'] = None
+                return attrs
+            if not category_instance:
+                raise serializers.ValidationError(
+                    {'checker': _(f'Invalid empty checker.')}
+                )
 
         attrs['category'] = category_instance
         filters = list(Filter.objects.filter(id__in=filter_ids)) if len(filter_ids) > 0 else []
@@ -116,17 +118,18 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                 checker.save(update_fields=('updated_at',))
                 checkers.append(checker)
 
-            if filter_instances:
-                for filter_instance in filter_instances:
-                    if filter_instance.type_name in [FilterType.MAX.value, FilterType.MIN.value]:
-                        filter_instance.save()
-
+            if category_instance:
                 checker = Checker(category=category_instance, user=user, )
                 checker.save()
 
-                checker.filters.set(filter_instances)
-                checker.updated_at = timezone.now()
-                checker.save(update_fields=('updated_at',))
-                checkers.append(checker)
+                if filter_instances:
+                    for filter_instance in filter_instances:
+                        if filter_instance.type_name in [FilterType.MAX.value, FilterType.MIN.value]:
+                            filter_instance.save()
+
+                    checker.filters.set(filter_instances)
+                    checker.updated_at = timezone.now()
+                    checker.save(update_fields=('updated_at',))
+                    checkers.append(checker)
 
         return checkers

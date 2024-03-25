@@ -1,11 +1,12 @@
 {% extends 'fragments/base.html' %}
+{% load i18n %}
 
 {% block main %}
     <div class="container my-5 fixed-top">
         {% if form.non_field_errors %}
             {% for error in form.non_field_errors %}
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Exception:</strong> {{ error }}
+                    <strong>{% translate "Exception" %}:</strong> {{ error }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
@@ -31,20 +32,20 @@
                                         <div class="form-floating mb-3">
                                             <input type="email" class="form-control" name="username" id="email"
                                                    placeholder="name@example.com" required>
-                                            <label for="email" class="form-label">Email</label>
+                                            <label for="email" class="form-label">{% translate "Email" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                             <input type="password" class="form-control" name="password" id="password"
                                                    value="" placeholder="Password" required>
-                                            <label for="password" class="form-label">Password</label>
+                                            <label for="password" class="form-label">{% translate "Password" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="d-grid">
                                             <button class="btn bsb-btn-2xl btn-primary" type="submit">
-                                                Log in now
+                                                {% translate "Log in now" %}
                                             </button>
                                         </div>
                                     </div>
@@ -55,8 +56,9 @@
                                     <hr class="mt-5 mb-4 border-secondary-subtle">
                                     <div class="d-flex text-center justify-content-center">
                                         <form method="post" action="{% url 'google_login' %}?next=/">{% csrf_token %}
-                                            <span class="me-2">or login with</span>
-                                            <button class="item border-0 bg-body bi bi-google fs-3" type="submit"></button>
+                                            <span class="me-2">{% translate "or login with" %}</span>
+                                            <button class="item border-0 bg-body bi bi-google fs-3"
+                                                    type="submit"></button>
                                         </form>
                                     </div>
                                 </div>

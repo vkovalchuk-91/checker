@@ -3,7 +3,6 @@ from settings.base import *
 import socket
 
 from apps.celery import celery_app as apps
-# from rest_framework.authtoken.apps import AuthTokenConfig
 
 # third part
 INSTALLED_APPS += [
@@ -11,7 +10,6 @@ INSTALLED_APPS += [
     'django_extensions',
 
     'rest_framework',
-    # 'rest_framework.authtoken',
 
     # project
     'apps.accounts',
@@ -54,7 +52,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_ADAPTER = 'apps.accounts.adapter.GoogleAccountAdapter'
 
 MIDDLEWARE += [
-    "allauth.account.middleware.AccountMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 # redis
@@ -98,12 +97,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
     ],
 
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-        # 'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated',
     ],
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -142,3 +139,9 @@ FRONTEND_CONFIRM_EMAIL_PATH = "/accounts/confirm-email/{uid}/{token}/"
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('uk', 'Ukrainian'),
+]
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]

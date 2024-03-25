@@ -22,9 +22,11 @@ from apps.views import index
 
 urlpatterns = [
     path("", index, name="index"),
+
+    path('i18n/', include('django.conf.urls.i18n')),
+
     path("tickets_ua/", include('apps.tickets_ua.urls'), name="tickets_ua"),
     path("hotline_ua/", include('apps.hotline_ua.urls'), name="hotline_ua"),
-
 
     path('admin/', admin.site.urls, name="admin"),
     path('accounts/', include('apps.accounts.urls'), name="accounts"),

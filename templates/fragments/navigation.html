@@ -1,6 +1,7 @@
+{% load i18n %}
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Home</a>
+        <a class="navbar-brand" href="/">{% translate "Home" %}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,10 +21,10 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            Panels
+                            {% translate "Panels" %}
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/admin">Admin</a></li>
+                            <li><a class="dropdown-item" href="/admin">{% translate "Administrator" %}</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -42,27 +43,38 @@
                             <form method="post"
                                   action="{% url 'accounts:logout' %}?next={{ request.path }}">{% csrf_token %}
                                 <button type="submit" class="bi bi-box-arrow-left nav-link active me-3"
-                                        title="Logout"></button>
+                                        title="{% translate "Logout" %}"></button>
                             </form>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link active me-3" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="nav-link active me-3"
+                               href="{% url 'accounts:login' %}">{% translate "Login" %}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active me-3" href="{% url 'accounts:signup' %}">Signup</a>
+                            <a class="nav-link active me-3"
+                               href="{% url 'accounts:signup' %}">{% translate "Signup" %}</a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
-
             <div class="d-flex">
                 <ul class="navbar-nav me-auto mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="?lang=ua">UA</a>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}">
+                            <input type="hidden" name="language" value="en"/>
+                            <input class="nav-link text-light" type="submit" value="EN">
+                        </form>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="?lang=en">EN</a>
+                        <form action="{% url 'set_language' %}" method="post">
+                            {% csrf_token %}
+                            <input name="next" type="hidden" value="{{ redirect_to }}">
+                            <input type="hidden" name="language" value="uk"/>
+                            <input class="nav-link text-light" type="submit" value="UA">
+                        </form>
                     </li>
                 </ul>
             </div>

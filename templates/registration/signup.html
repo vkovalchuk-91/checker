@@ -1,4 +1,5 @@
 {% extends 'fragments/base.html' %}
+{% load i18n %}
 {% load static %}
 
 {% block main %}
@@ -11,7 +12,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="mb-5">
-                                        <h3>Registration account</h3>
+                                        <h3>{% translate "Registration" %}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -21,14 +22,14 @@
                                         <div class="form-floating mb-3">
                                             <input type="text" class="form-control" name="first_name" id="first_name"
                                                    placeholder="Name">
-                                            <label for="first_name" class="form-label">First name</label>
+                                            <label for="first_name" class="form-label">{% translate "First name" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                             <input type="text" class="form-control" name="last_name" id="last_name"
                                                    placeholder="Name">
-                                            <label for="last_name" class="form-label">Last name</label>
+                                            <label for="last_name" class="form-label">{% translate "Last name" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -42,26 +43,37 @@
                                         <div class="form-floating mb-3">
                                             <input type="password" class="form-control" name="password" id="password"
                                                    value="" placeholder="Password" required>
-                                            <label for="password" class="form-label">Password</label>
+                                            <label for="password" class="form-label">{% translate "Password" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-floating mb-3">
                                             <input type="password" class="form-control" name="confirm" id="confirm"
                                                    value="" placeholder="Password confirm" required>
-                                            <label for="confirm" class="form-label">Password
-                                                confirm</label>
+                                            <label for="confirm" class="form-label">{% translate "Password" %}</label>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="d-grid">
                                             <button class="btn bsb-btn-2xl btn-primary SignUpBtn" type="submit">
-                                                Register
+                                                {% translate "Signup" %}
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr class="mt-5 mb-4 border-secondary-subtle">
+                                    <div class="d-flex text-center justify-content-center">
+                                        <form method="post" action="{% url 'google_login' %}?next=/">{% csrf_token %}
+                                            <span class="me-2">{% translate "or signup with" %}</span>
+                                            <button class="item border-0 bg-body bi bi-google fs-3"
+                                                    type="submit"></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
