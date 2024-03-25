@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from apps.accounts.enums.user_account import UserAccountType
 from apps.accounts.managers import CustomUserManager
 from apps.common.models import TimeStampedMixin
 
@@ -34,6 +35,14 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
     is_email_verified = models.BooleanField(_("email verified"), default=False)
 
+    personal_setting = models.ForeignKey(
+        'PersonalSetting',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='users',
+    )
+
     def __str__(self):
         return self.email
 
@@ -51,3 +60,26 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
         """
         full_name = "%s %s" % (self.first_name, self.last_name)
         return full_name.strip()
+
+
+class UserAccountTypeChoices(models.TextChoices):
+    REGISTERED = UserAccountType.REGISTERED_USER.value, _(UserAccountType.REGISTERED_USER.value)
+    REGULAR = UserAccountType.REGULAR_REGISTERED_USER.value, _(UserAccountType.REGULAR_REGISTERED_USER.value)
+    VIP = UserAccountType.VIP_REGISTERED_USER.value, _(UserAccountType.VIP_REGISTERED_USER.value)
+
+
+class PersonalSetting(models.Model):
+    telegram_user_id = models.IntegerField(_("telegram user ID"), null=True)
+    max_query_number = models.IntegerField(_("max query number"), default=5)
+    update_period = models.IntegerField(_("update period (minutes)"), default=0)
+    type_name = models.CharField(
+        _('user account type name'),
+        max_length=20,
+        blank=False,
+        choices=UserAccountTypeChoices.choices,
+        default=UserAccountTypeChoices.REGISTERED,
+    )
+
+    class Meta:
+        verbose_name = _("personal_setting")
+        verbose_name_plural = _("personal_settings")
