@@ -130,6 +130,6 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                     checker.filters.set(filter_instances)
                     checker.updated_at = timezone.now()
                     checker.save(update_fields=('updated_at',))
-                    checkers.append(checker)
+                checkers.append(checker)
 
         return checkers
