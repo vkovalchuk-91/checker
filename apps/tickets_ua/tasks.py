@@ -3,6 +3,7 @@ import logging
 from django.utils import timezone
 
 from apps.celery import celery_app as app
+from apps.task_manager.tasks import BaseTaskWithRetry
 from apps.tickets_ua.models import Checker, Station
 from apps.tickets_ua.scrapers.bus import BusScraper
 from apps.tickets_ua.scrapers.bus_station import BusStationScraper
@@ -13,7 +14,7 @@ DATE_FORMAT = '%Y-%m-%d'
 TIME_FORMAT = '%H:%M'
 
 
-@app.task(name='tickets_ua_scraping_train_stations')
+@app.task(name='tickets_ua_scraping_train_stations', base=BaseTaskWithRetry)
 def scraping_train_stations(title: str):
     scraper = TrainStationScraper(data=title)
     stations = scraper.scrapy_items
@@ -28,7 +29,7 @@ def scraping_train_stations(title: str):
                 scraping_bus_station_name.apply_async(args=(station.id,))
 
 
-@app.task(name='tickets_ua_scraping_bus_station_name')
+@app.task(name='tickets_ua_scraping_bus_station_name', base=BaseTaskWithRetry)
 def scraping_bus_station_name(station_id: int):
     if not Station.objects.filter(id=station_id).exists():
         return ''

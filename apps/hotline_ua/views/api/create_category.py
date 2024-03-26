@@ -8,7 +8,7 @@ from apps.hotline_ua.serializers import CategoryCreateSerializer
 from apps.hotline_ua.tasks import scraping_categories
 
 
-class CreateCategoryAPIView(CreateAPIView):
+class CategoryCreateAPIView(CreateAPIView):
     serializer_class = CategoryCreateSerializer
     permission_classes = (IsAuthenticated,)
 

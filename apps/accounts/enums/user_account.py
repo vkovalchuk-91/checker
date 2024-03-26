@@ -7,7 +7,7 @@ class UserAccountType(Enum):
     VIP_REGISTERED_USER = 'vip'
 
     @staticmethod
-    def find_filter_by_value(value):
+    def find_by_value(value):
         if not value:
             return None
 

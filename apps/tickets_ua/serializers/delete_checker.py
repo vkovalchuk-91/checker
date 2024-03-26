@@ -1,9 +1,11 @@
-from apps.common.serializer import InstanceDeleteSerializer
+from apps.common.enums.checker_name import CheckerTypeName
+from apps.common.serializer import DeleteSerializer
 from apps.tickets_ua.models import Checker
 
 
-class CheckerDeleteSerializer(InstanceDeleteSerializer):
+class CheckerDeleteSerializer(DeleteSerializer):
     model_class = Checker
+    checker_type = CheckerTypeName.TICKETS_UA
 
     class Meta:
         model = Checker
@@ -11,7 +13,3 @@ class CheckerDeleteSerializer(InstanceDeleteSerializer):
             'id',
             'user_id',
         ]
-        extra_kwargs = {
-            'id': {'required': True},
-            'user_id': {'required': True},
-        }

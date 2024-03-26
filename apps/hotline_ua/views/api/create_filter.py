@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from apps.hotline_ua.serializers import FilterCreateSerializer
 
 
-class CreateFilterAPIView(CreateAPIView):
+class FilterCreateAPIView(CreateAPIView):
     serializer_class = FilterCreateSerializer
     permission_classes = (IsAuthenticated,)
 

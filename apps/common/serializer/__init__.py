@@ -1,2 +1,2 @@
-from apps.common.serializer.update import InstanceStateUpdateSerializer
-from apps.common.serializer.delete import InstanceDeleteSerializer
+from apps.common.serializer.update import UpdateSerializer
+from apps.common.serializer.delete import DeleteSerializer

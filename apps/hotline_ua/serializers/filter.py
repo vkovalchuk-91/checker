@@ -30,7 +30,7 @@ class FilterSerializer(serializers.Serializer):
         }
 
     def validate(self, attrs):
-        type_name = FilterType.find_filter_by_value(attrs.get('type_name'))
+        type_name = FilterType.find_by_value(attrs.get('type_name'))
         if type_name and type_name == FilterType.TEXT:
             text_serializer = TextFilterSerializer(data=attrs)
             text_serializer.is_valid(raise_exception=True)

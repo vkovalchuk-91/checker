@@ -1,39 +1,16 @@
-from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 from rest_framework import serializers
 
-from apps.accounts.models import User
+from apps.common.serializer.base import BaseSerializer
 
 
-class InstanceDeleteSerializer(serializers.ModelSerializer):
-    model_class = None
-    user_model_class = User
-
-    id = serializers.IntegerField(required=True)
-    user_id = serializers.IntegerField(required=True)
-
+class DeleteSerializer(BaseSerializer, serializers.ModelSerializer):
     class Meta:
         abstract = True
 
-    def validate(self, attrs):
-        try:
-            instance = self.model_class.objects.get(id=attrs['id'])
-        except (self.model_class.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError(
-                {'id': _(f'Checker by id:{id} does not exist..')}
-            )
-
-        try:
-            user = self.user_model_class.objects.get(id=attrs['user_id'])
-            if instance.user.id != user.id and not user.is_superuser:
-                raise ValueError
-        except (self.user_model_class.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError(
-                {'user': _(f'Invalid user or permissions.')}
-            )
-
-        return attrs
-
     def delete(self):
-        instance_id = self.validated_data['id']
-        instance = self.model_class.objects.get(id=instance_id)
-        instance.delete()
+        checker_instance = self.validated_data['checker']
+        checker_task_instance = self.validated_data['checker_task']
+        with transaction.atomic():
+            checker_instance.delete()
+            checker_task_instance.delete()

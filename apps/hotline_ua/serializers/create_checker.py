@@ -3,17 +3,18 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.accounts.models import User
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Checker, Category, Filter
 from apps.hotline_ua.serializers import CategorySerializer
 from apps.hotline_ua.serializers.filter import FilterSerializer
+from apps.common.enums.checker_name import CheckerTypeName
+from apps.task_manager.models import CheckerTask
 
 
 class CheckerCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     filters = FilterSerializer(required=False, many=True)
-    user_id = serializers.IntegerField(required=True)
+    user_id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Checker
@@ -25,47 +26,22 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        filters = attrs['filters']
+        if not attrs.get('user_id'):
+            raise serializers.ValidationError(
+                {'user': _(f'Invalid identification user.')}
+            )
+
+        can_create_count = CheckerTask.objects.can_create_count(attrs['user_id'])
+        if can_create_count == 0:
+            raise serializers.ValidationError(
+                {'checker': _(f"Can't create a new checker.")}
+            )
+
         category = attrs['category']
-
-        filter_ids = []
-        text_filter_dict = None
-        range_filter_dicts = []
-
-        for filter_dict in filters:
-
-            filter_type = FilterType.find_filter_by_value(filter_dict.get('type_name'))
-            if filter_type == FilterType.TEXT:
-                text_filter_dict = {**filter_dict}
-                continue
-            elif filter_type in [FilterType.MAX, FilterType.MIN]:
-                range_filter_dicts.append({**filter_dict})
-                continue
-
-            if filter_dict['category']['id'] != category['id']:
-                raise serializers.ValidationError(
-                    {'filters': _(f"Filters must be from one category.")}
-                )
-
-            filter_ids.append(filter_dict['id'])
-
-        try:
-            user = attrs['user'] = User.objects.get(id=attrs['user_id'])
-        except (User.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError(
-                {'user': _(f'Invalid to user.')}
-            )
-
-        if text_filter_dict and Filter.objects.filter(
-                title__iexact=text_filter_dict['title'],
-                type_name=text_filter_dict['type_name'],
-                checkers__user_id=user.id).exists():
-            raise serializers.ValidationError(
-                {'filter': _(f'Filter "{text_filter_dict["title"]}" exist.')}
-            )
-
-        if text_filter_dict:
-            attrs['text_filter'] = Filter(**text_filter_dict)
+        filters = self._get_filter_dict_by_type(attrs)
+        text_filter_dict = filters["text_filter"]
+        range_filter_dicts = filters["range_filter"]
+        filter_ids = filters['filter_ids']
 
         category_instance = None
         if category.get('id'):
@@ -74,6 +50,14 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {'category': _(f'Invalid category id:{category["id"]} type or active state.')}
                 )
+
+        if category_instance and text_filter_dict and can_create_count < 2:
+            raise serializers.ValidationError(
+                {'checker': _(f'Cannot create more then 1 checker.')}
+            )
+
+        if text_filter_dict:
+            attrs['text_filter'] = Filter(**text_filter_dict)
 
         if len(filter_ids) == 0 and len(range_filter_dicts) == 0:
             if text_filter_dict:
@@ -99,37 +83,84 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         attrs['filters'] = filters
         return attrs
 
+    def _get_filter_dict_by_type(self, attrs):
+        filter_ids = []
+        text_filter_dict = None
+        range_filter_dicts = []
+        for filter_dict in attrs['filters']:
+
+            filter_type = FilterType.find_by_value(filter_dict.get('type_name'))
+            if filter_type == FilterType.TEXT:
+                text_filter_dict = {**filter_dict, 'category': None}
+                continue
+            elif filter_type in [FilterType.MAX, FilterType.MIN]:
+                range_filter_dicts.append({**filter_dict})
+                continue
+
+            if filter_dict['category']['id'] != attrs['category']['id']:
+                raise serializers.ValidationError(
+                    {'filters': _(f"Filters must be from one category.")}
+                )
+
+            filter_ids.append(filter_dict['id'])
+
+        return {
+            'text_filter': text_filter_dict,
+            'range_filter': range_filter_dicts,
+            'filter_ids': filter_ids,
+        }
+
     def create(self, validated_data):
         text_filter_instance = validated_data.get('text_filter')
         filter_instances = validated_data['filters']
         category_instance = validated_data['category']
-        user = validated_data['user']
+        user_id = validated_data['user_id']
 
         checkers = []
         with transaction.atomic():
             if text_filter_instance:
                 text_filter_instance.save()
 
-                checker = Checker(category=None, user=user, )
-                checker.save()
+                checker = self.__create_checker_task(
+                    category_instance=None,
+                    filter_instances=text_filter_instance,
+                    user_id=user_id,
+                )
 
-                checker.filters.add(text_filter_instance)
-                checker.updated_at = timezone.now()
-                checker.save(update_fields=('updated_at',))
                 checkers.append(checker)
 
             if category_instance:
-                checker = Checker(category=category_instance, user=user, )
-                checker.save()
-
                 if filter_instances:
                     for filter_instance in filter_instances:
                         if filter_instance.type_name in [FilterType.MAX.value, FilterType.MIN.value]:
                             filter_instance.save()
 
-                    checker.filters.set(filter_instances)
-                    checker.updated_at = timezone.now()
-                    checker.save(update_fields=('updated_at',))
+                checker = self.__create_checker_task(
+                    category_instance=category_instance,
+                    filter_instances=filter_instances,
+                    user_id=user_id,
+                )
+
                 checkers.append(checker)
 
         return checkers
+
+    def __create_checker_task(self, category_instance, filter_instances, user_id):
+        checker = Checker(category=category_instance)
+        checker.save()
+
+        if isinstance(filter_instances, Filter):
+            checker.filters.add(filter_instances)
+        else:
+            checker.filters.set(filter_instances)
+
+        checker.updated_at = timezone.now()
+        checker.save(update_fields=('updated_at',))
+
+        CheckerTask.objects.create_task(
+            checker_name=CheckerTypeName.HOTLINE_UA.value,
+            checker_id=checker.id,
+            user_id=user_id,
+        )
+
+        return checker

@@ -1,9 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.models import User
 from apps.common import TimeStampedMixin
-from apps.common.models import StateMixin
+from apps.common.models import ActiveStateMixin, AvailableCheckMixin
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.managers import CategoryManager, FilterManager
 
@@ -77,7 +76,7 @@ class Filter(models.Model):
         verbose_name_plural = _("filters")
 
 
-class Checker(TimeStampedMixin, StateMixin, models.Model):
+class Checker(TimeStampedMixin, ActiveStateMixin, AvailableCheckMixin, models.Model):
     filter_class = Filter
 
     filters = models.ManyToManyField(
@@ -90,13 +89,6 @@ class Checker(TimeStampedMixin, StateMixin, models.Model):
         on_delete=models.CASCADE,
         null=True,
         related_name='checkers'
-    )
-
-    user = models.ForeignKey(
-        User,
-        blank=False,
-        on_delete=models.CASCADE,
-        related_name='hotline_ua_checkers',
     )
 
     class Meta:

@@ -7,7 +7,7 @@ from apps.hotline_ua.serializers import CheckerCreateSerializer
 from apps.hotline_ua.tasks import run_checkers
 
 
-class CreateCheckerAPIView(CreateAPIView):
+class CheckerCreateAPIView(CreateAPIView):
     serializer_class = CheckerCreateSerializer
     permission_classes = (IsAuthenticated,)
 

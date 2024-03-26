@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 from apps.common import TimeStampedMixin
-from apps.common.models import StateMixin
+from apps.common.models import ActiveStateMixin, AvailableCheckMixin
 from apps.tickets_ua.managers import CheckerManager
 
 
@@ -17,7 +17,7 @@ class Station(models.Model):
         return self.name
 
 
-class Checker(TimeStampedMixin, StateMixin, models.Model):
+class Checker(TimeStampedMixin, ActiveStateMixin, AvailableCheckMixin, models.Model):
     objects = CheckerManager()
 
     from_station = models.ForeignKey(
@@ -36,13 +36,6 @@ class Checker(TimeStampedMixin, StateMixin, models.Model):
 
     date_at = models.DateField(_('at date'), default=timezone.now)
     time_at = models.TimeField(_('at time'), default=timezone.now)
-
-    user = models.ForeignKey(
-        User,
-        blank=False,
-        on_delete=models.CASCADE,
-        related_name='tickets_ua_checkers',
-    )
 
     class Meta:
         verbose_name = _("checker")

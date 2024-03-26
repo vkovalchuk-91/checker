@@ -14,7 +14,7 @@ class TextFilterSerializer(serializers.Serializer):
     category = serializers.CharField(read_only=True, required=False)
 
     def validate(self, attrs):
-        type_name = FilterType.find_filter_by_value(attrs.get('type_name'))
+        type_name = FilterType.find_by_value(attrs.get('type_name'))
         if not type_name:
             raise serializers.ValidationError(
                 {'type_name': _(f'Invalid type name.')}

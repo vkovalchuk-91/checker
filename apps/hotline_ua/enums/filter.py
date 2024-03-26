@@ -10,7 +10,7 @@ class FilterType(Enum):
     MAX = 'max'
 
     @staticmethod
-    def find_filter_by_value(value):
+    def find_by_value(value):
         if not value:
             return None
 

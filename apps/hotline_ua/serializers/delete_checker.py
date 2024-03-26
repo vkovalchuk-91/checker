@@ -1,14 +1,16 @@
 from django.db import transaction
 
-from apps.common.serializer import InstanceDeleteSerializer
+from apps.common.enums.checker_name import CheckerTypeName
+from apps.common.serializer import DeleteSerializer
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Checker
 from apps.hotline_ua.models import Filter
 
 
-class CheckerDeleteSerializer(InstanceDeleteSerializer):
+class CheckerDeleteSerializer(DeleteSerializer):
     model_class = Checker
     filter_model_class = Filter
+    checker_type = CheckerTypeName.HOTLINE_UA
 
     class Meta:
         model = Checker
@@ -16,10 +18,6 @@ class CheckerDeleteSerializer(InstanceDeleteSerializer):
             'id',
             'user_id',
         ]
-        extra_kwargs = {
-            'id': {'required': True},
-            'user_id': {'required': True},
-        }
 
     def delete(self):
         instance_id = self.validated_data['id']

@@ -28,11 +28,11 @@ class CheckerManager(models.Manager):
 
             current_date += timedelta(days=1)
 
-        checkers = super().get_queryset().bulk_create(checkers)
+        checkers = self.get_queryset().bulk_create(checkers)
         return checkers
 
     def is_exist(self, from_station, to_station, date_at, user):
-        return super().get_queryset().filter(
+        return self.get_queryset().filter(
             Q(from_station=from_station) &
             Q(to_station=to_station) &
             Q(date_at=date_at) &

@@ -9,9 +9,10 @@ from apps.hotline_ua.scrapers.category import CategoryScraper
 from apps.hotline_ua.scrapers.count import CountScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
 from apps.hotline_ua.scrapers.text_search import TextSearchScraper
+from apps.task_manager.tasks import BaseTaskWithRetry
 
 
-@app.task(name='hotline_ua_scraping_categories')
+@app.task(name='hotline_ua_scraping_categories', base=BaseTaskWithRetry)
 def scraping_categories():
     scraper = CategoryScraper()
     items = scraper.scrapy_items
@@ -19,7 +20,7 @@ def scraping_categories():
         Category.objects.save_with_children(item.__dict__)
 
 
-@app.task(name='hotline_ua_scraping_categories_filters')
+@app.task(name='hotline_ua_scraping_categories_filters', base=BaseTaskWithRetry)
 def scraping_categories_filters(category_ids: list[int]):
     category_instances = Category.objects.filter(id__in=category_ids)
     for category_instance in category_instances:

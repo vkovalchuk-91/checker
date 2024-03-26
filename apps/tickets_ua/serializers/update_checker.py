@@ -1,9 +1,11 @@
-from apps.common.serializer import InstanceStateUpdateSerializer
+from apps.common.enums.checker_name import CheckerTypeName
+from apps.common.serializer import UpdateSerializer
 from apps.tickets_ua.models import Checker
 
 
-class CheckerUpdateSerializer(InstanceStateUpdateSerializer):
+class CheckerUpdateSerializer(UpdateSerializer):
     model_class = Checker
+    checker_type = CheckerTypeName.TICKETS_UA
 
     class Meta:
         model = Checker
@@ -12,7 +14,3 @@ class CheckerUpdateSerializer(InstanceStateUpdateSerializer):
             'is_active',
             'user_id',
         ]
-        extra_kwargs = {
-            'id': {'required': True},
-            'is_active': {'required': True},
-        }

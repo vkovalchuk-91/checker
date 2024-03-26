@@ -17,7 +17,7 @@ class FilterManager(models.Manager):
             return filter_instances
 
     def get_instance(self, instance_dict: dict):
-        queryset = super().get_queryset()
+        queryset = self.get_queryset()
 
         if queryset.filter(code=instance_dict['code']).exists():
             instance = queryset.get(code=instance_dict['code'])

@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.enums.user_account import UserAccountType
 from apps.accounts.managers import CustomUserManager
+from apps.common.constants import MAX_QUERY_NUMBER, USER_UPDATE_PERIOD_DEFAULT
 from apps.common.models import TimeStampedMixin
 
 
@@ -70,8 +71,8 @@ class UserAccountTypeChoices(models.TextChoices):
 
 class PersonalSetting(models.Model):
     telegram_user_id = models.IntegerField(_("telegram user ID"), null=True)
-    max_query_number = models.IntegerField(_("max query number"), default=5)
-    update_period = models.IntegerField(_("update period (minutes)"), default=0)
+    max_query_number = models.IntegerField(_("max query number"), default=MAX_QUERY_NUMBER)
+    update_period = models.IntegerField(_("update period (minutes)"), default=USER_UPDATE_PERIOD_DEFAULT)
     type_name = models.CharField(
         _('user account type name'),
         max_length=20,

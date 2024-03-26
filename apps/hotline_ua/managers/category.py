@@ -37,7 +37,7 @@ class CategoryManager(models.Manager):
         return False
 
     def get_instance(self, instance_dict):
-        queryset = super().get_queryset()
+        queryset = self.get_queryset()
 
         if queryset.filter(code=instance_dict['code']).exists():
             instance = queryset.get(code=instance_dict['code'])
