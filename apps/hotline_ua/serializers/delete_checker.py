@@ -21,12 +21,13 @@ class CheckerDeleteSerializer(BaseDeleteSerializer, serializers.ModelSerializer)
         ]
 
     def delete(self):
-        instance_id = self.validated_data['id']
+        checker_instance = self.validated_data['checker']
         filter_instances = self.filter_model_class.objects.filter(
-            checkers__id=instance_id,
+            checkers__id=checker_instance.id,
             type_name__in=[FilterType.TEXT.value, FilterType.MIN.value, FilterType.MAX.value]
         )
         with transaction.atomic():
+            checker_instance.filters.clear()
             for filter_instance in filter_instances:
                 filter_instance.delete()
             super().delete()
