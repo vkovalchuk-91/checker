@@ -39,8 +39,6 @@ def scraping_categories_filters(category_ids: list[int]):
 
 @app.task(name='hotline_ua_run_checkers')
 def run_checkers(checker_ids: list[int]):
-    print(checker_ids)
-
     for checker in Checker.objects.filter(id__in=checker_ids, is_active=True, ):
         filter_instances = checker.filters.all()
         if len(filter_instances) == 1 and filter_instances[0].type_name == FilterType.TEXT.value:

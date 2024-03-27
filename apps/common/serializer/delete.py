@@ -4,7 +4,7 @@ from rest_framework import serializers
 from apps.common.serializer.base import BaseSerializer
 
 
-class DeleteSerializer(BaseSerializer, serializers.ModelSerializer):
+class BaseDeleteSerializer(BaseSerializer, serializers.Serializer):
     class Meta:
         abstract = True
 

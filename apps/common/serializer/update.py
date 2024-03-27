@@ -4,7 +4,7 @@ from rest_framework import serializers
 from apps.common.serializer.base import BaseSerializer
 
 
-class UpdateSerializer(BaseSerializer, serializers.ModelSerializer):
+class BaseUpdateSerializer(BaseSerializer, serializers.Serializer):
     is_active = serializers.BooleanField(required=True)
 
     class Meta:

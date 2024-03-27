@@ -2,5 +2,5 @@ from apps.hotline_ua.serializers.category import CategorySerializer
 from apps.hotline_ua.serializers.create_category import CategoryCreateSerializer
 from apps.hotline_ua.serializers.create_checker import CheckerCreateSerializer
 from apps.hotline_ua.serializers.create_filter import FilterCreateSerializer
-from apps.hotline_ua.serializers.delete_checker import DeleteSerializer
+from apps.hotline_ua.serializers.delete_checker import BaseDeleteSerializer
 from apps.hotline_ua.serializers.update_checker import CheckerUpdateSerializer

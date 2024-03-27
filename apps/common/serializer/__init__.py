@@ -1,2 +1,3 @@
-from apps.common.serializer.update import UpdateSerializer
-from apps.common.serializer.delete import DeleteSerializer
+from apps.common.serializer.base import BaseSerializer
+from apps.common.serializer.delete import BaseDeleteSerializer
+from apps.common.serializer.update import BaseUpdateSerializer
