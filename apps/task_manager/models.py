@@ -38,3 +38,37 @@ class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
         verbose_name = _("checker_task")
         verbose_name_plural = _("checker_tasks")
 
+
+class SessionCheckerCounter:
+    CLIENT_DATA_KEY = 'session_key'
+    CLIENT_COUNTER_KEY = 'counter_key'
+
+    def __init__(self, request):
+        self.session = request.session
+        client_data = request.session.get(self.CLIENT_DATA_KEY)
+        if not client_data:
+            self.session[self.CLIENT_DATA_KEY] = client_data = {}
+
+        counter = client_data.get(self.CLIENT_COUNTER_KEY)
+
+        user = request.user
+        if not user.is_authenticated or not user.is_active:
+            self.max_count = 0
+            self.count = 0
+        else:
+            self.max_count = CheckerTask.objects.max_user_checkers_count(user.id)
+            self.count = CheckerTask.objects.user_checkers_count(user.id)
+
+        client_data[self.CLIENT_COUNTER_KEY] = {
+            'max_count': self.max_count,
+            'count': self.count,
+        }
+
+    def clear(self):
+        del self.session[self.CLIENT_DATA_KEY][self.CLIENT_COUNTER_KEY]
+        self.session.modified = True
+
+    def update(self, count_value: int):
+        self.count += count_value
+        self.session[self.CLIENT_DATA_KEY][self.CLIENT_COUNTER_KEY]['max_count'] = self.count
+        self.session.modified = True

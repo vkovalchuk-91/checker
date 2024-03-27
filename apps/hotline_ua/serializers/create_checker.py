@@ -149,13 +149,14 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         checker = Checker(category=category_instance)
         checker.save()
 
-        if isinstance(filter_instances, Filter):
-            checker.filters.add(filter_instances)
-        else:
-            checker.filters.set(filter_instances)
+        if filter_instances:
+            if isinstance(filter_instances, Filter):
+                checker.filters.add(filter_instances)
+            else:
+                checker.filters.set(filter_instances)
 
-        checker.updated_at = timezone.now()
-        checker.save(update_fields=('updated_at',))
+            checker.updated_at = timezone.now()
+            checker.save(update_fields=('updated_at',))
 
         CheckerTask.objects.create_task(
             checker_name=CheckerTypeName.HOTLINE_UA.value,
