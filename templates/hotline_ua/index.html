@@ -1,4 +1,5 @@
 {% extends 'fragments/base.html' %}
+{% load i18n %}
 {% load static %}
 
 {% block main %}
@@ -8,67 +9,78 @@
                 <h3 class="pb-2">Generated new checkers:</h3>
                 <div class="bg-body rounded shadow-sm py-3">
                     <form class="row g-4 p-3" id="createCheckerForm">
-                        <div class="col-md-auto col-sm-12">
+                        <div class="col-md-6 col-sm-12">
                             <div class="col-auto">
-                                <label for="search-category" class="form-label ms-2">category</label>
+                                <label for="search-category" class="form-label ms-2">{% translate "Category" %}</label>
                                 <input type="text" class="form-control" name="category" id="search-category"
                                        placeholder="e.g. Холодильники...">
                                 <ul id="search-category-results"
                                     class="position-absolute text-bg-secondary pe-2 z-3"></ul>
                             </div>
-                            <div class="col-auto">
-                                <label for="search-text" class="form-label pt-3 ms-2">or product title</label>
-                                <input type="text" class="form-control" name="text" id="search-text"
-                                       placeholder="Search...">
+
+                            <div class="col-auto pt-4">
+                                <label for="search-category"
+                                       class="form-label ms-2">{% translate "Base filters" %}</label>
+                                <div>
+                                    <select class="form-select" name="base-filter" id="dselect-base" aria-label="">
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <label class="form-label ms-2"></label>
-                                <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">Generated</button>
+                                <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">{% translate "Generated" %}</button>
                             </div>
                         </div>
-                        <div class="col-md-auto col-sm-12">
+                        <div class="col-md-6 col-sm-12">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title text-secondary ">Price</h5>
-                                    <div>
-                                        <div class=" pt-3 pb-2 ms-2 align-items-center">
-                                            <div class="d-flex align-content-center">
-                                                <div class="pt-4 px-4">
-                                                    <input type="text" name="rangePrice" id="rangePrice" aria-label=""/>
-                                                </div>
+                                    <h5 class="card-title text-secondary ">{% translate "Search" %}</h5>
+                                    <input type="text" class="form-control" name="text" id="search-text"
+                                           placeholder="{% translate "text ..." %}" aria-label="">
+                                </div>
+                                <div class="px-3"
+                                     title="{% translate "e.g. 50 000 and more" %}">
+                                    <h5 class="card-title text-secondary pt-3">
+                                        {% translate "Price range" %}
+                                    </h5>
+                                    <div class="pt-3 pb-1 ms-2">
+                                        <div class="">
+                                            <div class="pt-4 px-4">
+                                                <input type="text" name="rangePrice" id="rangePrice" aria-label=""/>
                                             </div>
                                         </div>
-                                        <div class="card-text">
-                                            <small class="text-secondary text-opacity-50  bottom-0 ps-3">
-                                                e.g. 50 000 and more
-                                            </small>
-                                        </div>
                                     </div>
-                                    <div class="card-text pt-4">
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-text ">
                                         <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                            with enhanced allows
+                                            {% translate "with enhanced allows" %}
                                         </small>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 col-sm-12">
+                        <div class=" col-xs-12 col-sm-12">
                             <div class="card h-100">
                                 <div class="card-body">
-                                    <h5 class="card-title text-secondary ">Filters</h5>
                                     <div>
-                                        <label for="dselect-brand" class="form-label ps-2 text-secondary">brand</label>
-                                        <select class="form-select" name="brand" id="dselect-brand">
-                                        </select>
-                                    </div>
-                                    <div class="pt-2">
-                                        <label for="dselect-shop" class="form-label ps-2 text-secondary">shop</label>
-                                        <select class="form-select" name="shop" id="dselect-shop">
-                                        </select>
+                                        <h5 class="card-title text-secondary ">{% translate "Others filters" %}</h5>
+                                        <div>
+                                            <label for="dselect-brand"
+                                                   class="form-label ps-2 text-secondary">{% translate "brand" %}</label>
+                                            <select class="form-select" name="brand" id="dselect-brand">
+                                            </select>
+                                        </div>
+                                        <div class="pt-2">
+                                            <label for="dselect-shop"
+                                                   class="form-label ps-2 text-secondary">{% translate "shop" %}shop</label>
+                                            <select class="form-select" name="shop" id="dselect-shop">
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="card-text pt-4">
                                         <small class="text-secondary text-opacity-50 position-absolute bottom-0 py-1">
-                                            with enhanced allows
+                                            {% translate "with enhanced allows" %}
                                         </small>
                                     </div>
                                 </div>
@@ -79,21 +91,22 @@
             </div>
 
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2">Yours checkers:</h3>
+                <h3 class="pb-2"> {% translate "Yours checkers:" %}</h3>
                 <div class="bg-body rounded shadow-sm">
                     <table class="table">
                         <thead>
                         <tr class="text-center">
-                            <th class="col-auto text-primary-emphasis">category</th>
-                            <th class="col-5 text-primary-emphasis">filters</th>
-                            <th class="col-1 text-primary-emphasis">active</th>
-                            <th class="col-auto text-primary-emphasis">checked</th>
+                            <th class="col-auto text-primary-emphasis"> {% translate "category" %}</th>
+                            <th class="col-5 text-primary-emphasis"> {% translate "filters" %}</th>
+                            <th class="col-1 text-primary-emphasis"> {% translate "active" %}</th>
+                            <th class="col-auto text-primary-emphasis"> {% translate "checked" %}</th>
                             <th class="col-1"></th>
                         </tr>
                         </thead>
 
+
+                        <tbody id="checkersBodyTable">
                         {% if checkers %}
-                            <tbody id="checkersBodyTable">
                             {% for checker in checkers %}
                                 <tr>
                                     <td>
@@ -102,7 +115,7 @@
                                                 {{ checker.category.title }}
                                             {% else %}
                                                 <small class="text-secondary text-opacity-50">
-                                                    search product title...
+                                                    {% translate "search product title..." %}
                                                 </small>
                                             {% endif %}
                                         </small>
@@ -128,30 +141,32 @@
                                     </td>
                                     <td class="text-center">
                                         <div>
-                                            <small class="text-secondary text-opacity-50" title="last checked">
+                                            <small class="text-secondary text-opacity-50"
+                                                   title="{% translate "last checked" %}">
                                                 {{ checker.updated_at|date:"Y-m-d H:i" }}
                                             </small>
 
                                             {% if checker.is_available %}
                                                 <i class="p-2 text-success fs-5 bi bi-check2-all"
-                                                   title="available"></i>
+                                                   title="{% translate "available" %}"></i>
                                             {% else %}
                                                 <i class="p-2 text-danger bi bi-ban"
-                                                   title="not available"></i>
+                                                   title="{% translate "not available" %}"></i>
                                             {% endif %}
                                         </div>
                                     </td>
                                     <td>
                                         <div class="input-group d-flex justify-content-center">
-                                            <button title="trash" class="nav-link bi bi-trash mx-1 deleteCheckerButton"
+                                            <button title="{% translate "trash" %}"
+                                                    class="nav-link bi bi-trash mx-1 deleteCheckerButton"
                                                     data-checker_id="{{ checker.id }}">
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
                         {% endif %}
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -168,7 +183,7 @@
                 tooltip: true,
                 scale: false,
                 labels: false,
-                width: '150px',
+                width: '210px',
                 {#disabled: true,#}
                 {#minWidth:'300px'#}
                 {#set: [0, 50000]#}
@@ -180,7 +195,7 @@
         <script>
             const config = {
                 search: true,
-                creatable: true,
+                {#creatable: true,#}
                 clearable: true,
                 maxHeight: '360px',
                 size: '', // Can be "sm" or "lg". Default ''

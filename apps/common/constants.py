@@ -1,3 +1,6 @@
 USER_UPDATE_PERIOD_DEFAULT = 0
 TASK_UPDATE_PERIOD_DEFAULT = 5
 MAX_QUERY_NUMBER = 10
+
+DEFAULT_ACTIVE_TITLE_CATEGORIES = ["Побутова техніка", "Комп'ютери", "Смартфони"]
+DEFAULT_TITLE_REGEX = r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$"

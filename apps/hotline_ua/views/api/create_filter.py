@@ -1,14 +1,14 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.common.permissions import IsActiveAndAuthenticated
 from apps.hotline_ua.serializers import FilterCreateSerializer
 
 
 class FilterCreateAPIView(CreateAPIView):
     serializer_class = FilterCreateSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsActiveAndAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         data = request.data

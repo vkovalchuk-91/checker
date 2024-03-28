@@ -2,6 +2,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from apps.common.constants import DEFAULT_TITLE_REGEX
 from apps.hotline_ua.models import Category
 from apps.hotline_ua.tasks import scraping_categories
 
@@ -9,7 +10,7 @@ from apps.hotline_ua.tasks import scraping_categories
 class CategorySerializer(serializers.Serializer):
     title = serializers.RegexField(
         required=True,
-        regex=r"^[a-zA-Zа-яА-ЯєіїЄІЇ0-9\-'. ]{2,100}$",
+        regex=DEFAULT_TITLE_REGEX,
         error_messages={'invalid': _('Invalid title.')},
         allow_blank=True,
     )

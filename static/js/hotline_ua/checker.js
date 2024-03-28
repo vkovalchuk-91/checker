@@ -11,10 +11,25 @@ $(document).ready(function () {
                 };
 
                 let selectedFilters = [];
+                $('#dselect-base option:selected').each(function () {
+                    const titleContent = $(this).text();
+                    const codeContent = $(this).val();
+                    let selectedFilter = {
+                        title: titleContent,
+                        category: category,
+                        type_name: 'link',
+                    };
+                    if (Number.isInteger(parseInt(codeContent))) {
+                        selectedFilter.code = parseInt(codeContent);
+                    }
+                    selectedFilters.push(selectedFilter);
+                });
+
+
                 $('#dselect-shop option:selected').each(function () {
                     const titleContent = $(this).text();
                     const codeContent = $(this).val();
-                    let selectedFilter = {title: titleContent, category: category,};
+                    let selectedFilter = {title: titleContent, category: category, type_name: 'shop',};
                     if (Number.isInteger(parseInt(codeContent))) {
                         selectedFilter.code = parseInt(codeContent);
                     }
@@ -24,7 +39,7 @@ $(document).ready(function () {
                 $('#dselect-brand option:selected').each(function () {
                     const titleContent = $(this).text();
                     const codeContent = $(this).val();
-                    let selectedFilter = {title: titleContent, category: category,};
+                    let selectedFilter = {title: titleContent, category: category, type_name: 'brand',};
                     if (Number.isInteger(parseInt(codeContent))) {
                         selectedFilter.code = parseInt(codeContent);
                     }
@@ -106,7 +121,8 @@ $(document).ready(function () {
                                 '</tr>'
                             );
                         });
-                        notify_msg("Checkers save successful", 'info')
+                        checker_count_update(result.length);
+                        notify_msg("Checkers save successful", 'info');
                     },
                     () => {
                         target.disabled = true;
@@ -131,6 +147,7 @@ $(document).ready(function () {
                     null,
                     () => {
                         $('#checkersBodyTable').find('button[data-checker_id="' + checker_id + '"]').closest('tr').remove();
+                        checker_count_update(-1);
                     },
                     () => {
                         target.disabled = true;

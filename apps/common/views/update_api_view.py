@@ -1,13 +1,11 @@
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
 class BaseUpdateAPIView(UpdateAPIView):
     serializer_class = None
     delete_serializer_class = None
-    permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
         data = {**request.data, 'user_id': request.user.id}

@@ -1,9 +1,11 @@
 from django.db import models, transaction
 from django.utils import timezone
 
+from apps.common.constants import DEFAULT_ACTIVE_TITLE_CATEGORIES
+
 
 class CategoryManager(models.Manager):
-    DEFAULT_ACTIVE_TITLE_CATEGORIES = ["Побутова техніка", "Комп'ютери", "Смартфони"]
+    active_category_titles = DEFAULT_ACTIVE_TITLE_CATEGORIES
 
     def save_with_children(self, instance_dict):
         instance = self.get_instance(instance_dict)
@@ -30,7 +32,7 @@ class CategoryManager(models.Manager):
         return instances
 
     def default_active_state(self, instance):
-        for title in self.DEFAULT_ACTIVE_TITLE_CATEGORIES:
+        for title in self.active_category_titles:
             if title.lower() in instance.title.lower():
                 return True
 

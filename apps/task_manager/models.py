@@ -56,8 +56,8 @@ class SessionCheckerCounter:
             self.max_count = 0
             self.count = 0
         else:
-            self.max_count = CheckerTask.objects.max_user_checkers_count(user.id)
-            self.count = CheckerTask.objects.user_checkers_count(user.id)
+            self.max_count = CheckerTask.objects.select_max(user.id)
+            self.count = CheckerTask.objects.select_count(user.id)
 
         client_data[self.CLIENT_COUNTER_KEY] = {
             'max_count': self.max_count,

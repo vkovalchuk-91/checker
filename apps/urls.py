@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.views import index
+from apps.views import index, redirect_to_index_page
 
 urlpatterns = [
     path("", index, name="index"),
@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name="admin"),
     path('accounts/', include('apps.accounts.urls'), name="accounts"),
 
+    path('oauth2/inactive/', redirect_to_index_page),
     path('oauth2/', include('allauth.urls')),
-    path('oauth2/', include('allauth.socialaccount.urls')),
+    # path('oauth2/', include('allauth.socialaccount.urls')),
 ]

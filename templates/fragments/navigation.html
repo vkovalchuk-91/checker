@@ -64,14 +64,18 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <div class=" d-flex">
-                            <a class="nav-link" title="{% translate "checkers count" %}">
+                            <a class="nav-link" title="{% translate "checkers count" %}" id="checker-count">
                                 {{ request.session.session_key.counter_key.count }}
                             </a>
                             <a class="navbar-text">
                                 |
                             </a>
                             <a class="nav-link" title="{% translate "max checkers count" %}">
-                                {{ request.session.session_key.counter_key.max_count }}
+                                {% if request.session.session_key.counter_key.max_count %}
+                                    {{ request.session.session_key.counter_key.max_count }}
+                                {% else %}
+                                    {% translate "max" %}
+                                {% endif %}
                             </a>
                         </div>
                     </li>

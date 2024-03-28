@@ -1,15 +1,15 @@
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.common.permissions import IsActiveAndAuthenticated
 from apps.tickets_ua.serializers.create_checker import CheckerCreateSerializer
 from apps.tickets_ua.tasks import run_checkers
 
 
 class CheckerCreateAPIView(CreateAPIView):
     serializer_class = CheckerCreateSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsActiveAndAuthenticated,)
 
     def create(self, request, *args, **kwargs):
         data = {**request.data, **self.kwargs, 'user_id': request.user.id}

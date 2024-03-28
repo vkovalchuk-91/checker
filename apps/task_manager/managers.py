@@ -32,23 +32,29 @@ class CheckerTaskManager(models.Manager):
             checker_id=checker_id
         ).exists()
 
-    def user_checkers_count(self, user_id: int) -> int:
+    def select_count(self, user_id: int) -> int:
         return self.get_queryset().filter(user_id=user_id).count()
 
-    def max_user_checkers_count(self, user_pk: int) -> int:
+    def select_max(self, user_pk: int) -> [int, None]:
         if not User.objects.filter(pk=user_pk).exists():
-            return MAX_QUERY_NUMBER
+            return 0
 
         user = User.objects.get(pk=user_pk)
         if not user.is_active:
             return 0
 
+        if user.is_superuser:
+            return None
+
         if not user.personal_setting:
             return MAX_QUERY_NUMBER
 
+        if user.personal_setting.is_vip:
+            return None
+
         return user.personal_setting.max_query_number
 
-    def can_create_new_checker(self, user_pk: int) -> bool:
+    def can_create_new_checker(self, user_pk: int, need_count: int = 1) -> bool:
         try:
             user = User.objects.get(pk=user_pk)
         except (MultipleObjectsReturned, User.DoesNotExist, ValueError, TypeError, OverflowError):
@@ -60,9 +66,8 @@ class CheckerTaskManager(models.Manager):
         if not user.is_active:
             return False
 
-        return self.user_checkers_count(user_pk) < self.max_user_checkers_count(user_pk)
-
-    def can_create_count(self, user_pk: int) -> int:
-        if not self.can_create_new_checker(user_pk):
-            return 0
-        return self.max_user_checkers_count(user_pk) - self.user_checkers_count(user_pk)
+        max_count = self.select_max(user_pk)
+        if not max_count:
+            return True
+        else:
+            return self.select_max(user_pk) - self.select_count(user_pk) >= need_count

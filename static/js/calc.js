@@ -12,3 +12,10 @@ function getFormDataDict(form) {
 
     return formDataDict;
 }
+
+function checker_count_update(count) {
+    const $checkerCount = $("#checker-count");
+    let new_count = parseInt($checkerCount.text());
+    new_count += count;
+    $checkerCount.text(new_count);
+}

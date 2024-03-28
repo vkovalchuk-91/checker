@@ -112,8 +112,9 @@
                         </tr>
                         </thead>
 
+
+                        <tbody class="text-center" id="checkersBodyTable">
                         {% if checkers %}
-                            <tbody class="text-center" id="checkersBodyTable">
                             {% for checker in checkers %}
                                 <tr>
                                     <td>{{ checker.from_station.name }}</td>
@@ -152,8 +153,8 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
                         {% endif %}
+                        </tbody>
                     </table>
                 </div>
             </div>

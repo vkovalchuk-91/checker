@@ -4,7 +4,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.enums.user_account import UserAccountType
 from apps.accounts.managers import CustomUserManager
 from apps.common.constants import MAX_QUERY_NUMBER, USER_UPDATE_PERIOD_DEFAULT
 from apps.common.models import TimeStampedMixin
@@ -63,23 +62,11 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
         return full_name.strip()
 
 
-class UserAccountTypeChoices(models.TextChoices):
-    REGISTERED = UserAccountType.REGISTERED_USER.value, _(UserAccountType.REGISTERED_USER.value)
-    REGULAR = UserAccountType.REGULAR_REGISTERED_USER.value, _(UserAccountType.REGULAR_REGISTERED_USER.value)
-    VIP = UserAccountType.VIP_REGISTERED_USER.value, _(UserAccountType.VIP_REGISTERED_USER.value)
-
-
 class PersonalSetting(models.Model):
     telegram_user_id = models.IntegerField(_("telegram user ID"), null=True)
     max_query_number = models.IntegerField(_("max query number"), default=MAX_QUERY_NUMBER)
     update_period = models.IntegerField(_("update period (minutes)"), default=USER_UPDATE_PERIOD_DEFAULT)
-    type_name = models.CharField(
-        _('user account type name'),
-        max_length=20,
-        blank=False,
-        choices=UserAccountTypeChoices.choices,
-        default=UserAccountTypeChoices.REGISTERED,
-    )
+    is_vip = models.BooleanField(_("vip"), default=False)
 
     class Meta:
         verbose_name = _("personal_setting")
