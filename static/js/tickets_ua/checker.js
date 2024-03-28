@@ -6,15 +6,11 @@ $(document).ready(function () {
                 const form = $('#createCheckerForm');
                 let data = getFormDataDict(form)
 
-                const to_station_value = $('#search-to')[0].dataset.value;
-                if (to_station_value) {
-                    data.to_station = to_station_value;
-                }
-
                 const from_value_value = $('#search-from')[0].dataset.value;
-                if (from_value_value) {
-                    data.from_station = from_value_value;
-                }
+                data.from_station = {name: data.from_station, code: from_value_value}
+
+                const to_station_value = $('#search-to')[0].dataset.value;
+                data.to_station = {name: data.to_station, code: to_station_value}
 
                 load(
                     window.ChekerUrl,

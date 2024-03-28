@@ -3,7 +3,7 @@ from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.list import BaseListView
 
-from apps.task_manager.models import CheckerTask, SessionCheckerCounter
+from apps.task_manager.models import CheckerTask, SessionTaskManager
 
 
 class BaseCheckerListView(BaseListView):
@@ -30,7 +30,7 @@ class BaseCheckerListView(BaseListView):
             messages.warning(self.request, _('User blocked. You can logout.'))
             return redirect(reverse('index'))
 
-        SessionCheckerCounter(request)
+        SessionTaskManager(request)
 
         return super().get(request, *args, **kwargs)
 

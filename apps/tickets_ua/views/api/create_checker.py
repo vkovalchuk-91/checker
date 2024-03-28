@@ -12,9 +12,8 @@ class CheckerCreateAPIView(CreateAPIView):
     permission_classes = (IsActiveAndAuthenticated,)
 
     def create(self, request, *args, **kwargs):
-        data = {**request.data, **self.kwargs, 'user_id': request.user.id}
-        data['from_station'] = {'name': data.get('from_station'), }
-        data['to_station'] = {'name': data.get('to_station'), }
+        data = request.data
+        data['user_id'] = request.user.id
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         save_data = serializer.save()

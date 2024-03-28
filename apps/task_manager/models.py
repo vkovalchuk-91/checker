@@ -39,7 +39,7 @@ class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
         verbose_name_plural = _("checker_tasks")
 
 
-class SessionCheckerCounter:
+class SessionTaskManager:
     CLIENT_DATA_KEY = 'session_key'
     CLIENT_COUNTER_KEY = 'counter_key'
 
@@ -50,6 +50,8 @@ class SessionCheckerCounter:
             self.session[self.CLIENT_DATA_KEY] = client_data = {}
 
         counter = client_data.get(self.CLIENT_COUNTER_KEY)
+        if not counter:
+            client_data[self.CLIENT_COUNTER_KEY] = {}
 
         user = request.user
         if not user.is_authenticated or not user.is_active:

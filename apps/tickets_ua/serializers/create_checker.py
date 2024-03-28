@@ -1,21 +1,22 @@
 from datetime import datetime
 
+from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.accounts.models import User
-from apps.tickets_ua.models import Station, Checker
+from apps.common.constants import DATA_FORMAT
+from apps.common.enums.checker_name import CheckerTypeName
+from apps.task_manager.models import CheckerTask
+from apps.tickets_ua.models import Checker
 from apps.tickets_ua.serializers.station import StationSerializer
-
-DATA_FORMAT = "%Y-%m-%d"
-TIME_FORMAT = "%H:%M"
 
 
 class CheckerCreateSerializer(serializers.ModelSerializer):
     from_station = StationSerializer()
     to_station = StationSerializer()
     date_at = serializers.CharField(required=True, help_text=_(f'Period in format "{DATA_FORMAT} - {DATA_FORMAT}".'))
-    user_id = serializers.IntegerField(required=True)
+    user_id = serializers.IntegerField(required=False)
 
     class Meta:
         model = Checker
@@ -27,37 +28,14 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             'time_at',
             'user_id',
         ]
-        extra_kwargs = {
-            'time_at': {'required': True},
-        }
 
     def validate(self, attrs):
-        try:
-            attrs['user'] = User.objects.get(id=attrs['user_id'])
-        except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+        if not attrs.get('user_id') or not User.objects.filter(id=attrs['user_id']).exists():
             raise serializers.ValidationError(
                 {'user': _(f'Invalid user.')}
             )
 
-        try:
-            attrs['from_station'] = attrs['from_station']['station']
-            if not attrs['from_station']:
-                raise ValueError
-        except (Station.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError(
-                {'from_station': _(f'Invalid from station.')}
-            )
-
-        try:
-            attrs['to_station'] = attrs['to_station']['station']
-            if not attrs['to_station']:
-                raise ValueError
-        except (Station.DoesNotExist, ValueError, TypeError, OverflowError):
-            raise serializers.ValidationError(
-                {'to_station': _(f'Invalid to station.')}
-            )
-
-        if attrs['from_station'].id == attrs['to_station'].id:
+        if attrs['from_station']['id'] == attrs['to_station']['id']:
             raise serializers.ValidationError(
                 {'station': _(f'Stations must be different.')}
             )
@@ -85,12 +63,22 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        checkers = Checker.objects.create_checkers_in_range(
-            from_station=validated_data['from_station'],
-            to_station=validated_data['to_station'],
+        checkers = Checker.objects.get_models_in_range(
+            from_id=validated_data['from_station']['id'],
+            to_id=validated_data['to_station']['id'],
             start_date=validated_data['start_date'],
             end_date=validated_data['end_date'],
             time_at=validated_data['time_at'],
-            user=validated_data['user'],
         )
+
+        user_id = validated_data['user_id']
+        with transaction.atomic():
+            for checker in checkers:
+                checker.save()
+                CheckerTask.objects.create_task(
+                    checker_name=CheckerTypeName.TICKETS_UA.value,
+                    checker_id=checker.id,
+                    user_id=user_id,
+                )
+
         return checkers
