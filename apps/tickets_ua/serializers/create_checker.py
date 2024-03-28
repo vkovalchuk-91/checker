@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from apps.accounts.models import User
-from apps.common.constants import DATA_FORMAT
+from apps.common.constants import DATA_FORMAT_DEFAULT
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.task_manager.models import CheckerTask
 from apps.tickets_ua.models import Checker
@@ -15,7 +15,7 @@ from apps.tickets_ua.serializers.station import StationSerializer
 class CheckerCreateSerializer(serializers.ModelSerializer):
     from_station = StationSerializer()
     to_station = StationSerializer()
-    date_at = serializers.CharField(required=True, help_text=_(f'Period in format "{DATA_FORMAT} - {DATA_FORMAT}".'))
+    date_at = serializers.CharField(required=True, help_text=_(f'Period in format "{DATA_FORMAT_DEFAULT} - {DATA_FORMAT_DEFAULT}".'))
     user_id = serializers.IntegerField(required=False)
 
     class Meta:
@@ -44,11 +44,11 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             date_at = attrs['date_at']
             if ' - ' in date_at:
                 start_str, end_str = map(str.strip, attrs['date_at'].split(' - '))
-                start_date = datetime.strptime(start_str, DATA_FORMAT)
-                end_date = datetime.strptime(end_str, DATA_FORMAT)
+                start_date = datetime.strptime(start_str, DATA_FORMAT_DEFAULT)
+                end_date = datetime.strptime(end_str, DATA_FORMAT_DEFAULT)
             else:
-                start_date = datetime.strptime(date_at, DATA_FORMAT)
-                end_date = datetime.strptime(date_at, DATA_FORMAT)
+                start_date = datetime.strptime(date_at, DATA_FORMAT_DEFAULT)
+                end_date = datetime.strptime(date_at, DATA_FORMAT_DEFAULT)
 
             if start_date > end_date:
                 raise ValueError
@@ -57,7 +57,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             attrs['end_date'] = end_date
         except ValueError:
             raise serializers.ValidationError(
-                {'date_at': _(f'Invalid date format: {DATA_FORMAT} (or range).')}
+                {'date_at': _(f'Invalid date format: {DATA_FORMAT_DEFAULT} (or range).')}
             )
 
         return attrs

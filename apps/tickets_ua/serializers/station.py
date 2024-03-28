@@ -1,14 +1,14 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.common.constants import DEFAULT_TITLE_REGEX
+from apps.common.constants import TITLE_REGEX_DEFAULT
 from apps.tickets_ua.models import Station
 from apps.tickets_ua.tasks import scraping_train_stations
 
 
 class StationSerializer(serializers.ModelSerializer):
     # name = serializers.CharField(max_length=100)
-    name = serializers.RegexField(required=True, regex=DEFAULT_TITLE_REGEX)
+    name = serializers.RegexField(required=True, regex=TITLE_REGEX_DEFAULT)
     code = serializers.IntegerField(required=False, allow_null=True)
 
     class Meta:

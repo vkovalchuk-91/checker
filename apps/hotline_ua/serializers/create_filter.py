@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.common.constants import DEFAULT_TITLE_REGEX
+from apps.common.constants import TITLE_REGEX_DEFAULT
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Filter, Category
 from apps.hotline_ua.serializers.base_category import CategorySerializer
@@ -12,7 +12,7 @@ class FilterCreateSerializer(serializers.ModelSerializer):
     code = serializers.IntegerField(required=False, allow_null=True)
     title = serializers.RegexField(
         required=False,
-        regex=DEFAULT_TITLE_REGEX,
+        regex=TITLE_REGEX_DEFAULT,
         allow_blank=True,
         allow_null=True)
 

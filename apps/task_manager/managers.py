@@ -2,7 +2,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 
 from apps.accounts.models import User
-from apps.common.constants import MAX_QUERY_NUMBER
+from apps.common.constants import MAX_QUERY_NUMBER_DEFAULT
 from apps.common.enums.checker_name import CheckerTypeName
 
 
@@ -47,7 +47,7 @@ class CheckerTaskManager(models.Manager):
             return None
 
         if not user.personal_setting:
-            return MAX_QUERY_NUMBER
+            return MAX_QUERY_NUMBER_DEFAULT
 
         if user.personal_setting.is_vip:
             return None

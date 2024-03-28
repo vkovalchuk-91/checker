@@ -2,14 +2,14 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.common.constants import DEFAULT_TITLE_REGEX
+from apps.common.constants import TITLE_REGEX_DEFAULT
 from apps.hotline_ua.models import Category
 
 
 class CategoryCreateSerializer(serializers.ModelSerializer):
     title = serializers.RegexField(
         required=True,
-        regex=DEFAULT_TITLE_REGEX,
+        regex=TITLE_REGEX_DEFAULT,
         error_messages={'invalid': _('Invalid title.')}
     )
 

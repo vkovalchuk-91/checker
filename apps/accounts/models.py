@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.managers import CustomUserManager
-from apps.common.constants import MAX_QUERY_NUMBER, USER_UPDATE_PERIOD_DEFAULT
+from apps.common.constants import MAX_QUERY_NUMBER_DEFAULT, USER_UPDATE_PERIOD_DEFAULT
 from apps.common.models import TimeStampedMixin
 
 
@@ -64,7 +64,7 @@ class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):
 
 class PersonalSetting(models.Model):
     telegram_user_id = models.IntegerField(_("telegram user ID"), null=True)
-    max_query_number = models.IntegerField(_("max query number"), default=MAX_QUERY_NUMBER)
+    max_query_number = models.IntegerField(_("max query number"), default=MAX_QUERY_NUMBER_DEFAULT)
     update_period = models.IntegerField(_("update period (minutes)"), default=USER_UPDATE_PERIOD_DEFAULT)
     is_vip = models.BooleanField(_("vip"), default=False)
 

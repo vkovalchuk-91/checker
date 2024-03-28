@@ -3,7 +3,7 @@ import logging
 from django.utils import timezone
 
 from apps.celery import celery_app as app
-from apps.task_manager.tasks import BaseTaskWithRetry
+from apps.common.tasks import BaseTaskWithRetry
 from apps.tickets_ua.models import Checker, Station
 from apps.tickets_ua.scrapers.bus import BusScraper
 from apps.tickets_ua.scrapers.bus_station import BusStationScraper
@@ -48,7 +48,7 @@ def scraping_bus_station_name(station_id: int):
 
 @app.task(name='tickets_ua_run_checkers')
 def run_checkers(ids):
-    if not all(isinstance(arg, int) for arg in ids):
+    if not ids or len(ids) == 0:
         return
 
     for checker in Checker.objects.filter(id__in=ids):

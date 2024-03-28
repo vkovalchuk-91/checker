@@ -1,11 +1,11 @@
 from django.db import models, transaction
 from django.utils import timezone
 
-from apps.common.constants import DEFAULT_ACTIVE_TITLE_CATEGORIES
+from apps.common.constants import ACTIVE_TITLE_CATEGORIES_DEFAULT
 
 
 class CategoryManager(models.Manager):
-    active_category_titles = DEFAULT_ACTIVE_TITLE_CATEGORIES
+    active_category_titles = ACTIVE_TITLE_CATEGORIES_DEFAULT
 
     def save_with_children(self, instance_dict):
         instance = self.get_instance(instance_dict)

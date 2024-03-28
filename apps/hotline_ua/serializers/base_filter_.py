@@ -2,7 +2,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.common.constants import DEFAULT_TITLE_REGEX
+from apps.common.constants import TITLE_REGEX_DEFAULT
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Filter, Category
 from apps.hotline_ua.serializers.base_category import CategorySerializer
@@ -11,7 +11,7 @@ from apps.hotline_ua.serializers.base_category import CategorySerializer
 class FilterInstanceSerializer(serializers.ModelSerializer):
     title = serializers.RegexField(
         required=True,
-        regex=DEFAULT_TITLE_REGEX,
+        regex=TITLE_REGEX_DEFAULT,
         error_messages={'invalid': _('Invalid title.')}
     )
     category = CategorySerializer(required=True)
