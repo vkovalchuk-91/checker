@@ -51,7 +51,7 @@ class SessionTaskManager:
 
         counter = client_data.get(self.CLIENT_COUNTER_KEY)
         if not counter:
-            client_data[self.CLIENT_COUNTER_KEY] = {}
+            counter = client_data[self.CLIENT_COUNTER_KEY] = {}
 
         user = request.user
         if not user.is_authenticated or not user.is_active:
@@ -61,10 +61,11 @@ class SessionTaskManager:
             self.max_count = CheckerTask.objects.select_max(user.id)
             self.count = CheckerTask.objects.select_count(user.id)
 
-        client_data[self.CLIENT_COUNTER_KEY] = {
-            'max_count': self.max_count,
-            'count': self.count,
-        }
+        counter['max_count'] = self.max_count
+        counter['user_count'] = self.count
+
+        if user.is_superuser:
+            counter['all_count'] = CheckerTask.objects.count()
 
     def clear(self):
         del self.session[self.CLIENT_DATA_KEY][self.CLIENT_COUNTER_KEY]
