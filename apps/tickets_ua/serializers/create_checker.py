@@ -8,7 +8,7 @@ from apps.accounts.models import User
 from apps.common.constants import DATA_FORMAT_DEFAULT
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.task_manager.models import CheckerTask
-from apps.tickets_ua.models import Checker
+from apps.tickets_ua.models import BaseSearchParameter
 from apps.tickets_ua.serializers.station import StationSerializer
 
 
@@ -20,7 +20,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=False)
 
     class Meta:
-        model = Checker
+        model = BaseSearchParameter
         fields = [
             'id',
             'from_station',
@@ -76,7 +76,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        checkers = Checker.objects.get_models_in_range(
+        checkers = BaseSearchParameter.objects.get_models_in_range(
             from_id=validated_data['from_station']['id'],
             to_id=validated_data['to_station']['id'],
             start_date=validated_data['start_date'],

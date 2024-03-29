@@ -5,22 +5,41 @@ from apps.accounts.models import User
 from apps.common import TimeStampedMixin
 from apps.common.constants import TASK_UPDATE_PERIOD_DEFAULT
 from apps.common.models import ActiveStateMixin
-from apps.common.enums.checker_name import CheckerTypeName
 from apps.task_manager.managers import CheckerTaskManager
 
 
-class CheckerTypeNameChoices(models.TextChoices):
-    HOTLINE_UA = CheckerTypeName.HOTLINE_UA.value
-    TICKETS_UA = CheckerTypeName.TICKETS_UA.value
+class ParameterCategory(models.Model):
+    param_category_name = models.CharField(
+        max_length=150,
+        null=False,
+        blank=False,
+        unique=True,
+        verbose_name=_('parameter category name')
+    )
+
+
+class BaseParameter(models.Model):
+    param_type = models.ForeignKey(
+        'ParameterCategory',
+        on_delete=models.CASCADE,
+        null=False,
+        related_name='param_types',
+        verbose_name=_('parameter type name')
+    )
 
 
 class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
     objects = CheckerTaskManager()
-
     is_delete = models.BooleanField(_('delete'), default=False)
-
-    checker_id = models.IntegerField(_("checker id"))
     update_period = models.IntegerField(_("update period (minutes)"), default=TASK_UPDATE_PERIOD_DEFAULT)
+
+    task_param = models.ForeignKey(
+        'BaseParameter',
+        on_delete=models.CASCADE,
+        null=False,
+        related_name='checker_task_parameters',
+        verbose_name=_('checker task parameters')
+    )
 
     user = models.ForeignKey(
         User,
@@ -29,15 +48,8 @@ class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
         related_name='checker_tasks',
     )
 
-    checker_type = models.CharField(
-        _('checker type name'),
-        max_length=20,
-        choices=CheckerTypeNameChoices.choices,
-    )
-
     class Meta:
-        unique_together = ('checker_type', 'checker_id')
-        verbose_name = _("checker_task")
+        verbose_name = _('checker_task')
         verbose_name_plural = _("checker_tasks")
 
 

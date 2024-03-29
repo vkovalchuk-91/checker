@@ -8,7 +8,7 @@ from apps.accounts.tasks import send_email_checker_result_msg
 from apps.celery import celery_app as app
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
-from apps.tickets_ua.models import Checker, Station
+from apps.tickets_ua.models import BaseSearchParameter, Station
 from apps.tickets_ua.scrapers.bus_station import BusStationScraper
 from apps.tickets_ua.scrapers.train import TrainScraper
 from apps.tickets_ua.scrapers.train_station import TrainStationScraper
@@ -56,7 +56,7 @@ def run_checkers(ids):
     if not ids or len(ids) == 0:
         return
 
-    for checker in Checker.objects.filter(id__in=ids, is_active=True):
+    for checker in BaseSearchParameter.objects.filter(id__in=ids, is_active=True):
         if checker.date_at < timezone.now().date():
             if checker.is_available:
                 checker.updated_at = timezone.now()

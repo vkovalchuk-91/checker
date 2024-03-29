@@ -4,8 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 from apps.common import TimeStampedMixin
-from apps.common.models import ActiveStateMixin, AvailableCheckMixin
-from apps.tickets_ua.managers import CheckerManager
+from apps.common.models import ActiveStateMixin, AvailableStateMixin
+from apps.task_manager.models import BaseParameter
+from apps.tickets_ua.managers import BaseParameterManager
 
 
 class Station(models.Model):
@@ -17,29 +18,36 @@ class Station(models.Model):
         return self.name
 
 
-class Checker(TimeStampedMixin, ActiveStateMixin, AvailableCheckMixin, models.Model):
-    objects = CheckerManager()
+class BaseSearchParameter(TimeStampedMixin, ActiveStateMixin, AvailableStateMixin, models.Model):
+    objects = BaseParameterManager()
+
+    param_type = models.OneToOneField(
+        BaseParameter,
+        parent_link=True,
+        on_delete=models.CASCADE,
+        related_name='ticket_ua_search_parameters'
+    )
 
     from_station = models.ForeignKey(
         'Station',
         blank=False,
         on_delete=models.CASCADE,
-        related_name='from_station_checkers'
+        related_name='from_station_parameters'
     )
 
     to_station = models.ForeignKey(
         'Station',
         blank=False,
         on_delete=models.CASCADE,
-        related_name='to_station_checkers'
+        related_name='to_station_parameters'
     )
 
     date_at = models.DateField(_('at date'), default=timezone.now)
     time_at = models.TimeField(_('at time'), default=timezone.now)
 
     class Meta:
-        verbose_name = _("checker")
-        verbose_name_plural = _("checkers")
+        verbose_name = _("search_parameters")
+        verbose_name_plural = _("search parameters")
 
     def __str__(self):
         return f'{self.from_station}-{self.to_station}'

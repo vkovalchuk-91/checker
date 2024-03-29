@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from apps.hotline_ua.models import Category, Checker, Filter
+from apps.hotline_ua.models import Category, BaseSearchParameter, Filter
 
 
 # Register your models here.
-@admin.register(Checker)
-class CheckerAdmin(admin.ModelAdmin):
+@admin.register(BaseSearchParameter)
+class BaseSearchParameterAdmin(admin.ModelAdmin):
     ...
 
 

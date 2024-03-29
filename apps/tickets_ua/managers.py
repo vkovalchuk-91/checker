@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.db import models
 
 
-class CheckerManager(models.Manager):
+class BaseParameterManager(models.Manager):
     def get_models_in_range(self, from_id, to_id, start_date, end_date, time_at):
         if not from_id or not to_id or not start_date or not end_date or not time_at:
             raise ValueError("The all params must be set.")

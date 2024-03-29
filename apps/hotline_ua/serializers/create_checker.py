@@ -5,7 +5,7 @@ from rest_framework import serializers
 
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.hotline_ua.enums.filter import FilterType
-from apps.hotline_ua.models import Checker, Filter
+from apps.hotline_ua.models import BaseSearchParameter, Filter
 from apps.hotline_ua.serializers.base_category import CategorySerializer
 from apps.hotline_ua.serializers.base_filter_ import FilterInstanceSerializer
 from apps.task_manager.models import CheckerTask
@@ -17,7 +17,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(required=False)
 
     class Meta:
-        model = Checker
+        model = BaseSearchParameter
         fields = [
             'id',
             'filters',
@@ -84,7 +84,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         return checkers
 
     def __create_checker_task(self, category_id, filter_instances, user_id):
-        checker = Checker(category=None) if not category_id else Checker(category_id=category_id)
+        checker = BaseSearchParameter(category=None) if not category_id else BaseSearchParameter(category_id=category_id)
         checker.save()
 
         if filter_instances:

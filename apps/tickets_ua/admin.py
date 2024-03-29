@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.tickets_ua.models import Checker, Station
+from apps.tickets_ua.models import BaseSearchParameter, Station
 
 
 # Register your models here.
@@ -10,6 +10,6 @@ class StationAdmin(admin.ModelAdmin):
     ...
 
 
-@admin.register(Checker)
-class CheckerAdmin(admin.ModelAdmin):
+@admin.register(BaseSearchParameter)
+class BaseSearchParameterAdmin(admin.ModelAdmin):
     ...

@@ -18,7 +18,7 @@ class ActiveStateMixin(models.Model):
         abstract = True
 
 
-class AvailableCheckMixin(models.Model):
+class AvailableStateMixin(models.Model):
     is_available = models.BooleanField(_('available'), default=False)
 
     class Meta:

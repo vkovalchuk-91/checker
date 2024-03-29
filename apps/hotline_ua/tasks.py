@@ -8,7 +8,7 @@ from apps.celery import celery_app as app
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
 from apps.hotline_ua.enums.filter import FilterType
-from apps.hotline_ua.models import Category, Filter, Checker
+from apps.hotline_ua.models import Category, Filter, BaseSearchParameter
 from apps.hotline_ua.scrapers.category import CategoryScraper
 from apps.hotline_ua.scrapers.count import CountScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
@@ -48,7 +48,7 @@ def run_checkers(ids: list[int]):
     if not ids or len(ids) == 0:
         return
 
-    for checker in Checker.objects.filter(id__in=ids, is_active=True, ):
+    for checker in BaseSearchParameter.objects.filter(id__in=ids, is_active=True, ):
         filter_instances = checker.filters.all()
         if len(filter_instances) == 1 and filter_instances[0].type_name == FilterType.TEXT.value:
             scraper = TextSearchScraper(data=filter_instances[0].title)

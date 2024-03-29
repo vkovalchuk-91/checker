@@ -12,10 +12,10 @@ INSTALLED_APPS += [
     'rest_framework',
 
     # project
+    'apps.task_manager',
     'apps.accounts',
     'apps.hotline_ua',
     'apps.tickets_ua',
-    'apps.task_manager',
 
     # project template tags
 

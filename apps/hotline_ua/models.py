@@ -2,9 +2,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from apps.common import TimeStampedMixin
-from apps.common.models import ActiveStateMixin, AvailableCheckMixin
+from apps.common.models import ActiveStateMixin, AvailableStateMixin
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.managers import CategoryManager, FilterManager
+from apps.task_manager.models import BaseParameter
 
 
 class Category(TimeStampedMixin, models.Model):
@@ -76,21 +77,28 @@ class Filter(models.Model):
         verbose_name_plural = _("filters")
 
 
-class Checker(TimeStampedMixin, ActiveStateMixin, AvailableCheckMixin, models.Model):
+class BaseSearchParameter(TimeStampedMixin, ActiveStateMixin, AvailableStateMixin, models.Model):
     filter_class = Filter
+
+    param_type = models.OneToOneField(
+        BaseParameter,
+        parent_link=True,
+        on_delete=models.CASCADE,
+        related_name='hotline_ua_search_parameters'
+    )
 
     filters = models.ManyToManyField(
         filter_class,
-        related_name='checkers',
+        related_name='search_parameters',
     )
 
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         null=True,
-        related_name='checkers'
+        related_name='search_parameters'
     )
 
     class Meta:
-        verbose_name = _("checker")
-        verbose_name_plural = _("checkers")
+        verbose_name = _("search_parameter")
+        verbose_name_plural = _("search parameters")
