@@ -17,6 +17,8 @@ class CheckerTypeNameChoices(models.TextChoices):
 class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
     objects = CheckerTaskManager()
 
+    is_delete = models.BooleanField(_('delete'), default=False)
+
     checker_id = models.IntegerField(_("checker id"))
     update_period = models.IntegerField(_("update period (minutes)"), default=TASK_UPDATE_PERIOD_DEFAULT)
 
