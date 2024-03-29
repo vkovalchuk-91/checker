@@ -1,31 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.models import User
+from apps.accounts.models import User, BaseParameter
 from apps.common import TimeStampedMixin
 from apps.common.constants import TASK_UPDATE_PERIOD_DEFAULT
 from apps.common.models import ActiveStateMixin
 from apps.task_manager.managers import CheckerTaskManager
-
-
-class ParameterCategory(models.Model):
-    param_category_name = models.CharField(
-        max_length=150,
-        null=False,
-        blank=False,
-        unique=True,
-        verbose_name=_('parameter category name')
-    )
-
-
-class BaseParameter(models.Model):
-    param_type = models.ForeignKey(
-        'ParameterCategory',
-        on_delete=models.CASCADE,
-        null=False,
-        related_name='param_types',
-        verbose_name=_('parameter type name')
-    )
 
 
 class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
@@ -34,7 +14,7 @@ class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
     update_period = models.IntegerField(_("update period (minutes)"), default=TASK_UPDATE_PERIOD_DEFAULT)
 
     task_param = models.ForeignKey(
-        'BaseParameter',
+        BaseParameter,
         on_delete=models.CASCADE,
         null=False,
         related_name='checker_task_parameters',

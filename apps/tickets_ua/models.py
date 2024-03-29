@@ -2,10 +2,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.models import User
+from apps.accounts.models import User, BaseParameter
 from apps.common import TimeStampedMixin
 from apps.common.models import ActiveStateMixin, AvailableStateMixin
-from apps.task_manager.models import BaseParameter
 from apps.tickets_ua.managers import BaseParameterManager
 
 

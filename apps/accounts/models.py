@@ -71,3 +71,23 @@ class PersonalSetting(models.Model):
     class Meta:
         verbose_name = _("personal_setting")
         verbose_name_plural = _("personal_settings")
+
+
+class ParameterCategory(models.Model):
+    param_category_name = models.CharField(
+        max_length=150,
+        null=False,
+        blank=False,
+        unique=True,
+        verbose_name=_('parameter category name')
+    )
+
+
+class BaseParameter(models.Model):
+    param_type = models.ForeignKey(
+        'ParameterCategory',
+        on_delete=models.CASCADE,
+        null=False,
+        related_name='param_types',
+        verbose_name=_('parameter type name')
+    )

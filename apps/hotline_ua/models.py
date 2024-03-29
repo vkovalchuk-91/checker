@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from apps.accounts.models import BaseParameter
 from apps.common import TimeStampedMixin
 from apps.common.models import ActiveStateMixin, AvailableStateMixin
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.managers import CategoryManager, FilterManager
-from apps.task_manager.models import BaseParameter
 
 
 class Category(TimeStampedMixin, models.Model):
