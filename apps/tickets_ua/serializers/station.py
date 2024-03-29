@@ -45,7 +45,7 @@ class StationSerializer(serializers.ModelSerializer):
 
         scraping_train_stations(title=name)
         try:
-            attrs['id'] = Station.objects.get(name=name, )
+            attrs['id'] = Station.objects.get(name=name, ).id
         except (Station.MultipleObjectsReturned, Station.DoesNotExist, ValueError, TypeError, OverflowError):
             raise serializers.ValidationError(
                 {'station': _(f'Invalid station.')}

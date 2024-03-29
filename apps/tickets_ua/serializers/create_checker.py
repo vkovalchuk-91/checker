@@ -15,7 +15,8 @@ from apps.tickets_ua.serializers.station import StationSerializer
 class CheckerCreateSerializer(serializers.ModelSerializer):
     from_station = StationSerializer()
     to_station = StationSerializer()
-    date_at = serializers.CharField(required=True, help_text=_(f'Period in format "{DATA_FORMAT_DEFAULT} - {DATA_FORMAT_DEFAULT}".'))
+    date_at = serializers.CharField(required=True,
+                                    help_text=_(f'Period in format "{DATA_FORMAT_DEFAULT} - {DATA_FORMAT_DEFAULT}".'))
     user_id = serializers.IntegerField(required=False)
 
     class Meta:
@@ -57,7 +58,19 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             attrs['end_date'] = end_date
         except ValueError:
             raise serializers.ValidationError(
-                {'date_at': _(f'Invalid date format: {DATA_FORMAT_DEFAULT} (or range).')}
+                {'dates': _(f'Invalid date in format: {DATA_FORMAT_DEFAULT} (or range).')}
+            )
+
+        now = datetime.now()
+        if start_date < now or end_date < now:
+            raise serializers.ValidationError(
+                {'dates': _(f'Dates cannot be in past.')}
+            )
+
+        new_filters_count = (end_date - start_date).days
+        if not CheckerTask.objects.can_create_new_checker(attrs['user_id'], need_count=new_filters_count):
+            raise serializers.ValidationError(
+                {'checker': _(f'Cannot create {new_filters_count} checker(s).')}
             )
 
         return attrs

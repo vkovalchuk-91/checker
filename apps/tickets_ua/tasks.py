@@ -54,7 +54,10 @@ def run_checkers(ids):
     if not ids or len(ids) == 0:
         return
 
-    for checker in Checker.objects.filter(id__in=ids):
+    for checker in Checker.objects.filter(id__in=ids, is_active=True):
+        if checker.date_at < timezone.now().date():
+            continue
+
         data = {
             'from_station': checker.from_station.code,
             'to_station': checker.to_station.code,

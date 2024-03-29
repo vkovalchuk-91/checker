@@ -44,6 +44,8 @@ $(document).ready(function () {
                                 '</tr>';
                             table.append(newRow);
                         });
+
+                        checker_count_update(result.length);
                         notify_msg("Checkers save successful", 'info')
                     },
                     () => {
@@ -69,6 +71,7 @@ $(document).ready(function () {
                     null,
                     () => {
                         $('#checkersBodyTable').find('button[data-checker_id="' + checker_id + '"]').closest('tr').remove();
+                        checker_count_update(-1);
                     },
                     () => {
                         target.disabled = true;

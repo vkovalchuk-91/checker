@@ -29,23 +29,19 @@ app.conf.beat_schedule = {
 
 @app.task(name='run_hotline_ua_checkers')
 def run_hotline_ua_checkers():
-    hotline_ua_tasks = [task for task in CheckerTask.objects.all() if
-                        task.checker_type == CheckerTypeName.HOTLINE_UA.value]
-    ids = [task.checker_id for task in hotline_ua_tasks]
+    ids = CheckerTask.objects.filter(is_active=True, checker_type=CheckerTypeName.HOTLINE_UA.value).values('checker_id')
     hotline_ua_checkers(ids)
 
 
 @app.task(name='run_tickets_ua_checkers')
 def run_tickets_ua_checkers():
-    tickets_ua_tasks = [task for task in CheckerTask.objects.all() if
-                        task.checker_type == CheckerTypeName.TICKETS_UA.value]
-    ids = [task.checker_id for task in tickets_ua_tasks]
+    ids = CheckerTask.objects.filter(is_active=True, checker_type=CheckerTypeName.TICKETS_UA.value).values('checker_id')
     tickets_ua_checkers(ids)
 
 
 @app.task(name='update_checker_task')
 def update_checker_task(*args):
-    for checker in CheckerTask.objects.all():
+    for checker in CheckerTask.objects.filter(is_active=True):
         checker.updated_at = timezone.now()
         checker.save(update_fields=('updated_at',))
     celery_logger.info(f"checker task updated")
