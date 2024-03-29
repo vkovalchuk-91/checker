@@ -38,3 +38,12 @@ def send_email_oauth_password_generated(email: str, password: str):
         to=[email],
     )
 
+
+@app.task(name='send_email_checker_result_msg')
+def send_email_checker_result_msg(user_id: int, msg: str):
+    user = User.objects.only('email', 'first_name', 'last_name').get(pk=user_id)
+    send_email(
+        subject='Checker result message',
+        body=f'{msg}',
+        to=[user.email],
+    )

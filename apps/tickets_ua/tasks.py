@@ -2,10 +2,13 @@ import logging
 
 from django.utils import timezone
 
+from apps.accounts.models import User
+from apps.accounts.tasks import send_email_checker_result_msg
+
 from apps.celery import celery_app as app
+from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
 from apps.tickets_ua.models import Checker, Station
-from apps.tickets_ua.scrapers.bus import BusScraper
 from apps.tickets_ua.scrapers.bus_station import BusStationScraper
 from apps.tickets_ua.scrapers.train import TrainScraper
 from apps.tickets_ua.scrapers.train_station import TrainStationScraper
@@ -45,7 +48,6 @@ def scraping_bus_station_name(station_id: int):
                 station.bus_name = bus_station.code
                 station.save(update_fields=['bus_name', ])
                 return bus_station.code
-    return ''
 
 
 @app.task(name='tickets_ua_run_checkers')
@@ -56,6 +58,10 @@ def run_checkers(ids):
 
     for checker in Checker.objects.filter(id__in=ids, is_active=True):
         if checker.date_at < timezone.now().date():
+            if checker.is_available:
+                checker.updated_at = timezone.now()
+                checker.is_available = False
+                checker.save(update_fields=['updated_at', 'is_available'])
             continue
 
         data = {
@@ -77,5 +83,10 @@ def run_checkers(ids):
         checker.is_available = len(trains) > 0
         checker.save(update_fields=['updated_at', 'is_available'])
 
-        if trains:
-            logging.info('Checker has results.')
+        if len(trains) > 0:
+            msg = f"have {len(trains)} train(s) by your check."
+            user = User.objects.get(
+                checker_tasks__checker_id=checker.id,
+                checker_tasks__checker_type=CheckerTypeName.TICKETS_UA.value,
+            )
+            send_email_checker_result_msg.apply_async(args=(user.id, msg,))

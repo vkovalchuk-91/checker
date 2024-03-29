@@ -2,7 +2,10 @@ import logging
 
 from django.utils import timezone
 
+from apps.accounts.models import User
+from apps.accounts.tasks import send_email_checker_result_msg
 from apps.celery import celery_app as app
+from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Category, Filter, Checker
@@ -76,4 +79,9 @@ def run_checkers(ids: list[int]):
         checker.save(update_fields=['updated_at', 'is_available'])
 
         if is_available:
-            logging.info('Checker has results.')
+            msg = f"Available result by your check."
+            user = User.objects.get(
+                checker_tasks__checker_id=checker.id,
+                checker_tasks__checker_type=CheckerTypeName.HOTLINE_UA.value,
+            )
+            send_email_checker_result_msg.apply_async(args=(user.id, msg,))
