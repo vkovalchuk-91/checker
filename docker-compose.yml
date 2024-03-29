@@ -28,6 +28,13 @@ services:
     command: celery -A apps worker -l INFO -P solo
 
 
+  celery_beat:
+    <<: *base-backend
+    env_file:
+      - .env
+    command: celery -A apps beat -l info
+
+
   web_app:
     <<: *base-backend
     ports:
