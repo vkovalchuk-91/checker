@@ -1,26 +1,9 @@
+from apps.accounts.utils.telegram import check_is_user_unregistered_in_data_base_by_telegram_id, \
+    check_has_exist_user_related_tg_by_email, check_is_user_exist_in_data_base_by_email, get_checkers_number, \
+    validate_email, link_telegram_id_to_user
 from apps.tbot_base.bot import tbot as bot
 
 registered_users = [396264878]
-
-
-def check_existing_user_email(email):
-    return True
-
-
-def get_active_checkers_number():
-    return {'UZ-Tickets': 4}
-
-
-def get_related_email():
-    return 'example@example.com'
-
-
-def check_existing_user_email_with_related_tg(email):
-    return False
-
-
-def check_is_user_registered(user_id):
-    return True
 
 
 @bot.message_handler(func=lambda message: True)
@@ -28,38 +11,41 @@ def send_registration_info(message):
     user_id = message.chat.id
     tg_username = message.chat.username
     user_text = message.text
-
-    is_user_unregistered = check_is_user_registered(user_id)
-    has_existing_user_email_with_related_tg = check_existing_user_email_with_related_tg(user_text)
-    has_existing_user_email = check_existing_user_email(user_text)
+    is_user_unregistered = check_is_user_unregistered_in_data_base_by_telegram_id(user_id)
 
     if is_user_unregistered and user_text == '/start':
         bot.send_message(message.from_user.id,
                          f"Привіт! Щоб користуватися оповіщенням в Telegram, будь-ласка, введіть e-mail "
                          f"зареєстрованого вами користувача на сайті Checker.")
-    elif is_user_unregistered and has_existing_user_email:
+    elif is_user_unregistered and not validate_email(user_text):
+        bot.send_message(user_id,
+                         f"Ви ввели невалідний E-mail '{user_text}', будь-ласка повторіть спробу.")
+    elif is_user_unregistered and not check_is_user_exist_in_data_base_by_email(user_text):
         bot.send_message(user_id,
                          f"Не знайдено зареєстрованого користувача з E-mail {user_text}, будь-ласка "
                          f"зареєструйтесь на сайті Checker в розділі реєстрація та повторіть спробу.")
-    elif is_user_unregistered and has_existing_user_email_with_related_tg:
+    elif is_user_unregistered and check_has_exist_user_related_tg_by_email(user_text):
         bot.send_message(user_id,
-                         f"E-mail користувача {user_text} вже містить пов'язаний з ним Telegram аккаунт, будь-ласка "
-                         f"введіть e-mail іншого користувача або видаліть у користувача з e-mail {user_text}"
+                         f"E-mail користувача {user_text.lower()} вже містить пов'язаний з ним Telegram аккаунт, "
+                         f"будь-ласка введіть e-mail іншого користувача або видаліть у користувача з e-mail {user_text}"
                          f"пов'язаний з ним Telegram аккаунт сайті Checker в розділі налаштування та повторіть спробу.")
     else:
-        get_registered_user_response(tg_username, user_id)
+        if is_user_unregistered:
+            link_telegram_id_to_user(user_id, user_text)
+        get_linked_tg_user_response(tg_username, user_id, user_text)
 
 
-def get_registered_user_response(tg_username, user_id):
-    email = get_related_email()
-    checkers_number = get_active_checkers_number()
-    response_text = f"Вітаємо @{tg_username}! Ваш Telegram аккаунт пов'язаний з користувачем {email}\n"
-    if len(checkers_number) == 1:
+def get_linked_tg_user_response(tg_username, tg_user_id, email):
+    checkers_number = get_checkers_number(email)
+    response_text = f"Вітаємо @{tg_username}! Ваш Telegram аккаунт пов'язаний з користувачем {email.lower()}\n"
+    if len(checkers_number) == 0:
+        response_text += f"На даний момент у вас немає жодних збережених чекерів"
+    elif len(checkers_number) == 1:
         checker_service_name = next(iter(checkers_number))
         checker_qty = checkers_number[checker_service_name]
-        response_text += f"На даний момент у вас {checker_qty} активних чекерів сервісу {checker_service_name}"
+        response_text += f"На даний момент у вас по сервісу '{checker_service_name}' кількість активних чекерів - {checker_qty}"
     else:
         response_text = f"На даний момент у вас така кількість активних чекерів:\n"
         for checker_service_name, checker_qty in checkers_number.items():
-            response_text += f"Сервіс {checker_service_name} - {checker_qty}\n"
-    bot.send_message(user_id, response_text)
+            response_text += f"Сервіс '{checker_service_name}' - {checker_qty}\n"
+    bot.send_message(tg_user_id, response_text)

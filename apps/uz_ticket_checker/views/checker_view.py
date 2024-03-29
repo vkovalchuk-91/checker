@@ -1,24 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.views.generic import ListView
 
 from apps.accounts.models import CheckerTask
+from apps.accounts.utils.telegram import has_user_related_telegram_id
 from apps.uz_ticket_checker.models import TicketSearchParameter
 from apps.uz_ticket_checker.services.checker_service import add_new_checker, get_checkers_parameters_list
 from apps.uz_ticket_checker.services.trains_search_service import get_checker_matches
-
-
-class CheckersListView(ListView):
-    model = CheckerTask
-    template_name = 'uz_ticket_checker/checker.html'
-    context_object_name = 'checkers'
-    paginate_by = 10
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset()
-        queryset = queryset.filter(user=user)
-        return queryset
 
 
 def checkers_view(request):
@@ -28,6 +15,8 @@ def checkers_view(request):
 
     context = {}
     if request.method == 'GET':
+        if not has_user_related_telegram_id(request):
+            return redirect(reverse('telegram'))
         user = request.user
         context['parameters'] = get_checkers_parameters_list(user)
 

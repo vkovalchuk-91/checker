@@ -94,13 +94,14 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 try:
-    # logger.debug(3333)
     bot_config_obj = BotConfig.objects
     new_bot_config_from_env_condition_1 = not bot_config_obj.exists()
-    new_bot_config_from_env_condition_2 = len(bot_config_obj.all()) == 1 and (
+    new_bot_config_from_env_condition_2 = len(bot_config_obj.all()) > 0 and (
             bot_config_obj.first().token != env('BOT_TOKEN') or bot_config_obj.first().server_url != env(
         'BOT_WEBHOOK_URL'))
 
+    # logger.debug(new_bot_config_from_env_condition_1)
+    # logger.debug(new_bot_config_from_env_condition_2)
     if new_bot_config_from_env_condition_1 or new_bot_config_from_env_condition_2:
         new_config = BotConfig(title=env('BOT_TITLE'), link=env('BOT_LINK'), username=env('BOT_USERNAME'),
                                tid=env('BOT_TELEGRAM_ID'), token=env('BOT_TOKEN'),
