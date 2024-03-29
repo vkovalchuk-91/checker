@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 
+from apps.tbot.tasks import send_bot_message
 from apps.uz_ticket_checker.models import Station
 from apps.uz_ticket_checker.services.stations_update_service import run_all_stations_update
 
@@ -22,4 +23,5 @@ def stations_update(request):
 
     if request.method == 'GET':
         run_all_stations_update()
+        # send_bot_message.delay(telegram_id=396264878, message="Бульба")
     return render(request, 'uz_ticket_checker/stations.html')

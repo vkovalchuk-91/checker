@@ -18,10 +18,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from apps import tbot_base
 from apps.views import index
 
 urlpatterns = [
     path("", index, name="index"),
+    path("", include('apps.tbot_base.urls')),  # include webhook url
     path("uz_ticket/", include('apps.uz_ticket_checker.urls'), name="uz_ticket_checker"),
 
     path('admin/', admin.site.urls, name="admin"),

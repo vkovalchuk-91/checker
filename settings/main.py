@@ -18,6 +18,10 @@ INSTALLED_APPS += [
     'apps.uz_ticket_checker',
     'apps.task_manager',
 
+    # telegram bot
+    'apps.tbot_base',
+    'apps.tbot',
+
     # project template tags
 
     # OAuth
@@ -137,3 +141,8 @@ FRONTEND_CONFIRM_EMAIL_PATH = "/accounts/confirm-email/{uid}/{token}/"
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+# Add your bot handlers in order of priority
+BOT_HANDLERS = [
+    'apps.tbot.handlers.check_registration',
+]
