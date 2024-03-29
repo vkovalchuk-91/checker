@@ -31,15 +31,18 @@ class FilterCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         category_id = attrs['category']['id']
 
-        filters = self._get_link_filters(category_id)
-
-        filters.extend(Filter.objects.filter(
+        filters = list(Filter.objects.filter(
             category_id=category_id,
             type_name__in=[FilterType.BRAND.value, FilterType.SHOP.value]
         ))
         if not filters or len(filters) == 0:
             scraping_categories_filters([category_id])
-            filters = Filter.objects.filter(category_id=category_id, )
+            filters = list(Filter.objects.filter(
+                category_id=category_id,
+                type_name__in=[FilterType.BRAND.value, FilterType.SHOP.value]
+            ))
+
+        filters.extend(self._get_link_filters(category_id))
 
         attrs['filters'] = filters if filters else []
         return attrs
