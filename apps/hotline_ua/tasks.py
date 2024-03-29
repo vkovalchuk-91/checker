@@ -11,6 +11,9 @@ from apps.hotline_ua.scrapers.count import CountScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
 from apps.hotline_ua.scrapers.text_search import TextSearchScraper
 
+logger = logging.getLogger('django')
+
+
 @app.task(name='hotline_ua_scraping_categories', base=BaseTaskWithRetry)
 def scraping_categories():
     scraper = CategoryScraper()
@@ -38,6 +41,7 @@ def scraping_categories_filters(category_ids: list[int]):
 
 @app.task(name='hotline_ua_run_checkers')
 def run_checkers(ids: list[int]):
+    logger.info('Run hotline_ua checkers')
     if not ids or len(ids) == 0:
         return
 

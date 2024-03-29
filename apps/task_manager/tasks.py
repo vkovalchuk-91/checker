@@ -1,65 +1,80 @@
-import logging
-from itertools import groupby
+import time
+from contextlib import contextmanager
+from datetime import timedelta
 
-from celery import group
+from celery import group, chord
+from celery.utils.log import get_task_logger
+from django.core.cache import cache
+from django.utils import timezone
 
 from apps.celery import celery_app as app
-from apps.common.constants import RUN_CHECKER_INTERVAL_DEFAULT, EXPIRES_RUN_CHECKER_INTERVAL_DEFAULT
+from apps.common.constants import LOCK_EXPIRE_DEFAULT
+from apps.common.constants import RUN_CHECKER_INTERVAL_DEFAULT
+from apps.common.constants import TIME_SLEEP_DEFAULT
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.hotline_ua.tasks import run_checkers as hotline_ua_checkers
 from apps.task_manager.models import CheckerTask
 from apps.tickets_ua.tasks import run_checkers as tickets_ua_checkers
 
-logger = logging.getLogger('django')
-
-#
-# task_list = {
-#     "task1": "path.to.task1",
-#     "task2": "path.to.task2",
-#     # Add more tasks as needed
-# }
-#
-# app.conf.beat_schedule = {
-#     "update_every_5_seconds": {
-#         "task": task_list,
-#         "schedule": timedelta(seconds=5),
-#     },
-# }
+celery_logger = get_task_logger(__name__)
 
 app.conf.beat_schedule = {
     'run_task_with_interval': {
         'task': 'run_with_interval_all_checkers',
-        # 'task': 'tasks.check.run_with_interval_all_checkers',
-        'schedule': RUN_CHECKER_INTERVAL_DEFAULT,
-        'options': {'expires': EXPIRES_RUN_CHECKER_INTERVAL_DEFAULT},
+        "schedule": timedelta(seconds=RUN_CHECKER_INTERVAL_DEFAULT),
+        'options': {'expires': RUN_CHECKER_INTERVAL_DEFAULT},
     },
 }
 
 
-@app.task(name='run_with_interval_all_checkers')
-def run_with_interval_all_checkers():
-    logging.info(f"start")
-    sorted_checker_tasks = sorted(CheckerTask.objects.all(), key=lambda x: x.checker_type)
-    grouped_checker_tasks = groupby(sorted_checker_tasks, key=lambda x: x.checker_type)
-    checker_tasks_dict = {checker_type: list(tasks) for checker_type, tasks in grouped_checker_tasks}
-
-    hotline_ua_ids = get_checker_ids(checker_tasks_dict, CheckerTypeName.HOTLINE_UA.value)
-    tickets_ua_ids = get_checker_ids(checker_tasks_dict, CheckerTypeName.TICKETS_UA.value)
-    result = group(
-        hotline_ua_checkers.s(hotline_ua_ids),
-        tickets_ua_checkers.s(tickets_ua_ids),
-
-    )
-    result.apply_async(link_error=error_handler_task.s())
+@app.task(name='run_hotline_ua_checkers')
+def run_hotline_ua_checkers():
+    hotline_ua_tasks = [task for task in CheckerTask.objects.all() if
+                        task.checker_type == CheckerTypeName.HOTLINE_UA.value]
+    ids = [task.checker_id for task in hotline_ua_tasks]
+    hotline_ua_checkers(ids)
 
 
-def get_checker_ids(checker_tasks_dict, checker_type):
-    if checker_tasks_dict.get(checker_type):
-        return [task.checker_id for task in checker_tasks_dict[checker_type]]
-    else:
-        return []
+@app.task(name='run_tickets_ua_checkers')
+def run_tickets_ua_checkers():
+    tickets_ua_tasks = [task for task in CheckerTask.objects.all() if
+                        task.checker_type == CheckerTypeName.TICKETS_UA.value]
+    ids = [task.checker_id for task in tickets_ua_tasks]
+    tickets_ua_checkers(ids)
 
 
-@app.task
-def error_handler_task(request, exc, traceback):
-    logging.error(f"Error occurred: {exc}")
+@app.task(name='update_checker_task')
+def update_checker_task(*args):
+    for checker in CheckerTask.objects.all():
+        checker.updated_at = timezone.now()
+        checker.save(update_fields=('updated_at',))
+    celery_logger.info(f"checker task updated")
+
+
+@contextmanager
+def memcache_lock(lock_id, oid):
+    timeout_at = time.monotonic() + LOCK_EXPIRE_DEFAULT - 3
+    status = cache.add(lock_id, oid, LOCK_EXPIRE_DEFAULT)
+    try:
+        yield status
+    finally:
+        if time.monotonic() < timeout_at and status:
+            cache.delete(lock_id)
+
+
+@app.task(name='run_with_interval_all_checkers', bind=True)
+def run_with_interval_all_checkers(self):
+    celery_logger.info(f"start")
+    lock_id = 'run_with_interval_all_checkers_lock'
+    with memcache_lock(lock_id, self.app.oid) as acquired:
+        if acquired:
+            tasks_group = group(
+                run_hotline_ua_checkers.s(),
+                run_tickets_ua_checkers.s()
+            )
+            chord(tasks_group)(update_checker_task.s())
+
+            time.sleep(TIME_SLEEP_DEFAULT)
+        else:
+            celery_logger.warning(f"run with interval steel work")
+    celery_logger.info(f"finish")

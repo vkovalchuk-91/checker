@@ -17,7 +17,6 @@ class TextSearchScraper(_BaseScraper):
 
     @property
     def scrapy_items(self):
-        logger.info(f'Scrapy "{self.data}" search result.')
         try:
             json_data = {
                 'jsonrpc': '2.0',

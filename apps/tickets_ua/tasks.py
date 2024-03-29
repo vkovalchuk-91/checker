@@ -13,6 +13,8 @@ from apps.tickets_ua.scrapers.train_station import TrainStationScraper
 DATE_FORMAT = '%Y-%m-%d'
 TIME_FORMAT = '%H:%M'
 
+logger = logging.getLogger('django')
+
 
 @app.task(name='tickets_ua_scraping_train_stations', base=BaseTaskWithRetry)
 def scraping_train_stations(title: str):
@@ -48,6 +50,7 @@ def scraping_bus_station_name(station_id: int):
 
 @app.task(name='tickets_ua_run_checkers')
 def run_checkers(ids):
+    logger.info('Run tickets_ua checkers')
     if not ids or len(ids) == 0:
         return
 

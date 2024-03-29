@@ -24,7 +24,6 @@ class TrainScraper(_TransportScraper):
 
     @property
     def scrapy_items(self):
-        logger.info(f'Scrapy trains {self.from_station}-{self.to_station} at {self.date_at}.')
         session = requests.Session()
         try:
             response = session.get(self.MAIN_URL)

@@ -20,6 +20,7 @@ Checker
 
     python manage.py runserver
     celery -A apps worker --loglevel=INFO -P solo
+    celery -A apps beat -l info
 
     or:
 

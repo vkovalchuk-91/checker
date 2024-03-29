@@ -14,7 +14,6 @@ class CategoryScraper(_BaseScraper):
 
     @property
     def scrapy_items(self):
-        logger.info(f'Scrapy categories.')
         try:
             json_data = {
                 'operationName': 'menuMain',

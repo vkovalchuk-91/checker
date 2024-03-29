@@ -17,7 +17,6 @@ class FilterScraper(_BaseScraper):
 
     @property
     def scrapy_items(self):
-        logger.info(f'Scrapy filters from:{self.url}.')
         try:
             url = urljoin(self._MAIN_URL, 'ua' + self.url)
             response = requests.get(url, headers=self._HEADERS)

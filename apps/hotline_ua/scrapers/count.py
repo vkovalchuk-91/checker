@@ -18,7 +18,6 @@ class CountScraper(_BaseScraper):
 
     @property
     def scrapy_items(self):
-        logger.info(f'Scrapy "{self.data}" count search result.')
         self.session = requests.Session()
         try:
             url = self.data['url']
