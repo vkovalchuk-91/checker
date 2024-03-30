@@ -5,7 +5,6 @@ from django.utils import timezone
 from apps.accounts.models import User
 from apps.accounts.tasks import send_email_checker_result_msg
 from apps.celery import celery_app as app
-from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Category, Filter, BaseSearchParameter
@@ -44,7 +43,7 @@ def scraping_categories_filters(category_ids: list[int]):
 
 @app.task(name='hotline_ua_run_checkers')
 def run_checkers(ids: list[int]):
-    logger.info('Run hotline_ua checkers')
+    logger.info(f'Run hotline_ua checkers [{ids}]')
     if not ids or len(ids) == 0:
         return
 
@@ -79,9 +78,6 @@ def run_checkers(ids: list[int]):
         checker.save(update_fields=['updated_at', 'is_available'])
 
         if is_available:
-            msg = f"Available result by your check."
-            user = User.objects.get(
-                checker_tasks__checker_id=checker.id,
-                checker_tasks__checker_type=CheckerTypeName.HOTLINE_UA.value,
-            )
+            msg = f"Available result by your check from hotline.ua"
+            user = User.objects.get(checker_tasks__task_param__hotline_ua_search_parameters__id=checker.id)
             send_email_checker_result_msg.apply_async(args=(user.id, msg,))

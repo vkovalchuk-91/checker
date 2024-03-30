@@ -9,8 +9,9 @@ class BaseDeleteSerializer(BaseSerializer, serializers.Serializer):
         abstract = True
 
     def delete(self):
-        checker_instance = self.validated_data['checker']
-        checker_task_instance = self.validated_data['checker_task']
+        instance = self.validated_data['instance']
+        task_instance = self.validated_data['task_instance']
         with transaction.atomic():
-            checker_instance.delete()
-            checker_task_instance.delete()
+            instance.delete()
+            task_instance.task_param.delete()
+            task_instance.delete()

@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from apps.accounts.models import User
+from apps.accounts.models import User, ParameterCategory, BaseParameter
 from apps.common.constants import DATA_FORMAT_DEFAULT
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.task_manager.models import CheckerTask
@@ -61,14 +62,14 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
                 {'dates': _(f'Invalid date in format: {DATA_FORMAT_DEFAULT} (or range).')}
             )
 
-        now = datetime.now()
-        if start_date < now or end_date < now:
+        now = timezone.now().date()
+        if start_date.date() < now or end_date.date() < now:
             raise serializers.ValidationError(
                 {'dates': _(f'Dates cannot be in past.')}
             )
 
         new_filters_count = (end_date - start_date).days
-        if not CheckerTask.objects.can_create_new_checker(attrs['user_id'], need_count=new_filters_count):
+        if not CheckerTask.objects.can_create_new_task(attrs['user_id'], need_count=new_filters_count):
             raise serializers.ValidationError(
                 {'checker': _(f'Cannot create {new_filters_count} checker(s).')}
             )
@@ -76,22 +77,27 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        checkers = BaseSearchParameter.objects.get_models_in_range(
+        user_id = validated_data['user_id']
+        instances = BaseSearchParameter.objects.get_models_in_range(
             from_id=validated_data['from_station']['id'],
             to_id=validated_data['to_station']['id'],
             start_date=validated_data['start_date'],
             end_date=validated_data['end_date'],
             time_at=validated_data['time_at'],
+            user_id=user_id,
         )
-
-        user_id = validated_data['user_id']
-        with transaction.atomic():
-            for checker in checkers:
-                checker.save()
-                CheckerTask.objects.create_task(
-                    checker_name=CheckerTypeName.TICKETS_UA.value,
-                    checker_id=checker.id,
-                    user_id=user_id,
+        if len(instances) > 0:
+            with transaction.atomic():
+                param_category, created = ParameterCategory.objects.get_or_create(
+                    param_category_name=CheckerTypeName.TICKETS_UA.value
                 )
+                for instance in instances:
+                    param_type = BaseParameter.objects.create(param_type=param_category)
+                    instance.param_type = param_type
+                    instance.save()
+                    CheckerTask.objects.create(
+                        task_param_id=instance.param_type.id,
+                        user_id=user_id,
+                    )
 
-        return checkers
+        return instances

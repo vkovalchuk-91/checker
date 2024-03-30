@@ -11,9 +11,9 @@ class BaseUpdateSerializer(BaseSerializer, serializers.Serializer):
         abstract = True
 
     def create(self, validated_data):
-        checker_instance = self.validated_data['checker']
+        instance = self.validated_data['instance']
         is_active = self.validated_data['is_active']
-        checker_instance.is_active = is_active
-        checker_instance.updated_at = timezone.now()
-        checker_instance.save(update_fields=('is_active', 'updated_at',))
-        return checker_instance
+        instance.is_active = is_active
+        instance.updated_at = timezone.now()
+        instance.save(update_fields=('is_active', 'updated_at',))
+        return instance

@@ -31,9 +31,9 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
             (Q(title__contains=title.lower()) | Q(title__contains=title.capitalize()))
         ))
 
-        attrs['categories'] = category_instances if category_instances else []
+        attrs['instances'] = category_instances if category_instances else []
         return attrs
 
     def create(self, validated_data):
-        category_instances = validated_data.pop('categories')
-        return category_instances
+        instances = validated_data['instances']
+        return instances

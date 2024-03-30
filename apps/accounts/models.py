@@ -75,12 +75,14 @@ class PersonalSetting(models.Model):
 
 class ParameterCategory(models.Model):
     param_category_name = models.CharField(
+        unique=False,
         max_length=150,
         null=False,
-        blank=False,
-        unique=True,
         verbose_name=_('parameter category name')
     )
+
+    def __str__(self):
+        return self.param_category_name
 
 
 class BaseParameter(models.Model):
@@ -91,3 +93,6 @@ class BaseParameter(models.Model):
         related_name='param_types',
         verbose_name=_('parameter type name')
     )
+
+    def __str__(self):
+        return self.id

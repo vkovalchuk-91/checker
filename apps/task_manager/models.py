@@ -59,7 +59,7 @@ class SessionTaskManager:
         counter['user_count'] = self.count
 
         if user.is_superuser:
-            counter['all_count'] = CheckerTask.objects.count()
+            counter['all_count'] = CheckerTask.objects.filter(is_delete=False).count()
 
     def clear(self):
         del self.session[self.CLIENT_DATA_KEY][self.CLIENT_COUNTER_KEY]

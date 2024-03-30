@@ -3,13 +3,13 @@ from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 
 from apps.common.permissions import IsActiveAndAuthenticated
-from apps.hotline_ua.serializers import CheckerCreateSerializer
-from apps.hotline_ua.serializers.create_checker import CheckerCreateSerializer
+from apps.hotline_ua.serializers import SearchParameterCreateSerializer
+from apps.hotline_ua.serializers.create_checker import SearchParameterCreateSerializer
 from apps.hotline_ua.tasks import run_checkers
 
 
 class CheckerCreateAPIView(CreateAPIView):
-    serializer_class = CheckerCreateSerializer
+    serializer_class = SearchParameterCreateSerializer
     permission_classes = (IsActiveAndAuthenticated,)
 
     def create(self, request, *args, **kwargs):

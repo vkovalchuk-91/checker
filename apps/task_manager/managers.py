@@ -3,37 +3,14 @@ from django.db import models
 
 from apps.accounts.models import User
 from apps.common.constants import MAX_QUERY_NUMBER_DEFAULT
-from apps.common.enums.checker_name import CheckerTypeName
 
 
 class CheckerTaskManager(models.Manager):
-
-    def create_task(self, checker_name: str, checker_id: str, user_id: int):
-        checker_type = CheckerTypeName.find_by_value(checker_name)
-        if not checker_type:
-            raise ValueError('Checker type not found')
-
-        if not self.can_create_new_checker(user_id) or self.is_exist(checker_type.value, checker_id):
-            raise ValueError('Checker cannot be save.')
-
-        checker_task = self.model(
-            checker_id=checker_id,
-            user_id=user_id,
-            checker_type=checker_type.value,
-        )
-
-        checker_task.save(using=self._db)
-
-        return checker_task
-
-    def is_exist(self, checker_type, checker_id):
-        return self.get_queryset().filter(
-            checker_type=checker_type,
-            checker_id=checker_id
-        ).exists()
-
     def select_count(self, user_id: int) -> int:
-        return self.get_queryset().filter(user_id=user_id).count()
+        return self.get_queryset().filter(
+            user_id=user_id,
+            is_delete=False,
+        ).count()
 
     def select_max(self, user_pk: int) -> [int, None]:
         if not User.objects.filter(pk=user_pk).exists():
@@ -54,7 +31,7 @@ class CheckerTaskManager(models.Manager):
 
         return user.personal_setting.max_query_number
 
-    def can_create_new_checker(self, user_pk: int, need_count: int = 1) -> bool:
+    def can_create_new_task(self, user_pk: int, need_count: int = 1) -> bool:
         try:
             user = User.objects.get(pk=user_pk)
         except (MultipleObjectsReturned, User.DoesNotExist, ValueError, TypeError, OverflowError):

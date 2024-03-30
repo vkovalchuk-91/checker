@@ -3,7 +3,7 @@ from django.shortcuts import redirect, reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.list import BaseListView
 
-from apps.task_manager.models import CheckerTask, SessionTaskManager
+from apps.task_manager.models import SessionTaskManager
 
 
 class BaseCheckerListView(BaseListView):
@@ -14,11 +14,10 @@ class BaseCheckerListView(BaseListView):
 
     def get_queryset(self):
         user = self.request.user
-        checker_ids = CheckerTask.objects.filter(
-            user_id=user.id,
-            checker_type=self.checker_type.value
-        ).values_list('checker_id')
-        return self.model_class.objects.filter(pk__in=checker_ids)
+        return self.model_class.objects.filter(
+            param_type__checker_task_parameters__user_id=user.id,
+            param_type__checker_task_parameters__is_delete=False,
+        )
 
     def get(self, request, *args, **kwargs):
         user = self.request.user

@@ -7,7 +7,6 @@ from apps.tickets_ua.tasks import scraping_train_stations
 
 
 class StationSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField(max_length=100)
     name = serializers.RegexField(required=True, regex=TITLE_REGEX_DEFAULT)
     code = serializers.IntegerField(required=False, allow_null=True)
 
@@ -18,10 +17,6 @@ class StationSerializer(serializers.ModelSerializer):
             'name',
             'code',
         ]
-        # extra_kwargs = {
-        #     'name': {'required': True},
-        #     'code': {'required': False},
-        # }
 
     def validate(self, attrs):
         code = attrs.get('code')

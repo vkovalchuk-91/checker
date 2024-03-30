@@ -32,9 +32,9 @@ class StationCreateSerializer(serializers.ModelSerializer):
             Q(name__contains=name) | Q(name__contains=name.capitalize())
         ))
 
-        attrs['stations'] = stations if stations else []
+        attrs['instances'] = stations if stations else []
         return attrs
 
     def create(self, validated_data):
-        stations = validated_data.pop('stations')
-        return stations
+        instances = validated_data.pop('instances')
+        return instances

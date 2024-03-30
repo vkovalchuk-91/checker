@@ -52,7 +52,7 @@ def scraping_bus_station_name(station_id: int):
 
 @app.task(name='tickets_ua_run_checkers')
 def run_checkers(ids):
-    logger.info('Run tickets_ua checkers')
+    logger.info(f'Run tickets_ua checkers [{ids}]')
     if not ids or len(ids) == 0:
         return
 
@@ -74,19 +74,20 @@ def run_checkers(ids):
         train_scraper = TrainScraper(**data)
         trains = train_scraper.scrapy_items
 
-        # data['from_station'] = checker.from_station.bus_name
-        # data['to_station'] = checker.to_station.bus_name
-        # bus_scraper = BusScraper(**data)
-        # buses = bus_scraper.scraper_items
+        # if checker.from_station.bus_name and checker.to_station.bus_name:
+        #     data['from_station'] = checker.from_station.bus_name
+        #     data['to_station'] = checker.to_station.bus_name
+        #     bus_scraper = BusScraper(**data)
+        #     buses = bus_scraper.scraper_items
 
         checker.updated_at = timezone.now()
         checker.is_available = len(trains) > 0
         checker.save(update_fields=['updated_at', 'is_available'])
 
         if len(trains) > 0:
-            msg = f"have {len(trains)} train(s) by your check."
-            user = User.objects.get(
-                checker_tasks__checker_id=checker.id,
-                checker_tasks__checker_type=CheckerTypeName.TICKETS_UA.value,
-            )
+            msg = f"Available {len(trains)} train(s) "
+            # if buses and len(buses) > 0:
+            #     msg += f"and {len(buses)} bus(s) "
+            msg += f"by your check from tickets.ua"
+            user = User.objects.get(checker_tasks__task_param__ticket_ua_search_parameters__id=checker.id)
             send_email_checker_result_msg.apply_async(args=(user.id, msg,))

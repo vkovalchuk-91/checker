@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from apps.accounts.models import ParameterCategory, BaseParameter
 from apps.common.enums.checker_name import CheckerTypeName
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import BaseSearchParameter, Filter
@@ -11,7 +12,7 @@ from apps.hotline_ua.serializers.base_filter_ import FilterInstanceSerializer
 from apps.task_manager.models import CheckerTask
 
 
-class CheckerCreateSerializer(serializers.ModelSerializer):
+class SearchParameterCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     filters = FilterInstanceSerializer(many=True)
     user_id = serializers.IntegerField(required=False)
@@ -34,7 +35,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         category = attrs['category']
         if not category.get('id') and len(attrs['filters']) == 0:
             raise serializers.ValidationError(
-                {'checker': _(f'Invalid empty checker.')}
+                {'parameters': _(f'Invalid empty search parameter(s).')}
             )
 
         filter_instances: list[Filter] = [element['instance'] for element in attrs['filters']]
@@ -42,9 +43,9 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         if category.get('id'):
             new_filters_count += 1
 
-        if not CheckerTask.objects.can_create_new_checker(attrs['user_id'], need_count=new_filters_count):
+        if not CheckerTask.objects.can_create_new_task(attrs['user_id'], need_count=new_filters_count):
             raise serializers.ValidationError(
-                {'checker': _(f'Cannot create {new_filters_count} checker(s).')}
+                {'task': _(f'Cannot create {new_filters_count} search task(s).')}
             )
 
         attrs['instances'] = filter_instances
@@ -84,7 +85,20 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         return checkers
 
     def __create_checker_task(self, category_id, filter_instances, user_id):
-        checker = BaseSearchParameter(category=None) if not category_id else BaseSearchParameter(category_id=category_id)
+        param_category, created = ParameterCategory.objects.get_or_create(
+            param_category_name=CheckerTypeName.HOTLINE_UA.value
+        )
+        param_type = BaseParameter.objects.create(param_type=param_category)
+        if not category_id:
+            checker = BaseSearchParameter(
+                category=None,
+                param_type=param_type
+            )
+        else:
+            checker = BaseSearchParameter(
+                category_id=category_id,
+                param_type=param_type
+            )
         checker.save()
 
         if filter_instances:
@@ -96,9 +110,8 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
             checker.updated_at = timezone.now()
             checker.save(update_fields=('updated_at',))
 
-        CheckerTask.objects.create_task(
-            checker_name=CheckerTypeName.HOTLINE_UA.value,
-            checker_id=checker.id,
+        CheckerTask.objects.create(
+            task_param_id=param_type.id,
             user_id=user_id,
         )
 
