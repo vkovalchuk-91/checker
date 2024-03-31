@@ -41,8 +41,7 @@ def validate_email(email):
     return True
 
 
-def get_checkers_number(user_email):
-    user = User.objects.filter(email=user_email.lower()).first()
+def get_user_checkers_number(user):
     checker_tasks = CheckerTask.objects.filter(user=user).all()
     checkers_number = {}
     for checker_task in checker_tasks:
@@ -52,6 +51,10 @@ def get_checkers_number(user_email):
         else:
             checkers_number[param_category_name] = 1
     return checkers_number
+
+
+def get_registered_user_with_linked_tg_by_telegram_id(user_telegram_id):
+    return User.objects.filter(telegram_user_id=user_telegram_id).first()
 
 
 def link_telegram_id_to_user(tg_user_id, user_email):

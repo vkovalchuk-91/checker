@@ -1,12 +1,10 @@
-import os
-from pathlib import Path
-
-import environ
 from django.db import models
 from django.core.exceptions import ValidationError
 
 from loguru import logger
 from telebot.apihelper import ApiTelegramException
+
+from apps.common.constants import BOT_TOKEN, BOT_WEBHOOK_URL, BOT_LINK, BOT_TITLE, BOT_USERNAME, BOT_TELEGRAM_ID
 
 AUTO_FILLED_IN = 'это поле автоматически заполнится'
 
@@ -81,32 +79,15 @@ class BotConfig(models.Model):
         verbose_name_plural = 'Настройки Telegram ботов'
 
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-
 try:
-    bot_config_obj = BotConfig.objects
-    new_bot_config_from_env_condition_1 = not bot_config_obj.exists()
-    new_bot_config_from_env_condition_2 = len(bot_config_obj.all()) > 0 and (
-            bot_config_obj.first().token != env('BOT_TOKEN') or bot_config_obj.first().server_url != env(
-        'BOT_WEBHOOK_URL'))
-
-    # logger.debug(new_bot_config_from_env_condition_1)
-    # logger.debug(new_bot_config_from_env_condition_2)
-    if new_bot_config_from_env_condition_1 or new_bot_config_from_env_condition_2:
-        new_config = BotConfig(title=env('BOT_TITLE'), link=env('BOT_LINK'), username=env('BOT_USERNAME'),
-                               tid=env('BOT_TELEGRAM_ID'), token=env('BOT_TOKEN'),
-                               server_url=env('BOT_WEBHOOK_URL'))
-        new_config.clean()
-        new_config.save()
+    if not BotConfig.objects.filter(token=BOT_TOKEN, server_url=BOT_WEBHOOK_URL).exists():
+        config = BotConfig(title=BOT_TITLE, link=BOT_LINK, username=BOT_USERNAME, tid=BOT_TELEGRAM_ID, token=BOT_TOKEN,
+                           server_url=BOT_WEBHOOK_URL)
+        config.save()
+    else:
+        config = BotConfig.objects.filter(token=BOT_TOKEN, server_url=BOT_WEBHOOK_URL).first()
+        config.is_active = True
+        config.save()
+    config.clean()
 except Exception as e:
     logger.info(e)

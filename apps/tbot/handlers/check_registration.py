@@ -1,6 +1,6 @@
 from apps.accounts.utils.telegram import check_is_user_unregistered_in_data_base_by_telegram_id, \
-    check_has_exist_user_related_tg_by_email, check_is_user_exist_in_data_base_by_email, get_checkers_number, \
-    validate_email, link_telegram_id_to_user
+    check_has_exist_user_related_tg_by_email, check_is_user_exist_in_data_base_by_email, get_user_checkers_number, \
+    validate_email, link_telegram_id_to_user, get_registered_user_with_linked_tg_by_telegram_id
 from apps.tbot_base.bot import tbot as bot
 
 registered_users = [396264878]
@@ -32,18 +32,19 @@ def send_registration_info(message):
     else:
         if is_user_unregistered:
             link_telegram_id_to_user(user_id, user_text)
-        get_linked_tg_user_response(tg_username, user_id, user_text)
+        get_linked_tg_user_response(tg_username, user_id)
 
 
-def get_linked_tg_user_response(tg_username, tg_user_id, email):
-    checkers_number = get_checkers_number(email)
-    response_text = f"Вітаємо @{tg_username}! Ваш Telegram аккаунт пов'язаний з користувачем {email.lower()}\n"
+def get_linked_tg_user_response(tg_username, tg_user_id):
+    user = get_registered_user_with_linked_tg_by_telegram_id(tg_user_id)
+    checkers_number = get_user_checkers_number(user)
+    response_text = f"Вітаємо @{tg_username}! Ваш Telegram аккаунт пов'язаний з користувачем {user.email.lower()}\n"
     if len(checkers_number) == 0:
         response_text += f"На даний момент у вас немає жодних збережених чекерів"
     elif len(checkers_number) == 1:
         checker_service_name = next(iter(checkers_number))
         checker_qty = checkers_number[checker_service_name]
-        response_text += f"На даний момент у вас по сервісу '{checker_service_name}' кількість активних чекерів - {checker_qty}"
+        response_text += f"На даний момент у вас для сервіса '{checker_service_name}' кількість активних чекерів - {checker_qty}"
     else:
         response_text = f"На даний момент у вас така кількість активних чекерів:\n"
         for checker_service_name, checker_qty in checkers_number.items():

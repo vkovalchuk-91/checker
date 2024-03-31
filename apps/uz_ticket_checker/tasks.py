@@ -14,8 +14,8 @@ def run_tickets_search_task(**kwargs):
     to_station = kwargs.get('to_station')
     from_date = kwargs.get('from_date')
     to_date = kwargs.get('to_date')
-    search_results = []
-    search_summary = []
+
+    dates_result = {}
 
     start_date = datetime.strptime(from_date, "%Y-%m-%d")
     end_date = datetime.strptime(to_date, "%Y-%m-%d")
@@ -24,15 +24,23 @@ def run_tickets_search_task(**kwargs):
     while current_date <= end_date:
         current_search_results, search_direction = (
             get_current_search_tickets(from_station, to_station, current_date.strftime("%Y-%m-%d")))
-        search_results += current_search_results
-        if not search_summary:
-            search_summary = search_direction
+
+        date = current_search_results[0]['departure_date']
+        rowspan_counter = 0
+        if date in dates_result:
+            for result in current_search_results:
+                rowspan_counter += result['rowspan']
+            dates_result[date][0] += current_search_results
+            dates_result[date][1] += rowspan_counter
+        else:
+            link = f"https://proizd.ua/search?fromId={from_station}&toId={to_station}&date={date}"
+            for result in current_search_results:
+                rowspan_counter += result['rowspan']
+            dates_result[date] = [current_search_results, rowspan_counter, link]
+
         current_date += timedelta(days=1)
-    if start_date == end_date:
-        search_summary += f" ({start_date.strftime("%Y-%m-%d")})"
-    else:
-        search_summary += f" ({start_date.strftime("%Y-%m-%d")} - {end_date.strftime("%Y-%m-%d")})"
-    return search_results, search_summary
+
+    return dates_result
 
 
 @app.task(name='run_stations_scraping')
@@ -44,7 +52,7 @@ def run_stations_scraping_task(**kwargs):
     stations_data = handle_one_phrase_stations(phrase)
     if len(stations_data) == 10:
         for letter in UKRAINIAN_ALPHABET:
-            run_stations_scraping_task.delay(phrase=phrase+letter)
+            run_stations_scraping_task.delay(phrase=phrase + letter)
     else:
         print(f"Додано в чергу задачу на оновлення станцій, що містять в назві '{phrase}'")
         for station in stations_data:

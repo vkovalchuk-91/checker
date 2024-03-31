@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from loguru import logger
 
 from apps.common import TimeStampedMixin
 from apps.accounts.models import BaseParameter
+from apps.common.constants import SEAT_TYPES, WAGON_TYPES
 
 
 class Station(TimeStampedMixin):
@@ -72,3 +74,22 @@ class WagonType(models.Model):
 
 class SeatType(models.Model):
     seat_type = models.CharField(_("seat type"), max_length=50)
+    seat_type_name = models.CharField(_("seat type name"), max_length=50)
+
+
+try:
+    for wagon_type in WAGON_TYPES:
+        if not WagonType.objects.filter(wagon_type=wagon_type).exists():
+            wagon_type_obj = WagonType(wagon_type=wagon_type)
+            wagon_type_obj.save()
+except Exception as e:
+    logger.info(e)
+
+
+try:
+    for seat_type in SEAT_TYPES:
+        if not SeatType.objects.filter(seat_type=seat_type['seat_type']).exists():
+            seat_type_obj = SeatType(seat_type=seat_type['seat_type'], seat_type_name=seat_type['seat_type_name'])
+            seat_type_obj.save()
+except Exception as e:
+    logger.info(e)
