@@ -17,20 +17,23 @@
                         <a class="nav-link" href="{% url 'hotline_ua:index' %}">Hotline UA</a>
                     </li>
                 {% endif %}
-                {% if request.user.is_superuser %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                           aria-expanded="false">
-                            {% translate "Panels" %}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/admin">{% translate "Administrator" %}</a></li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">API </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'swagger' %}">Swagger UI</a></li>
+                        <li><a class="dropdown-item" href="{% url 'redoc' %}">Redoc</a></li>
+                        {% if request.user.is_superuser %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                        </ul>
-                    </li>
-                {% endif %}
+                            <li><a class="dropdown-item" href="/admin">{% translate "Administrator" %}</a></li>
+                        {% endif %}
+                    </ul>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
             </ul>
 
             <div class="d-flex justify-content-center pe-4">

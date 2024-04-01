@@ -1,13 +1,13 @@
 from rest_framework import status
-from rest_framework.generics import UpdateAPIView
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 
-class BaseUpdateAPIView(UpdateAPIView):
+class BaseUpdateAPIView(GenericAPIView):
     serializer_class = None
     delete_serializer_class = None
 
-    def update(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         data = {**request.data, 'user_id': request.user.id}
         data.update({'id': self.kwargs['pk']})
         serializer = self.serializer_class(data=data)
