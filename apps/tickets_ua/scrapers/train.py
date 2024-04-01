@@ -50,8 +50,7 @@ class TrainScraper(_TransportScraper):
 
             return [train for train in trains if train.date_at.time() >= self.time_at]
         except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError) as e:
-            logger.error(
-                f"Invalid scraping trains [{self.from_station}->{self.to_station} at {self.date_at}]")
+            logger.error(f"Invalid scraping trains [{self.from_station}->{self.to_station} at {self.date_at}]")
             return []
         finally:
             session.close()

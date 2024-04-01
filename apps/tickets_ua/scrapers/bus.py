@@ -95,6 +95,6 @@ class BusScraper(_TransportScraper):
             return [bus for bus in buses if bus.date_at.time() >= self.time_at]
         except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError):
             logger.error(f"Invalid scraping buses [{self.from_station}->{self.to_station} at {self.date_at}]")
-            raise ValueError(f"Invalid scraping buses.")
+            return []
         finally:
             session.close()

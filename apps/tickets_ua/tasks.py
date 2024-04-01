@@ -4,11 +4,10 @@ from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.accounts.tasks import send_email_checker_result_msg
-
 from apps.celery import celery_app as app
-from apps.common.enums.checker_name import CheckerTypeName
 from apps.common.tasks import BaseTaskWithRetry
 from apps.tickets_ua.models import BaseSearchParameter, Station
+from apps.tickets_ua.scrapers.bus import BusScraper
 from apps.tickets_ua.scrapers.bus_station import BusStationScraper
 from apps.tickets_ua.scrapers.train import TrainScraper
 from apps.tickets_ua.scrapers.train_station import TrainStationScraper
@@ -56,38 +55,50 @@ def run_checkers(ids):
     if not ids or len(ids) == 0:
         return
 
-    for checker in BaseSearchParameter.objects.filter(id__in=ids, is_active=True):
-        if checker.date_at < timezone.now().date():
-            if checker.is_available:
-                checker.updated_at = timezone.now()
-                checker.is_available = False
-                checker.save(update_fields=['updated_at', 'is_available'])
+    for search_parameter in BaseSearchParameter.objects.filter(id__in=ids, is_active=True):
+        if search_parameter.date_at < timezone.now().date():
+            if search_parameter.is_available:
+                search_parameter.updated_at = timezone.now()
+                search_parameter.is_available = False
+                search_parameter.save(update_fields=['updated_at', 'is_available'])
             continue
 
         data = {
-            'from_station': checker.from_station.code,
-            'to_station': checker.to_station.code,
-            'date_at': checker.date_at,
-            'time_at': checker.time_at,
+            'from_station': search_parameter.from_station.code,
+            'to_station': search_parameter.to_station.code,
+            'date_at': search_parameter.date_at,
+            'time_at': search_parameter.time_at,
         }
 
         train_scraper = TrainScraper(**data)
         trains = train_scraper.scrapy_items
 
-        # if checker.from_station.bus_name and checker.to_station.bus_name:
-        #     data['from_station'] = checker.from_station.bus_name
-        #     data['to_station'] = checker.to_station.bus_name
-        #     bus_scraper = BusScraper(**data)
-        #     buses = bus_scraper.scraper_items
+        buses = []
+        if len(search_parameter.from_station.bus_name) > 0 and len(search_parameter.to_station.bus_name) > 0:
+            data['from_station'] = search_parameter.from_station.bus_name
+            data['to_station'] = search_parameter.to_station.bus_name
+            bus_scraper = BusScraper(**data)
+            buses = bus_scraper.scraper_items
 
-        checker.updated_at = timezone.now()
-        checker.is_available = len(trains) > 0
-        checker.save(update_fields=['updated_at', 'is_available'])
+        search_parameter.updated_at = timezone.now()
+        search_parameter.is_available = len(trains) > 0
+        search_parameter.save(update_fields=['updated_at', 'is_available'])
 
-        if len(trains) > 0:
-            msg = f"Available {len(trains)} train(s) "
-            # if buses and len(buses) > 0:
-            #     msg += f"and {len(buses)} bus(s) "
-            msg += f"by your check from tickets.ua"
-            user = User.objects.get(checker_tasks__task_param__ticket_ua_search_parameters__id=checker.id)
+        if len(trains) > 0 or len(buses) > 0:
+            msg = get_result_message(search_parameter, trains, buses)
+            user = User.objects.get(checker_tasks__task_param__ticket_ua_search_parameters__id=search_parameter.id)
             send_email_checker_result_msg.apply_async(args=(user.id, msg,))
+
+
+def get_result_message(search_parameter: BaseSearchParameter, trains, buses):
+    msg = f"Available"
+    from_station = search_parameter.from_station.name
+    to_station = search_parameter.to_station.name
+    if len(trains) > 0:
+        msg += f" by trains {from_station}-{to_station}: {len(trains)} tickets"
+    if len(buses) > 0:
+        msg += ' and' if len(trains) > 0 else ''
+        msg += f" by buses {from_station}-{to_station}: {len(buses)} tickets"
+
+    msg += f" from ticket.ua"
+    return msg

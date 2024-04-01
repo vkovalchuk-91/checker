@@ -47,16 +47,17 @@ def run_checkers(ids: list[int]):
     if not ids or len(ids) == 0:
         return
 
-    for checker in BaseSearchParameter.objects.filter(id__in=ids, is_active=True, ):
-        filter_instances = checker.filters.all()
+    for search_parameter in BaseSearchParameter.objects.filter(id__in=ids, is_active=True, ):
+        filter_instances = search_parameter.filters.all()
         if len(filter_instances) == 1 and filter_instances[0].type_name == FilterType.TEXT.value:
             scraper = TextSearchScraper(data=filter_instances[0].title)
-            items = scraper.scrapy_items
-            is_available = len(items) > 0
+            result = scraper.scrapy_items
+            result_count = len(result)
+            is_available = result_count > 0
         else:
             data = {
-                'url': checker.category.url,
-                'path': checker.category.path,
+                'url': search_parameter.category.url,
+                'path': search_parameter.category.path,
             }
             filters = []
             for filter_instance in filter_instances:
@@ -70,14 +71,27 @@ def run_checkers(ids: list[int]):
                 data['filters'] = '-'.join(str(item) for item in filters)
 
             scraper = CountScraper(data=data)
-            count = scraper.scrapy_items
-            is_available = count > 0
+            result_count = scraper.scrapy_items
+            is_available = result_count > 0
 
-        checker.updated_at = timezone.now()
-        checker.is_available = is_available
-        checker.save(update_fields=['updated_at', 'is_available'])
+        search_parameter.updated_at = timezone.now()
+        search_parameter.is_available = is_available
+        search_parameter.save(update_fields=['updated_at', 'is_available'])
 
         if is_available:
-            msg = f"Available result by your check from hotline.ua"
-            user = User.objects.get(checker_tasks__task_param__hotline_ua_search_parameters__id=checker.id)
+            msg = get_result_message(search_parameter, result_count)
+            user = User.objects.get(checker_tasks__task_param__hotline_ua_search_parameters__id=search_parameter.id)
             send_email_checker_result_msg.apply_async(args=(user.id, msg,))
+
+
+def get_result_message(search_parameter: BaseSearchParameter, result_count):
+    msg = f"Available {result_count} result(s)"
+    filter_instances = search_parameter.filters.all()
+    if filter_instances and len(filter_instances) == 1 and filter_instances[0].type_name == FilterType.TEXT.value:
+        msg += f" search text: {filter_instances[0].title}"
+    else:
+        msg += f" search items by category : {search_parameter.category.title}"
+        msg += f" and {len(filter_instances)} filter(s)"
+
+    msg += f" from hotline.ua"
+    return msg
