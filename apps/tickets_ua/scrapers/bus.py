@@ -48,7 +48,6 @@ class BusScraper(_TransportScraper):
 
     @property
     def scraper_items(self):
-        logger.info(f'Scrapy buses {self.from_station}-{self.to_station} at {self.date_at}.')
         session = requests.Session()
         try:
             response = session.get(self.MAIN_URL)

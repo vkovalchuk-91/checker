@@ -85,9 +85,13 @@ def run_checkers(ids):
         search_parameter.save(update_fields=['updated_at', 'is_available'])
 
         if len(trains) > 0 or len(buses) > 0:
-            msg = get_result_message(search_parameter, trains, buses)
             user = User.objects.get(checker_tasks__task_param__ticket_ua_search_parameters__id=search_parameter.id)
-            send_email_checker_result_msg.apply_async(args=(user.id, msg,))
+            msg = get_result_message(search_parameter, trains, buses)
+            if user.is_email_verified:
+                send_email_checker_result_msg.apply_async(args=(user.id, msg,))
+            if user.personal_setting and user.personal_setting.telegram_user_id:
+                # TODO telegram send message
+                ...
 
 
 def get_result_message(search_parameter: BaseSearchParameter, trains, buses):
