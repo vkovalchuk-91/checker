@@ -23,10 +23,6 @@
                                 <ul id="search-to-results" class="position-absolute text-bg-secondary pe-2"></ul>
                             </div>
                             <div class="col-auto">
-                                <label class="form-label ms-2">{% translate "dates" %}</label>
-                                <input type="text" class="form-control" name="date_at" aria-label="datepicker"/>
-                            </div>
-                            <div class="col-auto">
                                 <label class="form-label ms-2"></label>
                                 <button class="btn btn-primary mt-2 form-control CreateCheckerBtn">{% translate "Generated" %}</button>
                             </div>
@@ -45,28 +41,9 @@
                                         <input type="range" class="form-range py-2" id="range-time" min="0" max="23"
                                                step="1" value="0" aria-label="range-time">
                                     </div>
-                                    <div class="pt-3">
-                                        <h5 class="card-title text-secondary">Seats (train):</h5>
-                                        {% for seat_type in seat_types %}
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" checked disabled
-                                                       aria-label="seat_type">
-                                                <label class="form-check-label">{{ seat_type }}</label>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="py-3">
-                                        <h5 class="card-title text-secondary ">Transport:</h5>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" checked disabled
-                                                   aria-label="seat_type">
-                                            <label class="form-check-label">train</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" checked disabled
-                                                   aria-label="seat_type">
-                                            <label class="form-check-label">bus</label>
-                                        </div>
+                                    <div class="col-auto pt-2">
+                                        <h5 class="card-title text-secondary ">{% translate "Dates" %}</h5>
+                                        <input type="text" class="form-control" name="date_at" aria-label="datepicker"/>
                                     </div>
                                 </div>
                             </div>
@@ -90,8 +67,7 @@
                             <th class="col-1"></th>
                         </tr>
                         </thead>
-
-
+                    
                         <tbody class="text-center" id="checkersBodyTable">
                         {% if checkers %}
                             {% for checker in checkers %}

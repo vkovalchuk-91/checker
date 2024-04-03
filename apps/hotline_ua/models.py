@@ -37,20 +37,18 @@ class Category(TimeStampedMixin, models.Model):
         verbose_name_plural = _("categories")
 
 
-class HotlineUaFilterTypeChoices(models.TextChoices):
+class FilterTypeChoices(models.TextChoices):
     BRAND = FilterType.BRAND.value, _(FilterType.BRAND.value)
     LINK = FilterType.LINK.value, _(FilterType.LINK.value)
     SHOP = FilterType.SHOP.value, _(FilterType.SHOP.value)
-
     TEXT = FilterType.TEXT.value, _(FilterType.TEXT.value)
-
     MAX_PRICE = FilterType.MAX.value, _(FilterType.MAX.value)
     MIN_PRICE = FilterType.MIN.value, _(FilterType.MIN.value)
 
 
 class Filter(models.Model):
     objects = FilterManager()
-    type_choices_class = HotlineUaFilterTypeChoices
+    type_choices_class = FilterTypeChoices
 
     code = models.IntegerField(_('code'))
     title = models.CharField(_('title'), max_length=100, blank=False)

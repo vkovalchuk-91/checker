@@ -29,16 +29,3 @@ class _TransportParser:
 
     class Meta:
         abstract = True
-
-    @staticmethod
-    def get_seat_type_by_value(value) -> SeatType:
-        if not value:
-            return SeatType.DEFAULT
-
-        for seat_type in SeatType:
-            if isinstance(value, int) and seat_type.value[0] == value:
-                return seat_type
-            if isinstance(value, str) and seat_type.value[1] == value:
-                return seat_type
-
-        return SeatType.DEFAULT

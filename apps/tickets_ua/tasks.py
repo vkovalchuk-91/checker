@@ -57,10 +57,11 @@ def run_checkers(ids):
 
     for search_parameter in BaseSearchParameter.objects.filter(id__in=ids, is_active=True):
         if search_parameter.date_at < timezone.now().date():
-            if search_parameter.is_available:
+            if search_parameter.is_active or search_parameter.is_available:
                 search_parameter.updated_at = timezone.now()
                 search_parameter.is_available = False
-                search_parameter.save(update_fields=['updated_at', 'is_available'])
+                search_parameter.is_active = False
+                search_parameter.save(update_fields=['updated_at', 'is_available', 'is_active'])
             continue
 
         data = {
@@ -95,14 +96,15 @@ def run_checkers(ids):
 
 
 def get_result_message(search_parameter: BaseSearchParameter, trains, buses):
-    msg = f"Available"
     from_station = search_parameter.from_station.name
     to_station = search_parameter.to_station.name
+    date_at = search_parameter.date_at
+    msg = f"{from_station}-{to_station} at {date_at} available"
     if len(trains) > 0:
-        msg += f" by trains {from_station}-{to_station}: {len(trains)} tickets"
+        msg += f" by trains: {len(trains)} ticket(s)"
     if len(buses) > 0:
         msg += ' and' if len(trains) > 0 else ''
-        msg += f" by buses {from_station}-{to_station}: {len(buses)} tickets"
+        msg += f" by buses: {len(buses)} ticket(s)"
 
-    msg += f" from ticket.ua"
+    msg += f" check in ticket.ua"
     return msg

@@ -97,5 +97,5 @@ def get_result_message(search_parameter: BaseSearchParameter, result_count):
         msg += f" search items by category : {search_parameter.category.title}"
         msg += f" and {len(filter_instances)} filter(s)"
 
-    msg += f" from hotline.ua"
+    msg += f" check in hotline.ua"
     return msg

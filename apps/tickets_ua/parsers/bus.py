@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 
+from apps.tickets_ua.enums.seat import SeatType
 from apps.tickets_ua.parsers.transport import _TransportParser
 
 
@@ -48,6 +49,6 @@ class BusParser(_TransportParser):
         match = re.search(r'\b\d+\b', available_str)
         if match:
             return self.seat_class(
-                type=self.get_seat_type_by_value(None),
+                type=SeatType.find_by_value(None),
                 available=int(match.group()),
             )

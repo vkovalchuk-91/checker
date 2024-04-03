@@ -4,7 +4,7 @@ from apps.hotline_ua.serializers import CheckerUpdateSerializer
 from apps.hotline_ua.serializers import CheckerDeleteSerializer
 
 
-class CheckerUpdateAPIView(BaseUpdateAPIView):
+class HotlineUaCheckerUpdateAPIView(BaseUpdateAPIView):
     serializer_class = CheckerUpdateSerializer
     delete_serializer_class = CheckerDeleteSerializer
     permission_classes = (IsActiveAndAuthenticated,)

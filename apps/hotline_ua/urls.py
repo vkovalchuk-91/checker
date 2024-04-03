@@ -10,5 +10,5 @@ urlpatterns = [
     path("api/catalog/", api.CategoryCreateAPIView.as_view(), name="api-category"),
     path("api/filter/", api.FilterCreateAPIView.as_view(), name="api-filter"),
     path("api/checker/", api.CheckerCreateAPIView.as_view(), name="api-checker"),
-    path("api/checker/<int:pk>/", api.CheckerUpdateAPIView.as_view(), name='api-update-checker'),
+    path("api/checker/<int:pk>/", api.HotlineUaCheckerUpdateAPIView.as_view(), name='api-update-checker'),
 ]

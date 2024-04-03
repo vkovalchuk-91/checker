@@ -5,7 +5,7 @@ from apps.common.serializer import BaseUpdateSerializer
 from apps.tickets_ua.models import BaseSearchParameter
 
 
-class CheckerUpdateSerializer(BaseUpdateSerializer, serializers.ModelSerializer):
+class TicketsUaCheckerUpdateSerializer(BaseUpdateSerializer, serializers.ModelSerializer):
     model_class = BaseSearchParameter
     checker_type = CheckerTypeName.TICKETS_UA
 

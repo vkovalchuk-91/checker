@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from apps.tickets_ua.enums.seat import SeatType
 from apps.tickets_ua.parsers.transport import _TransportParser
 
 
@@ -20,7 +21,7 @@ class TrainParser(_TransportParser):
         return train_instances
 
     def _parse_instance(self, json_data: dict):
-        seats = self._parse_seats(json_data['seats'])
+        seats = SeatType.find_by_value(json_data['seats'])
 
         number = r"{}".format(json_data['number'])
         name = r"{}".format(json_data['name'])
@@ -35,16 +36,3 @@ class TrainParser(_TransportParser):
             travel_time_minutes=travel_time_minutes,
             seats=seats,
         )
-
-    def _parse_seats(self, json_seats: list[dict]):
-        seats = []
-        for json_seat in json_seats:
-            type_value = json_seat['type']
-            type_seat = self.get_seat_type_by_value(type_value)
-            seat = self.seat_class(
-                type=type_seat,
-                available=int(json_seat['availableSeats']),
-            )
-            seats.append(seat)
-
-        return seats
