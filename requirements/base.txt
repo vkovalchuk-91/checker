@@ -10,7 +10,6 @@ django-filter==23.5
 djangorestframework==3.14.0
 drf-spectacular==0.27.1
 ipython==8.20.0
-factory_boy==3.3.0
 google-auth-oauthlib==1.2.0
 Markdown==3.5.2
 redis==5.0.1
