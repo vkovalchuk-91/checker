@@ -16,7 +16,6 @@ INSTALLED_APPS += [
     # project
     'apps.accounts',
     'apps.uz_ticket_checker',
-    'apps.task_manager',
 
     # telegram bot
     'apps.tbot_base',

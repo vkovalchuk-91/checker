@@ -22,9 +22,9 @@ from apps.views import index, telegram, feedback
 
 urlpatterns = [
     path("", index, name="index"),
+    path("", include('apps.tbot_base.urls')),  # include webhook url
     path("telegram/", telegram, name="telegram"),
     path("feedback/", feedback, name="feedback"),
-    path("", include('apps.tbot_base.urls')),  # include webhook url
     path("uz_ticket/", include('apps.uz_ticket_checker.urls'), name="uz_ticket_checker"),
 
     path('admin/', admin.site.urls, name="admin"),
