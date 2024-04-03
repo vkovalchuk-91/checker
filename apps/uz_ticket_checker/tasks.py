@@ -20,6 +20,8 @@ def run_tickets_search_task(**kwargs):
     dates_result = {}
     search_direction_text = ""
     search_dates_text = ""
+    no_trains_error_text = "no_trains_error"
+    no_trains_error_description = "На даний момент на вказані дати відсутні квитки на потяги між вказаними станціями"
 
     start_date = datetime.strptime(from_date, "%Y-%m-%d")
     end_date = datetime.strptime(to_date, "%Y-%m-%d")
@@ -29,14 +31,14 @@ def run_tickets_search_task(**kwargs):
         current_search_results, current_search_direction = (
             get_current_search_tickets(from_station, to_station, current_date.strftime("%Y-%m-%d")))
 
-        if current_search_results in ["no_trains_error", "proizd_ua_service_error", "proizd_ua_price_details_error"]:
+        if current_search_results in ["proizd_ua_service_error", "proizd_ua_price_details_error"]:
             logger.error(current_search_results)
             return {
                 'dates_result': current_search_results,
                 'search_direction_text': current_search_direction,
                 'search_dates_text': ""
             }
-        elif len(current_search_results) != 0:
+        elif current_search_results != "no_trains_error":
             date = current_search_results[0]['departure_date']
             rowspan_counter = 0
             if date in dates_result:
@@ -58,11 +60,18 @@ def run_tickets_search_task(**kwargs):
                     search_dates_text += f" ({start_date.strftime("%Y-%m-%d")} - {end_date.strftime("%Y-%m-%d")})"
         current_date += timedelta(days=1)
 
-    final_result = {
-        'dates_result': dates_result,
-        'search_direction_text': search_direction_text,
-        'search_dates_text': search_dates_text
-    }
+    if dates_result:
+        final_result = {
+            'dates_result': dates_result,
+            'search_direction_text': search_direction_text,
+            'search_dates_text': search_dates_text
+        }
+    else:
+        final_result = {
+            'dates_result': no_trains_error_text,
+            'search_direction_text': no_trains_error_description,
+            'search_dates_text': ""
+        }
     return final_result
 
 

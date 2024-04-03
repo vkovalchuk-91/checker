@@ -104,11 +104,11 @@
                         var tableHtml = '';
                         if (datesResult === "no_trains_error" || datesResult === "proizd_ua_service_error" || datesResult === "proizd_ua_price_details_error") {
                             tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
-                            tableHtml += '<h3 class="pb-2">' + searchDirectionText + '</h3>';
+                            tableHtml += '<h4 class="pb-2">' + searchDirectionText + '</h4>';
                             tableHtml += '</div>';
                         } else {
                             tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
-                            tableHtml += '<h3 class="pb-2">Квитки за напрямком ' + searchDirectionText + ' <a data-toggle="tooltip" title="Додати checker на вказані дати" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + from_date + '&to_date=' + to_date +'">' + searchDatesText + '</a></h3>';
+                            tableHtml += '<h4 class="pb-2">Квитки за напрямком ' + searchDirectionText + ' <a data-toggle="tooltip" title="Додати checker на вказані дати" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + from_date + '&to_date=' + to_date +'">' + searchDatesText + '</a></h4>';
                             tableHtml += '<table class="table"><thead><tr class="text-center">';
                             tableHtml += '<th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>';
                             tableHtml += '<th class="col-1 text-primary-emphasis border" colspan="2">Час</th>';
