@@ -6,166 +6,56 @@
         <div class="container">
             <div class="my-3 p-3 bg-body rounded shadow-sm">
                 <h3 class="pb-2">Пошук залізничних квитків</h3>
-                <div class="bg-body rounded shadow-sm py-3">
-                    <form class="row g-4 p-3" id="createCheckerForm">
-                        <div class="row">
-                            <div class="col-md-auto col-sm-12">
-                                <div class="col-auto">
-                                    {#                                    <label for="search-from" class="form-label ms-2">from</label>#}
-                                    <input type="text" class="form-control" name="from_station" id="search-from"
-                                           placeholder="Звідки виїзд?">
-                                    <ul id="search-from-results" class="position-absolute text-bg-secondary pe-2"></ul>
-                                </div>
-                            </div>
-                            <div class="col-md-auto col-sm-12">
-                                <div class="col-auto">
-                                    {#                                    <label for="search-to" class="form-label ms-2">to</label>#}
-                                    <input type="text" class="form-control" name="to_station" id="search-to"
-                                           placeholder="Куди прямуєте?">
-                                    <ul id="search-to-results" class="position-absolute text-bg-secondary pe-2"></ul>
-                                </div>
-                            </div>
-                            <div class="col-md-auto col-sm-12">
-                                <div class="col-auto">
-                                    {#                                    <label class="form-label ms-2">dates</label>#}
-                                    <input type="text" class="form-control" name="date_at" aria-label="datepicker"
-                                           placeholder="Дата"/>
-                                </div>
-                            </div>
-                            <div class="col-md-auto col-sm-12">
-                                <div class="col-auto">
-                                    {#                                    <label class="form-label ms-2"></label>#}
-                                    <button class="btn btn-primary form-control CreateCheckerBtn">Пошук</button>
-                                </div>
-                            </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-12">
+                        <label for="from_station" class="col-form-label">Звідки виїзд?</label>
+                        <select class="form-select dselect" required id="from_station" name="from_station">
+                            {% for express_3, station_name in stations.items %}
+                                {% if express_3 == 2200001 %}
+                                    <option value="{{ express_3 }}" selected>{{ station_name }}</option>
+                                {% else %}
+                                    <option value="{{ express_3 }}">{{ station_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-sm-12">
+                        <label for="to_station" class="col-form-label">Куди прямуєте?</label>
+                        <select class="form-select dselect" required id="to_station" name="to_station">
+                            {% for express_3, station_name in stations.items %}
+                                {% if express_3 == 2218000 %}
+                                    <option value="{{ express_3 }}" selected>{{ station_name }}</option>
+                                {% else %}
+                                    <option value="{{ express_3 }}">{{ station_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-auto col-sm-12">
+                        <label for="trip_dates" class="col-form-label">Проміжок дат пошуку потягів</label>
+                        <div class="ms-1 col-12">
+                            <input type="text" id="trip_dates" class="form-control">
                         </div>
-
-                    </form>
+                    </div>
+                    <div class="col-md-auto col-sm-12">
+                        <label for="search_button" class="col-form-label">&nbsp;</label>
+                        <div class="ms-1 col-12">
+                            <button class="btn btn-primary search-btn" name="search_button">Пошук</button>
+                        </div>
+                    </div>
+                    <div class="col-md-auto col-sm-12">
+                        <label for="add_checker_button" class="col-form-label">&nbsp;</label>
+                        <div class="ms-1 col-12">
+                            <button class="btn btn-secondary add-checker-btn"
+                                    onclick="window.location.href='/uz_ticket/checker/'" name="add_checker_button">Додати новий чекер
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button class="btn btn-primary form-control CreateCheckerBtn remove-btn">33333</button>
-
-            {% if dates_result %}
-                <div class="my-3 p-3 bg-body rounded shadow-sm">
-                    <h3 class="pb-2">Квитки за напрямком {{ search_summary }}</h3>
-                    <div id="main_content">
-                        <br><br>
-                        <div align="center"><h5><b>Зачекайте, відбувається завантаження й обробка інформації</b></h5>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Animated striped example"
-                             aria-valuenow="75"
-                             aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                 style="width: 100%"></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-body rounded shadow-sm">
-                        <table class="table">
-                            <thead>
-                            <tr class="text-center">
-                                <th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>
-                                <th class="col-1 text-primary-emphasis border" colspan="2">Час</th>
-                                <th class="col-1 text-primary-emphasis border" colspan="3">Потяг</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Тип вагону</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Мінімальна ціна</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Доступно місць</th>
-                            </tr>
-                            <tr class="text-center">
-                                <th class="col-auto text-primary-emphasis border">Відправлення</th>
-                                <th class="col-auto text-primary-emphasis border">Прибуття</th>
-                                <th class="col-auto text-primary-emphasis border">Відправлення</th>
-                                <th class="col-auto text-primary-emphasis border">Прибуття</th>
-                                <th class="col-auto text-primary-emphasis border">Номер</th>
-                                <th class="col-auto text-primary-emphasis border">Сполучення</th>
-                                <th class="col-auto text-primary-emphasis border">Категорія</th>
-                            </tr>
-                            </thead>
-
-                            <tbody class="text-center" id="checkersBodyTable">
-
-                            {% for date, results in dates_result.items %}
-                                <tr class="border">
-                                    <td class="border" rowspan="{{ results.1 }}" nowrap>{{ date }} <br><br>
-                                        <a href="{{ results.2 }}"> Придбати на <br><img
-                                                src="https://proizd.ua/assets/images/logos/logo-new-black.svg"
-                                                alt="Proizd.ua">
-                                        </a>
-                                    </td>
-
-                                    {% for result in results.0 %}
-                                        {% if not forloop.first %}
-                                            <tr>
-                                        {% endif %}
-                                    <td class="border" rowspan="{{ result.rowspan }}"
-                                        nowrap>{{ result.arrival_date }}</td>
-                                    <td class="border" rowspan="{{ result.rowspan }}"
-                                        nowrap>{{ result.departure_time }} </td>
-                                    <td class="border" rowspan="{{ result.rowspan }}"
-                                        nowrap>{{ result.arrival_time }}</td>
-                                    <td class="border" rowspan="{{ result.rowspan }}"
-                                        nowrap>{{ result.train_number }}</td>
-                                    <td class="border" rowspan="{{ result.rowspan }}">{{ result.train_name }}</td>
-                                    <td class="border" rowspan="{{ result.rowspan }}"
-                                        nowrap>{{ result.train_category }}</td>
-
-                                    {% for wagon_detail in result.wagon_details %}
-                                        {% if not forloop.first %}
-                                            </tr>
-                                            <tr>
-                                        {% endif %}
-                                    <td class="border" nowrap>{{ wagon_detail.wagon_type }}</td>
-                                    <td class="border" nowrap>{{ wagon_detail.min_price }}</td>
-                                    <td class="border" nowrap>{{ wagon_detail.available_seats }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                    {% endfor %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            {% endif %}
+            <div id="main_content"></div>
         </div>
-
-        {#        <script>#}
-        {#            window.StationUrl = "{% url 'tickets_ua:api-station' %}"#}
-        {#            window.ChekerUrl = "{% url 'tickets_ua:api-checker' %}"#}
-        {#        </script>#}
-
-        {#        <script>#}
-        {#            $('#range-time').on('input', function () {#}
-        {#                const time = $('#range-time').val()#}
-        {#                $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")#}
-        {#            });#}
-        {#        </script>#}
-
-        {#        <script src="{% static '/js/moment.min.js' %}"></script>#}
-        {#        <script src="{% static '/js/daterangepicker.js' %}"></script>#}
-        {#        <script>#}
-        {#            $(function () {#}
-        {#                $('input[name="date_at"]').daterangepicker({#}
-        {#                    opens: 'left',#}
-        {#                    startDate: moment(),#}
-        {#                    minDate: moment(),#}
-        {#                    endDate: moment(),#}
-        {#                    maxDate: moment().add(10, 'day'),#}
-        {#                    locale: {#}
-        {#                        format: 'YYYY-MM-DD'#}
-        {#                    }#}
-        {#                });#}
-        {#            });#}
-        {#        </script>#}
-
-        {#        <script src="{% static '/js/calc.js' %}"></script>#}
-        {#        <script src="{% static '/js/ajax.js' %}"></script>#}
-        {#        <script src="{% static '/js/notify.js' %}"></script>#}
-
-        {#        {% csrf_token %}#}
-        {#        <script src="{% static '/js/tickets_ua/station.js' %}"></script>#}
-        {#        <script src="{% static '/js/tickets_ua/checker.js' %}"></script>#}
-
     {% endif %}
 {% endblock %}
 
@@ -175,72 +65,192 @@
     </script>
     <script>
         $(document).ready(function () {
-            $('.remove-btn').on('click', function () {
+            $('.search-btn').on('click', function () {
+                var tableHtml = '';
+                tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
+                tableHtml += '<br><br><div align="center"><h5><b>Зачекайте, відбувається завантаження й обробка інформації</b></h5></div>';
+                tableHtml += '<div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">';
+                tableHtml += '<div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>';
+                tableHtml += '</div>';
+                $('#main_content').html(tableHtml);
+
+                var from_station = $("#from_station").val();
+                var to_station = $("#to_station").val();
+                var trip_dates = $("#trip_dates").val().split(" - ");
+                var from_date = trip_dates[0];
+                var to_date = trip_dates[1];
+                console.log(from_station);
+                console.log(to_station);
 
                 $.ajax({
                     type: 'POST',
-                    url: '/uz_ticket/execute_task/',
+                    url: '/uz_ticket/execute_search_task/',
                     data: {
-                        'from_station': '2200001',
-                        'to_station': '2208099',
-                        'from_date': '2024-04-01',
-                        'to_date': '2024-04-01'
+                        'from_station': from_station,
+                        'to_station': to_station,
+                        'from_date': from_date,
+                        'to_date': to_date
                     },
                     headers: {
                         'X-CSRFToken': csrf_token
                     },
                     success: function (data) {
-                        var dates_result = JSON.parse(data);
-                        console.log(dates_result);
-                        var html = ``;
-                        if (Object.keys(dates_result).length > 1) {
-                            html += `
-                            <div class="my-3 p-3 bg-body rounded shadow-sm">
-                    <h3 class="pb-2">Квитки за напрямком {{ search_summary }}</h3>
-                    <div id="main_content">
-                        <br><br>
-                        <div align="center"><h5><b>Зачекайте, відбувається завантаження й обробка інформації</b></h5>
-                        </div>
-                        <div class="progress" role="progressbar" aria-label="Animated striped example"
-                             aria-valuenow="75"
-                             aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                 style="width: 100%"></div>
-                        </div>
-                    </div>
+                        var input = JSON.parse(data);
+                        console.log(input);
+                        var datesResult = input.dates_result;
+                        var searchDirectionText = input.search_direction_text;
+                        var searchDatesText = input.search_dates_text;
 
-                    <div class="bg-body rounded shadow-sm">
-                        <table class="table">
-                            <thead>
-                            <tr class="text-center">
-                                <th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>
-                                <th class="col-1 text-primary-emphasis border" colspan="2">Час</th>
-                                <th class="col-1 text-primary-emphasis border" colspan="3">Потяг</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Тип вагону</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Мінімальна ціна</th>
-                                <th class="col-auto text-primary-emphasis border" rowspan="2">Доступно місць</th>
-                            </tr>
-                            <tr class="text-center">
-                                <th class="col-auto text-primary-emphasis border">Відправлення</th>
-                                <th class="col-auto text-primary-emphasis border">Прибуття</th>
-                                <th class="col-auto text-primary-emphasis border">Відправлення</th>
-                                <th class="col-auto text-primary-emphasis border">Прибуття</th>
-                                <th class="col-auto text-primary-emphasis border">Номер</th>
-                                <th class="col-auto text-primary-emphasis border">Сполучення</th>
-                                <th class="col-auto text-primary-emphasis border">Категорія</th>
-                            </tr>
-                            </thead>
+                        var tableHtml = '';
+                        if (datesResult === "no_trains_error" || datesResult === "proizd_ua_service_error" || datesResult === "proizd_ua_price_details_error") {
+                            tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
+                            tableHtml += '<h3 class="pb-2">' + searchDirectionText + '</h3>';
+                            tableHtml += '</div>';
+                        } else {
+                            tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
+                            tableHtml += '<h3 class="pb-2">Квитки за напрямком ' + searchDirectionText + ' <a data-toggle="tooltip" title="Додати checker на вказані дати" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + from_date + '&to_date=' + to_date +'">' + searchDatesText + '</a></h3>';
+                            tableHtml += '<table class="table"><thead><tr class="text-center">';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>';
+                            tableHtml += '<th class="col-1 text-primary-emphasis border" colspan="2">Час</th>';
+                            tableHtml += '<th class="col-1 text-primary-emphasis border" colspan="3">Потяг</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border" rowspan="2">Тип вагону</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border" rowspan="2">Мінімальна ціна</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border" rowspan="2">Доступно місць</th>';
+                            tableHtml += '</tr><tr class="text-center">';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Відправлення</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Прибуття</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Відправлення</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Прибуття</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Номер</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Сполучення</th>';
+                            tableHtml += '<th class="col-auto text-primary-emphasis border">Категорія</th>';
+                            tableHtml += '</tr></thead><tbody class="text-center" id="checkersBodyTable">';
 
-                            <tbody class="text-center" id="checkersBodyTable">`;
+                            for (var date in datesResult) {
+                                if (datesResult.hasOwnProperty(date)) {
+                                    var results = datesResult[date];
+                                    tableHtml += '<tr class="border"><td class="border" rowspan="' + results[1] + '" nowrap><a data-toggle="tooltip" title="Додати checker на вказану дату" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + date + '">' + date + '</a><<br><br>';
+                                    tableHtml += '<a href="' + results[2] + '"> Придбати на <br><img src="https://proizd.ua/assets/images/logos/logo-new-black.svg" alt="Proizd.ua"></a></td>';
+
+                                    for (var i = 0; i < results[0].length; i++) {
+                                        var result = results[0][i];
+                                        if (i !== 0) {
+                                            tableHtml += '<tr>';
+                                        }
+
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '" nowrap>' + result.arrival_date + '</td>';
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '" nowrap>' + result.departure_time + '</td>';
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '" nowrap>' + result.arrival_time + '</td>';
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '" nowrap> <a data-toggle="tooltip" title="Додати checker на вказані дату та номер потягу" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + result.departure_date + '&train_number=' + result.train_number + '">' + result.train_number + '</a></td>';
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '">' + result.train_name + '</td>';
+                                        tableHtml += '<td class="border" rowspan="' + result.rowspan + '" nowrap>' + result.train_category + '</td>';
+
+                                        for (var j = 0; j < result.wagon_details.length; j++) {
+                                            var wagonDetail = result.wagon_details[j];
+                                            if (j !== 0) {
+                                                tableHtml += '</tr><tr>';
+                                            }
+                                            tableHtml += '<td class="border" nowrap> <a data-toggle="tooltip" title="Додати checker на вказані дату, номер потягу та тип вагону" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + result.departure_date + '&train_number=' + result.train_number + '&wagon_type=' + wagonDetail.wagon_type + '">' + wagonDetail.wagon_type + '</td>';
+                                            tableHtml += '<td class="border" nowrap>' + wagonDetail.min_price + '</td>';
+                                            tableHtml += '<td data-toggle="tooltip" title="' + wagonDetail.seat_types + '" class="border" nowrap>' + wagonDetail.available_seats + '</td>';
+                                        }
+
+                                        tableHtml += '</tr>';
+                                    }
+                                }
+                            }
+
+                            tableHtml += '</tbody></table></div></div>';
                         }
 
-                        $('#main_content').html('<div>' + html + '</div>');
+                        // Вставляємо згенерований HTML в контейнер
+                        $('#main_content').html(tableHtml);
+
                     },
                     error: function (error) {
                         console.log('Error:', error);
                     }
                 });
             });
+        });
+    </script>
+
+    {#    Selectable lists#}
+    <link rel="stylesheet" href="https://unpkg.com/@jarstone/dselect/dist/css/dselect.css">
+    <script src="https://unpkg.com/@jarstone/dselect/dist/js/dselect.js"></script>
+    <script>
+        for (const el of document.querySelectorAll('.dselect')) {
+            dselect(el, {
+                search: true
+            })
+        }
+    </script>
+
+    {#    Date picker#}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <script>
+        // date range picker options
+        $('#trip_dates').daterangepicker({
+            "autoApply": true,
+            ranges: {
+                'Сьогодні': [moment(), moment()],
+                'Наступні 3 дні': [moment(), moment().add(2, 'days')],
+                'Наступні 5 днів': [moment(), moment().add(4, 'days')],
+                'Наступні 7 днів': [moment(), moment().add(6, 'days')],
+                'Цей місяць': [moment(), moment().endOf('month')],
+                'Наступний місяць': [moment().add(1, 'month').startOf('month'), moment().add(1, 'month').endOf('month')]
+            },
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Apply",
+                "cancelLabel": "Cancel",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Інші дати",
+                "weekLabel": "W",
+                "daysOfWeek": [
+                    "Нд",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Січень",
+                    "Лютий",
+                    "Березень",
+                    "Квітень",
+                    "Травень",
+                    "Червень",
+                    "Липень",
+                    "Серпень",
+                    "Вересень",
+                    "Жовтень",
+                    "Листопад",
+                    "Грудень"
+                ],
+                "firstDay": 1
+            },
+            "alwaysShowCalendars": true,
+            // default values
+            "startDate": moment(),
+            "endDate": moment().add(2, 'days'),
+            "minDate": moment(),
+            "maxDate": moment().add(1, 'month').endOf('month'),
+            "opens": "left"
+        }, function (start, end) {
+            console.log(start.format('YYYY/MM/DD') + ' - ' + end.format('YYYY/MM/DD'));
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 {% endblock %}

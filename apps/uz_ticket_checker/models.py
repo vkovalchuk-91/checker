@@ -4,7 +4,7 @@ from loguru import logger
 
 from apps.common import TimeStampedMixin
 from apps.accounts.models import BaseParameter
-from apps.common.constants import SEAT_TYPES, WAGON_TYPES
+from apps.common.constants import SEAT_TYPES, WAGON_TYPES, STATIONS
 
 
 class Station(TimeStampedMixin):
@@ -77,6 +77,17 @@ class SeatType(models.Model):
     seat_type_name = models.CharField(_("seat type name"), max_length=50)
 
 
+# Get active stations info for using in checkers app
+try:
+    if Station.objects.filter(is_active=True).exists():
+        stations = Station.objects.filter(is_active=True).order_by('-weight')
+        for station in stations:
+            STATIONS[station.express_3_id] = station.name
+except Exception as e:
+    logger.info(e)
+
+
+# wagon types initializing
 try:
     for wagon_type in WAGON_TYPES:
         if not WagonType.objects.filter(wagon_type=wagon_type).exists():
@@ -86,10 +97,33 @@ except Exception as e:
     logger.info(e)
 
 
+# Update wagon types from DB for using in checkers app
+try:
+    if WagonType.objects.exists():
+        wagon_types = WagonType.objects.all()
+        WAGON_TYPES.clear()
+        for wagon_type in wagon_types:
+            WAGON_TYPES.append(wagon_type.wagon_type)
+except Exception as e:
+    logger.info(e)
+
+
+# seat types initializing
 try:
     for seat_type in SEAT_TYPES:
         if not SeatType.objects.filter(seat_type=seat_type['seat_type']).exists():
             seat_type_obj = SeatType(seat_type=seat_type['seat_type'], seat_type_name=seat_type['seat_type_name'])
             seat_type_obj.save()
+except Exception as e:
+    logger.info(e)
+
+
+# Update seat types from DB for using in checkers app
+try:
+    if SeatType.objects.exists():
+        seat_types = SeatType.objects.all()
+        SEAT_TYPES.clear()
+        for seat_type in seat_types:
+            SEAT_TYPES.append({'seat_type': seat_type.seat_type, 'seat_type_name': seat_type.seat_type_name})
 except Exception as e:
     logger.info(e)

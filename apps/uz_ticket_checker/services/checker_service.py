@@ -1,12 +1,36 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from apps.accounts.models import ParameterCategory, CheckerTask
 from apps.uz_ticket_checker.models import SeatType, WagonType, TrainNumber, Station, TicketSearchParameter
+from apps.uz_ticket_checker.parsers.trains_parser import get_checker_matches_by_train_number, \
+    get_all_train_numbers_by_date
 
 
-def get_checkers_parameters_list(user):
+def get_checker_matches(train_checker_info):
+    start_date = datetime.strptime(train_checker_info['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(train_checker_info['end_date'], "%Y-%m-%d")
+
+    tickets_matches = []
+    current_date = start_date
+    while current_date <= end_date:
+        if len(train_checker_info['train_number']) == 0:
+            train_numbers = get_all_train_numbers_by_date(
+                train_checker_info['departure_station'],
+                train_checker_info['arrival_station'],
+                current_date.strftime("%Y-%m-%d")
+            )
+            for train_number in train_numbers:
+                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+        else:
+            for train_number in train_checker_info['train_number']:
+                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+        current_date += timedelta(days=1)
+    return tickets_matches
+
+
+def get_checkers_parameters_list_for_frontend(user):
     parameters = []
     user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(
             task_params__param_type__param_category_name="UZ Ticket Checker").all()
@@ -26,7 +50,7 @@ def get_checkers_parameters_list(user):
             ', '.join(
                 str(wagon_type.wagon_type) for wagon_type in ticket_search_parameter_obj.wagon_type.all()))
         checker_parameter['seat_types'] = (
-            ', '.join(str(seat_type.seat_type) for seat_type in ticket_search_parameter_obj.seat_type.all()))
+            ', '.join(str(seat_type.seat_type_name) for seat_type in ticket_search_parameter_obj.seat_type.all()))
         checker_parameter['update_period'] = item.update_period
         checker_parameter['last_run_at'] = item.last_run_at
         checker_parameter['is_active'] = item.is_active
@@ -61,21 +85,18 @@ def add_new_checker(
         return None
 
     if seat_types:
-        seat_types = seat_types.split(",")
         for seat_type in seat_types:
             if not SeatType.objects.filter(seat_type=seat_type).exists():
                 return None
-    seat_types_obj = SeatType.objects.filter(seat_type=seat_types)
+    seat_types_obj = SeatType.objects.filter(seat_type__in=seat_types)
 
     if wagon_types:
-        wagon_types = wagon_types.split(",")
         for wagon_type in wagon_types:
             if not WagonType.objects.filter(wagon_type=wagon_type).exists():
                 return None
     wagon_types_obj = WagonType.objects.filter(wagon_type__in=wagon_types)
 
     if train_numbers:
-        train_numbers = train_numbers.split(",")
         for train_number in train_numbers:
             if not TrainNumber.objects.filter(train_number=train_number).exists():
                 new_train_number = TrainNumber(train_number=train_number)

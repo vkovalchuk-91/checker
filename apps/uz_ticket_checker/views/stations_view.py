@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 
-from apps.tbot.tasks import send_bot_message
+from apps.common.constants import UKRAINIAN_ALPHABET
 from apps.uz_ticket_checker.models import Station
-from apps.uz_ticket_checker.services.stations_update_service import run_all_stations_update
 
 
 class StationsListView(ListView):
@@ -16,12 +15,12 @@ class StationsListView(ListView):
         return Station.objects.filter(is_active=1).order_by('-weight')
 
 
-def stations_update(request):
+def stations_update(request, run_stations_scraping_task=None):
     # if request.user and not request.user.is_superuser:
     #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише суперюзери.')
     #     return redirect(reverse('products:products_list'))
 
     if request.method == 'GET':
-        run_all_stations_update()
-        # send_bot_message.delay(telegram_id=396264878, message="Бульба")
+        for letter in UKRAINIAN_ALPHABET:
+            run_stations_scraping_task.delay(phrase=letter)
     return render(request, 'uz_ticket_checker/stations.html')
