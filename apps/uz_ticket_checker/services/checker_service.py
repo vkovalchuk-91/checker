@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from apps.accounts.models import ParameterCategory, CheckerTask
+from apps.accounts.models import ParameterCategory
+from apps.task_manager.models import CheckerTask
 from apps.uz_ticket_checker.models import SeatType, WagonType, TrainNumber, Station, TicketSearchParameter
 from apps.uz_ticket_checker.parsers.trains_parser import get_checker_matches_by_train_number, \
     get_all_train_numbers_by_date

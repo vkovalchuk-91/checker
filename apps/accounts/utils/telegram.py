@@ -3,7 +3,8 @@ import re
 from django.contrib import messages
 from django.utils.safestring import mark_safe
 
-from apps.accounts.models import User, CheckerTask
+from apps.accounts.models import User
+from apps.task_manager.models import CheckerTask
 
 
 def check_linked_telegram_id(request):

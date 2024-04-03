@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from loguru import logger
 
-from apps.accounts.models import CheckerTask
 from apps.accounts.utils.telegram import has_user_related_telegram_id
 from apps.common.constants import STATIONS, WAGON_TYPES, SEAT_TYPES
+from apps.task_manager.models import CheckerTask
 from apps.uz_ticket_checker.models import TicketSearchParameter
 from apps.uz_ticket_checker.services.checker_service import add_new_checker, get_checkers_parameters_list_for_frontend
 from apps.uz_ticket_checker.services.checker_service import get_checker_matches
