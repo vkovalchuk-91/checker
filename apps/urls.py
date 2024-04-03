@@ -19,13 +19,17 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
-from apps.views import index, redirect_to_index_page
+from apps.views import index, telegram, feedback, redirect_to_index_page
 
 urlpatterns = [
     path("", index, name="index"),
+    path("", include('apps.tbot_base.urls')),  # include webhook url
+    path("telegram/", telegram, name="telegram"),
+    path("feedback/", feedback, name="feedback"),
 
     path('i18n/', include('django.conf.urls.i18n')),
 
+    path("uz_ticket/", include('apps.uz_ticket_checker.urls'), name="uz_ticket_checker"),
     path("tickets_ua/", include('apps.tickets_ua.urls'), name="tickets_ua"),
     path("hotline_ua/", include('apps.hotline_ua.urls'), name="hotline_ua"),
 

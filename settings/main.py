@@ -14,8 +14,13 @@ INSTALLED_APPS += [
     # project
     'apps.task_manager',
     'apps.accounts',
+    'apps.uz_ticket_checker',
     'apps.hotline_ua',
     'apps.tickets_ua',
+
+    # telegram bot
+    'apps.tbot_base',
+    'apps.tbot',
 
     # project template tags
 
@@ -148,3 +153,8 @@ LANGUAGES = [
     ('uk', 'Ukrainian'),
 ]
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
+
+# Add your bot handlers in order of priority
+BOT_HANDLERS = [
+    'apps.tbot.handlers.check_registration',
+]

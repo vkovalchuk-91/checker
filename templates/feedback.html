@@ -1,0 +1,54 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Змінено відступ між рядками */
+        }
+
+        .form-label {
+            width: 250px; /* Збільшено ширину для заголовків полів */
+            text-align: right; /* Центрування тексту */
+            margin-right: 15px; /* Змінено відступ від правого краю */
+        }
+
+        .form-field {
+            flex: 1;
+        }
+
+        .submit-btn {
+            margin-left: 265px; /* Перемістити кнопку відправлення вправо */
+        }
+
+        .form-control.form-field.descr {
+            height: 300px; /* Встановлюємо висоту 200px */
+        }
+    </style>
+
+    <div class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h3 class="pb-2" align="center">Форма зворотнього зв'язку</h3>
+            <form method="post" action="{% url 'feedback' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_contact_info" class="form-label">Контактні дані відправника:</label>
+                    <input type="text" class="form-control form-field" id="id_contact_info" name="contact_info">
+                </div>
+                <div class="form-group">
+                    <label for="id_subject" class="form-label">Тема повідомлення:</label>
+                    <input type="text" class="form-control form-field" id="id_subject" name="subject">
+                </div>
+                <div class="form-group">
+                    <label for="id_description" class="form-label">Опис:</label>
+                    <textarea class="form-control form-field descr" id="id_description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn">Відправити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    {% if request.user.is_authenticated %}
+        <div class="container">
+            <div class="my-3 p-3 bg-body rounded shadow-sm">
+                <h3 class="pb-2" align="center">Список станцій доступних в додатку</h3>
+                <div class="bg-body rounded shadow-sm">
+                    <table class="table">
+                        <thead>
+                            <tr class="text-center">
+                                <th class="col-auto text-primary-emphasis border">EXPRESS-3 ID</th>
+                                <th class="col-auto text-primary-emphasis border">Назва станції</th>
+                                <th class="col-auto text-primary-emphasis border">Вагомість</th>
+                            </tr>
+                        </thead>
+                    
+                        <tbody class="text-center" id="checkersBodyTable">
+                        {% for station in stations %}
+                            <tr>
+                                <td>{{ station.express_3_id }}</td>
+                                <td>{{ station.name }}</td>
+                                <td>{{ station.weight }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            
+                <br><br>
+                <table class="table">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="col-auto text-primary-emphasis">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page=1">&laquo; перша</a>
+                                    <span style="margin-right: 12px;"></span>
+                                    <a href="?page={{ page_obj.previous_page_number }}">&laquo; попередня</a>
+                                    <span style="margin-right: 12px;"></span>
+                                {% endif %}
+                            
+                                <span class="current">
+                                    Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}.
+                                </span>
+                            
+                                {% if page_obj.has_next %}
+                                    <span style="margin-right: 12px;"></span>
+                                    <a href="?page={{ page_obj.next_page_number }}">наступна &raquo;</a>
+                                    <span style="margin-right: 12px;"></span>
+                                    <a href="?page={{ page_obj.paginator.num_pages }}">остання &raquo;</a>
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        
+{#        <script>#}
+{#            window.StationUrl = "{% url 'tickets_ua:api-station' %}"#}
+{#            window.ChekerUrl = "{% url 'tickets_ua:api-checker' %}"#}
+{#        </script>#}
+
+{#        <script>#}
+{#            $('#range-time').on('input', function () {#}
+{#                const time = $('#range-time').val()#}
+{#                $('#range-time-value').val((time < 10 ? "0" + time : time) + ":00")#}
+{#            });#}
+{#        </script>#}
+
+{#        <script src="{% static '/js/moment.min.js' %}"></script>#}
+{#        <script src="{% static '/js/daterangepicker.js' %}"></script>#}
+{#        <script>#}
+{#            $(function () {#}
+{#                $('input[name="date_at"]').daterangepicker({#}
+{#                    opens: 'left',#}
+{#                    startDate: moment(),#}
+{#                    minDate: moment(),#}
+{#                    endDate: moment(),#}
+{#                    maxDate: moment().add(10, 'day'),#}
+{#                    locale: {#}
+{#                        format: 'YYYY-MM-DD'#}
+{#                    }#}
+{#                });#}
+{#            });#}
+{#        </script>#}
+
+{#        <script src="{% static '/js/calc.js' %}"></script>#}
+{#        <script src="{% static '/js/ajax.js' %}"></script>#}
+{#        <script src="{% static '/js/notify.js' %}"></script>#}
+
+{#        {% csrf_token %}#}
+{#        <script src="{% static '/js/tickets_ua/station.js' %}"></script>#}
+{#        <script src="{% static '/js/tickets_ua/checker.js' %}"></script>#}
+
+    {% endif %}
+{% endblock %}
