@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.shortcuts import render
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
@@ -14,7 +15,11 @@ class SignUpView(CreateAPIView):
     permission_classes = (IsAnonymous,)
     template_name = 'registration/signup.html'
 
-    def create(self, request, *args, **kwargs):
+    @extend_schema(
+        request=serializer_class,
+        responses={status.HTTP_204_NO_CONTENT: None},
+    )
+    def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -25,5 +30,8 @@ class SignUpView(CreateAPIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(
+        responses={status.HTTP_200_OK: None},
+    )
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)

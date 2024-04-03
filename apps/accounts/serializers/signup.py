@@ -9,6 +9,7 @@ from apps.accounts.models import User
 
 class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, min_length=3, )
+    confirm = serializers.CharField(required=False, min_length=3, )
 
     class Meta:
         model = User = get_user_model()
@@ -16,13 +17,15 @@ class SignUpSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'first_name',
-            'last_name'
+            'last_name',
+            'confirm'
         )
         extra_kwargs = {
             'email': {'required': True},
             'password': {'required': True},
             'first_name': {'required': True},
             'last_name': {'required': True},
+            'confirm': {'required': False},
         }
 
     def validate_email(self, email):
@@ -48,6 +51,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password')
+        validated_data.pop('confirm')
         user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save(update_fields=('password', 'updated_at'))

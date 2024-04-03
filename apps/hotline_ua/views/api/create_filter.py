@@ -16,4 +16,4 @@ class FilterCreateAPIView(CreateAPIView):
         serializer.is_valid(raise_exception=True)
         save_date = serializer.save()
         serializer_date = self.serializer_class(save_date, many=True).data
-        return Response(data=serializer_date, status=status.HTTP_200_OK)
+        return Response(data=serializer_date, status=status.HTTP_201_CREATED)

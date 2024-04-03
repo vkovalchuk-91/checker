@@ -21,4 +21,4 @@ class StationCreateAPIView(CreateAPIView):
             scraping_train_stations.apply_async(args=(data['name'],))
 
         serializer_date = self.serializer_class(save_date, many=True).data
-        return Response(data=serializer_date, status=status.HTTP_200_OK)
+        return Response(data=serializer_date, status=status.HTTP_201_CREATED)

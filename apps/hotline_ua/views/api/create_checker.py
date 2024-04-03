@@ -24,4 +24,4 @@ class CheckerCreateAPIView(CreateAPIView):
             run_checkers.apply_async(args=([i.id for i in save_data],))
             # run_checkers([i.id for i in save_data])
 
-        return Response(data=serializer_data, status=status.HTTP_200_OK)
+        return Response(data=serializer_data, status=status.HTTP_201_CREATED)

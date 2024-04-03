@@ -1,9 +1,31 @@
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
 
 from apps.common.serializer.base import BaseSerializer
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Request Value',
+            value={
+                'is_active': 'true'
+            },
+            request_only=True,
+            response_only=False,
+        ),
+        OpenApiExample(
+            'Response Value',
+            value={
+                'id': 0,
+                'is_active': 'true'
+            },
+            request_only=False,
+            response_only=False,
+        ),
+    ]
+)
 class BaseUpdateSerializer(BaseSerializer, serializers.Serializer):
     is_active = serializers.BooleanField(required=True)
 
