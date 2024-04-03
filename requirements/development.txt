@@ -1,7 +1,1 @@
 -r base.txt
-
-drf-spectacular==0.27.1
-
-factory_boy==3.3.0
-django-filter==23.5
-Markdown==3.5.2
