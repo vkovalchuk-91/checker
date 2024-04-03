@@ -129,7 +129,7 @@
                             for (var date in datesResult) {
                                 if (datesResult.hasOwnProperty(date)) {
                                     var results = datesResult[date];
-                                    tableHtml += '<tr class="border"><td class="border" rowspan="' + results[1] + '" nowrap><a data-toggle="tooltip" title="Додати checker на вказану дату" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + date + '">' + date + '</a><<br><br>';
+                                    tableHtml += '<tr class="border"><td class="border" rowspan="' + results[1] + '" nowrap><a data-toggle="tooltip" title="Додати checker на вказану дату" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + date + '">' + date + '</a><br><br>';
                                     tableHtml += '<a href="' + results[2] + '"> Придбати на <br><img src="https://proizd.ua/assets/images/logos/logo-new-black.svg" alt="Proizd.ua"></a></td>';
 
                                     for (var i = 0; i < results[0].length; i++) {
