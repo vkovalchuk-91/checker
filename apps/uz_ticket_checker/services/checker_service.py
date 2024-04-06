@@ -34,7 +34,7 @@ def get_checker_matches(train_checker_info):
 def get_checkers_parameters_list_for_frontend(user):
     parameters = []
     user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(
-            task_params__param_type__param_category_name="UZ Ticket Checker").all()
+            task_param__param_type__param_category_name="UZ Ticket Checker").all()
     for item in user_checker_tasks_queryset:
         checker_parameter = {}
         parameter_id = item.task_params.pk

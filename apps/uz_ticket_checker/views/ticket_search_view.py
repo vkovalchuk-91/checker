@@ -10,18 +10,9 @@ from apps.uz_ticket_checker.tasks import run_tickets_search_task
 
 
 def search_ticket_view(request):
-    # if request.user and not request.user.is_authenticated:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише авторизовані користувачі.')
-    #     return render(request, "ticket_search_page.html")
-
     context = {}
     if request.method == 'GET':
         context['stations'] = STATIONS
-    if request.method == 'POST':
-        from_station = request.POST.get('from_station')
-        to_station = request.POST.get('to_station')
-        trip_dates = request.POST.get('444')
-        return JsonResponse({'status': [from_station, to_station, trip_dates]})
 
     return render(request, 'uz_ticket_checker/ticket_search_page.html', context)
 
@@ -37,9 +28,9 @@ def get_search_results(request):
         try:
             final_result = run_tickets_search_task.delay(from_station=from_station, to_station=to_station,
                                                          from_date=from_date, to_date=to_date)
-            task_id = final_result.id  # Отримуємо ідентифікатор завдання
+            task_id = final_result.id
             async_result = AsyncResult(task_id)
-            task_result = async_result.get()  # Отримуємо результати завдання
+            task_result = async_result.get()
         except Exception as e:
             logger.debug(e)
     return JsonResponse(json.dumps(task_result), safe=False)

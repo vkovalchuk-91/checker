@@ -43,15 +43,26 @@
                                 <li class="nav-item">
                                     <form method="post" action="{% url 'accounts:logout' %}?next={{ request.path }}">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn">&nbsp;Logout <i class="bi bi-box-arrow-left"></i></button>
+                                        <button type="submit" class="btn">&nbsp;Logout <i
+                                                class="bi bi-box-arrow-left"></i></button>
                                     </form>
                                 </li>
-                                <li><a class="dropdown-item" href="{% url 'redoc' %}">Link Telegram</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:link_unlink_telegram' %}">
+                                    {% if request.user.personal_setting.telegram_user_id > 0 %}
+                                        Unlink Telegram
+                                    {% else %}
+                                        Link Telegram
+                                    {% endif %}
+                                </a></li>
                                 {% if request.user.is_superuser %}
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
                                     <li><a class="dropdown-item" href="/admin">{% translate "Administrator" %}</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="/uz_ticket/stations">{% translate "Railway Stations list" %}</a></li>
                                 {% endif %}
                             </ul>
                         <li>

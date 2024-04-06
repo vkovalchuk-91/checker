@@ -9,7 +9,7 @@ class StationsListView(ListView):
     model = Station
     template_name = 'uz_ticket_checker/stations.html'
     context_object_name = 'stations'
-    paginate_by = 100
+    paginate_by = 300
 
     def get_queryset(self):
         return Station.objects.filter(is_active=1).order_by('-weight')

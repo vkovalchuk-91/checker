@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from loguru import logger
@@ -11,9 +13,9 @@ from apps.uz_ticket_checker.services.checker_service import get_checker_matches
 
 
 def checkers_view(request):
-    # if request.user and not request.user.is_authenticated:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише авторизовані користувачі.')
-    #     return render(request, "ticket_search_page.html")
+    if request.user and not request.user.is_authenticated:
+        messages.info(request, 'Доступ до сторінки списку чекерів мають лише авторизовані користувачі.')
+        return redirect(reverse('uz_ticket_checker_app:search_results'))
 
     context = {}
     if request.method == 'GET':
@@ -57,9 +59,9 @@ def checkers_view(request):
 
 
 def checker_add(request):
-    # if request.user and not request.user.is_superuser:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише суперюзери.')
-    #     return redirect(reverse('products:products_list'))
+    if request.user and not request.user.is_authenticated:
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(previous_page)
 
     if request.method == 'POST':
         departure_station_str = request.POST.get('from_station')
@@ -89,9 +91,9 @@ def checker_add(request):
 
 
 def checker_delete(request, pk):
-    # if request.user and not request.user.is_superuser:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише суперюзери.')
-    #     return redirect(reverse('products:products_list'))
+    if request.user and not request.user.is_authenticated:
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(previous_page)
 
     delete_object = get_object_or_404(CheckerTask, pk=pk)
     if request.method == 'GET':
@@ -106,9 +108,9 @@ def checker_delete(request, pk):
 
 
 def checker_change_is_active(request, pk):
-    # if request.user and not request.user.is_superuser:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише суперюзери.')
-    #     return redirect(reverse('products:products_list'))
+    if request.user and not request.user.is_authenticated:
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(previous_page)
 
     change_object = get_object_or_404(CheckerTask, pk=pk)
     if request.method == 'POST':
@@ -119,9 +121,9 @@ def checker_change_is_active(request, pk):
 
 
 def checker_check(request):
-    # if request.user and not request.user.is_superuser:
-    #     messages.error(request, 'Доступ до сторінки додавання нових продуктів мають лише суперюзери.')
-    #     return redirect(reverse('products:products_list'))
+    if request.user and not request.user.is_authenticated:
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(previous_page)
 
     if request.method == 'GET':
         user = request.user

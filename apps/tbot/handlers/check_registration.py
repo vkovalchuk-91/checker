@@ -3,8 +3,6 @@ from apps.accounts.utils.telegram import check_is_user_unregistered_in_data_base
     validate_email, link_telegram_id_to_user, get_registered_user_with_linked_tg_by_telegram_id
 from apps.tbot_base.bot import tbot as bot
 
-registered_users = [396264878]
-
 
 @bot.message_handler(func=lambda message: True)
 def send_registration_info(message):
