@@ -1,0 +1,104 @@
+{% extends 'fragments/base.html' %}
+{% load static %}
+
+{% block main %}
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px; /* Змінено відступ між рядками */
+        }
+
+        .form-label {
+            width: 250px; /* Збільшено ширину для заголовків полів */
+            text-align: right; /* Центрування тексту */
+            margin-right: 15px; /* Змінено відступ від правого краю */
+        }
+
+        .form-field {
+            width: 70px;
+        }
+
+        .submit-btn {
+            margin-left: 265px; /* Перемістити кнопку відправлення вправо */
+        }
+
+        .note {
+            margin-left: 265px; /* Перемістити кнопку відправлення вправо */
+            font-style: italic; /* Зробити текст курсивним */
+            color: #dc3545; /* Змінити колір тексту на сірий */
+        }
+    </style>
+
+    <div class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h3 class="pb-2" align="center">Додаткові налаштування</h3>
+            <form method="post" action="{% url 'change_max_query_number' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="max_query_number" class="form-label">Змінити максимальну кількість checker-ів для REGULAR
+                        користувачів:</label>
+                    <input type="number" class="form-control form-field" id="max_query_number" name="max_query_number"
+                           min="1" max="60" value="{{ max_query_number }}">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn">Оновити</button>
+                </div>
+            </form>
+            <div class="note">* Персонально для кожного користувача кількість cheker-ів можна оновити на <a
+                    style="color: blue; text-decoration: underline;" href="/admin">панелі адміністратора</a></div>
+
+            <br><br>
+            <form method="post" action="{% url 'change_regular_users_update_period' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="regular_users_update_period" class="form-label">Змінити час через який будуть
+                        повторюватися checker запити для REGULAR
+                        користувачів (хвилин):</label>
+                    <input type="number" class="form-control form-field" id="regular_users_update_period"
+                           name="regular_users_update_period"
+                           min="1" max="60" value="{{ regular_users_update_period }}">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn">Оновити</button>
+                </div>
+            </form>
+            <div class="note">* Персонально для кожного користувача час через який будуть повторюватися cheker-запити
+                можна оновити на
+                <a style="color: blue; text-decoration: underline;" class="dropdown-item" href="/admin">панелі
+                    адміністратора</a></div>
+
+            <br><br>
+            <form method="post" action="{% url 'change_vip_users_update_period' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="vip_users_update_period" class="form-label">Змінити час через який будуть
+                        повторюватися checker запити для VIP
+                        користувачів (хвилин):</label>
+                    <input type="number" class="form-control form-field" id="vip_users_update_period"
+                           name="vip_users_update_period"
+                           min="1" max="60" value="{{ vip_users_update_period }}">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn">Оновити</button>
+                </div>
+            </form>
+            <div class="note">* Персонально для кожного користувача час через який будуть повторюватися cheker-запити
+                можна оновити на
+                <a style="color: blue; text-decoration: underline;" class="dropdown-item" href="/admin">панелі
+                    адміністратора</a></div>
+
+            <br><br>
+            <form method="post" action="{% url 'uz_ticket_checker_app:stations_update' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary submit-btn">Оновити перелік станцій для сервісу "UZ
+                        tickets Search"
+                    </button>
+
+                </div>
+            </form>
+            <div class="note">* Будьте обережні, оновлення виконуватимуться кілька годин!!!</div>
+        </div>
+    </div>
+{% endblock %}

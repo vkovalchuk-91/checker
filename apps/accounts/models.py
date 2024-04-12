@@ -5,8 +5,9 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.managers import CustomUserManager
-from apps.common.constants import MAX_QUERY_NUMBER_DEFAULT, USER_UPDATE_PERIOD_DEFAULT
+from apps.common.constants import USER_UPDATE_PERIOD_DEFAULT
 from apps.common.models import TimeStampedMixin
+from settings.main import MAX_QUERY_NUMBER_DEFAULT
 
 
 class User(TimeStampedMixin, PermissionsMixin, AbstractBaseUser):

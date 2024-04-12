@@ -2,61 +2,60 @@
 {% load static %}
 
 {% block main %}
-    {% if request.user.is_authenticated %}
-        <div class="container">
-            <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2">Пошук залізничних квитків</h3>
-                <div class="row">
-                    <div class="col-md-3 col-sm-12">
-                        <label for="from_station" class="col-form-label">Звідки виїзд?</label>
-                        <select class="form-select dselect" required id="from_station" name="from_station">
-                            {% for express_3, station_name in stations.items %}
-                                {% if express_3 == 2200001 %}
-                                    <option value="{{ express_3 }}" selected>{{ station_name }}</option>
-                                {% else %}
-                                    <option value="{{ express_3 }}">{{ station_name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+    <div class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h3 class="pb-2">Пошук залізничних квитків</h3>
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    <label for="from_station" class="col-form-label">Звідки виїзд?</label>
+                    <select class="form-select dselect" required id="from_station" name="from_station">
+                        {% for express_3, station_name in stations.items %}
+                            {% if express_3 == 2200001 %}
+                                <option value="{{ express_3 }}" selected>{{ station_name }}</option>
+                            {% else %}
+                                <option value="{{ express_3 }}">{{ station_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <label for="to_station" class="col-form-label">Куди прямуєте?</label>
+                    <select class="form-select dselect" required id="to_station" name="to_station">
+                        {% for express_3, station_name in stations.items %}
+                            {% if express_3 == 2218000 %}
+                                <option value="{{ express_3 }}" selected>{{ station_name }}</option>
+                            {% else %}
+                                <option value="{{ express_3 }}">{{ station_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-auto col-sm-12">
+                    <label for="trip_dates" class="col-form-label">Проміжок дат пошуку потягів</label>
+                    <div class="ms-1 col-12">
+                        <input type="text" id="trip_dates" class="form-control">
                     </div>
-                    <div class="col-md-3 col-sm-12">
-                        <label for="to_station" class="col-form-label">Куди прямуєте?</label>
-                        <select class="form-select dselect" required id="to_station" name="to_station">
-                            {% for express_3, station_name in stations.items %}
-                                {% if express_3 == 2218000 %}
-                                    <option value="{{ express_3 }}" selected>{{ station_name }}</option>
-                                {% else %}
-                                    <option value="{{ express_3 }}">{{ station_name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
+                </div>
+                <div class="col-md-auto col-sm-12">
+                    <label for="search_button" class="col-form-label">&nbsp;</label>
+                    <div class="ms-1 col-12">
+                        <button class="btn btn-primary search-btn" name="search_button">Пошук</button>
                     </div>
-                    <div class="col-md-auto col-sm-12">
-                        <label for="trip_dates" class="col-form-label">Проміжок дат пошуку потягів</label>
-                        <div class="ms-1 col-12">
-                            <input type="text" id="trip_dates" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-auto col-sm-12">
-                        <label for="search_button" class="col-form-label">&nbsp;</label>
-                        <div class="ms-1 col-12">
-                            <button class="btn btn-primary search-btn" name="search_button">Пошук</button>
-                        </div>
-                    </div>
-                    <div class="col-md-auto col-sm-12">
-                        <label for="add_checker_button" class="col-form-label">&nbsp;</label>
-                        <div class="ms-1 col-12">
-                            <button class="btn btn-secondary add-checker-btn"
-                                    onclick="window.location.href='/uz_ticket/checker/'" name="add_checker_button">Список чекерів
-                            </button>
-                        </div>
+                </div>
+                <div class="col-md-auto col-sm-12">
+                    <label for="add_checker_button" class="col-form-label">&nbsp;</label>
+                    <div class="ms-1 col-12">
+                        <button class="btn btn-secondary add-checker-btn"
+                                onclick="window.location.href='/uz_ticket/checker/'" name="add_checker_button">Список
+                            чекерів
+                        </button>
                     </div>
                 </div>
             </div>
-
-            <div id="main_content"></div>
         </div>
-    {% endif %}
+
+        <div id="main_content"></div>
+    </div>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -108,7 +107,7 @@
                             tableHtml += '</div>';
                         } else {
                             tableHtml += '<div class="my-3 p-3 bg-body rounded shadow-sm">';
-                            tableHtml += '<h4 class="pb-2">Квитки за напрямком ' + searchDirectionText + ' <a data-toggle="tooltip" title="Додати checker на вказані дати" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + from_date + '&to_date=' + to_date +'">' + searchDatesText + '</a></h4>';
+                            tableHtml += '<h4 class="pb-2">Квитки за напрямком ' + searchDirectionText + ' <a data-toggle="tooltip" title="Додати checker на вказані дати" href="/uz_ticket/checker/?from_station=' + from_station + '&to_station=' + to_station + '&from_date=' + from_date + '&to_date=' + to_date + '">' + searchDatesText + '</a></h4>';
                             tableHtml += '<table class="table"><thead><tr class="text-center">';
                             tableHtml += '<th class="col-auto text-primary-emphasis border" colspan="2">Дата</th>';
                             tableHtml += '<th class="col-1 text-primary-emphasis border" colspan="2">Час</th>';

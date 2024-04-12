@@ -2,7 +2,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import models
 
 from apps.accounts.models import User
-from apps.common.constants import MAX_QUERY_NUMBER_DEFAULT
+from settings.main import MAX_QUERY_NUMBER_DEFAULT
 
 
 class CheckerTaskManager(models.Manager):

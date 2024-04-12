@@ -32,7 +32,7 @@ SEAT_TYPES = [
 
 WAGON_TYPES = [
     'Сидячий 1-й клас', 'Сидячий 2-й клас', 'Плацкарт Економ', 'Плацкарт Стандартний', 'Плацкарт Покращений',
-    'Купе Економ', 'Купе Стандартний', 'Купе Покращений', 'Люкс Стандартний'
+    'Купе Економ', 'Купе Стандартний', 'Купе Покращений', 'Люкс Економ', 'Люкс Стандартний', 'Люкс Покращений'
 ]
 
 STATIONS = {}
@@ -41,8 +41,6 @@ UKRAINIAN_ALPHABET = ['А', 'Б', 'В', 'Г', 'Ґ', 'Д', 'Е', 'Є', 'Ж', 'З'
                       'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ю', 'Я']
 
 USER_UPDATE_PERIOD_DEFAULT = 0
-TASK_UPDATE_PERIOD_DEFAULT = 5
-MAX_QUERY_NUMBER_DEFAULT = 10
 
 DATA_FORMAT_DEFAULT = "%Y-%m-%d"
 TIME_FORMAT_DEFAULT = "%H:%M"
@@ -55,3 +53,7 @@ RUN_VIP_CHECKER_INTERVAL_DEFAULT = 60 * 5
 RUN_ALL_CHECKER_INTERVAL_DEFAULT = 60 * 1
 TIME_SLEEP_DEFAULT = 2
 LOCK_EXPIRE_DEFAULT = 60 * 10
+
+RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT = int(env('RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT'))  # Seconds
+TICKETS_MATCHES_CASH_EXPIRE_RATIO = int(env('TICKETS_MATCHES_CASH_EXPIRE_RATIO'))  # User_update_period (minutes) x2
+TG_MENUS_EXPIRE_TIME = int(env('TG_MENUS_EXPIRE_TIME'))  # 5 Minutes

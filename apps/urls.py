@@ -19,13 +19,19 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
-from apps.views import index, telegram, feedback, redirect_to_index_page
+from apps.views import index, telegram, feedback, redirect_to_index_page, additional_settings, change_max_query_number, \
+    change_vip_users_update_period, change_regular_users_update_period
 
 urlpatterns = [
     path("", index, name="index"),
     path("", include('apps.tbot_base.urls')),  # include webhook url
     path("telegram/", telegram, name="telegram"),
     path("feedback/", feedback, name="feedback"),
+    path("settings/", additional_settings, name="settings"),
+    path("change_max_query_number/", change_max_query_number, name="change_max_query_number"),
+    path("change_regular_users_update_period/", change_regular_users_update_period,
+         name="change_regular_users_update_period"),
+    path("change_vip_users_update_period/", change_vip_users_update_period, name="change_vip_users_update_period"),
 
     path('i18n/', include('django.conf.urls.i18n')),
 

@@ -121,14 +121,14 @@ def get_wagon_type_details(departure_station_code, arrival_station_code, departu
     return details
 
 
-def get_checker_matches_by_train_number(train_checker_info, current_date, train_number):
+def get_checker_matches_by_train_number(checker_matches_info, current_date, train_number):
     request_body = {
         'language': 'uk',
         'supplier': 'uz_train',
         'transactionId': '3835b4beef23',
         'sourceType': 'FRONTEND',
-        'departureCode': train_checker_info['departure_station'],
-        'arrivalCode': train_checker_info['arrival_station'],
+        'departureCode': checker_matches_info['departure_station'],
+        'arrivalCode': checker_matches_info['arrival_station'],
         'departureDate': current_date.strftime('%Y-%m-%d'),
         'transNumber': train_number,
     }
@@ -155,12 +155,12 @@ def get_checker_matches_by_train_number(train_checker_info, current_date, train_
                     wagon_class_name = f" {wagon_class['name']}"
 
                 is_wagon_type_valid = True
-                if len(train_checker_info['wagon_type']) != 0:
+                if len(checker_matches_info['wagon_type']) != 0:
                     response_wagon_type = f"{wagon_type_name}{wagon_class_name}"
-                    if response_wagon_type not in train_checker_info['wagon_type']:
+                    if response_wagon_type not in checker_matches_info['wagon_type']:
                         is_wagon_type_valid = False
 
-                if is_wagon_type_valid and train_checker_info['seat_type'] is not None:
+                if is_wagon_type_valid and checker_matches_info['seat_type'] is not None:
                     seats = []
                     wagon_types.append({
                         'wagon_type': f"{wagon_type_name}{wagon_class_name}",
@@ -171,8 +171,8 @@ def get_checker_matches_by_train_number(train_checker_info, current_date, train_
                     response_seats = wagon_class['seatsDetails']
 
                     for response_seat, seats_qty in response_seats.items():
-                        is_seats_not_defined = len(train_checker_info['seat_type']) == 0
-                        is_seat_in_search_list = response_seat in train_checker_info['seat_type']
+                        is_seats_not_defined = len(checker_matches_info['seat_type']) == 0
+                        is_seat_in_search_list = response_seat in checker_matches_info['seat_type']
                         if seats_qty != 0 and (is_seats_not_defined or is_seat_in_search_list):
                             seats.append({
                                 'seat_type': response_seat,

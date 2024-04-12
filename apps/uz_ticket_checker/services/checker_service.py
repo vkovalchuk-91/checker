@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from loguru import logger
+from pytz import timezone
 
 from apps.accounts.models import ParameterCategory
 from apps.task_manager.models import CheckerTask
@@ -9,35 +12,65 @@ from apps.uz_ticket_checker.parsers.trains_parser import get_checker_matches_by_
     get_all_train_numbers_by_date
 
 
-def get_checker_matches(train_checker_info):
-    start_date = datetime.strptime(train_checker_info['start_date'], "%Y-%m-%d")
-    end_date = datetime.strptime(train_checker_info['end_date'], "%Y-%m-%d")
+def get_checker_matches(checker_matches_info):
+    start_date = datetime.strptime(checker_matches_info['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(checker_matches_info['end_date'], "%Y-%m-%d")
 
     tickets_matches = []
     current_date = start_date
     while current_date <= end_date:
-        if len(train_checker_info['train_number']) == 0:
+        if len(checker_matches_info['train_number']) == 0 or checker_matches_info['train_number'] == ['']:
             train_numbers = get_all_train_numbers_by_date(
-                train_checker_info['departure_station'],
-                train_checker_info['arrival_station'],
+                checker_matches_info['departure_station'],
+                checker_matches_info['arrival_station'],
                 current_date.strftime("%Y-%m-%d")
             )
             for train_number in train_numbers:
-                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+                tickets_matches += get_checker_matches_by_train_number(checker_matches_info, current_date, train_number)
         else:
-            for train_number in train_checker_info['train_number']:
-                tickets_matches += get_checker_matches_by_train_number(train_checker_info, current_date, train_number)
+            for train_number in checker_matches_info['train_number']:
+                tickets_matches += get_checker_matches_by_train_number(checker_matches_info, current_date, train_number)
         current_date += timedelta(days=1)
     return tickets_matches
 
 
+def get_checker_matches_info_dict(ticket_search_parameter: TicketSearchParameter):
+    checker_matches_info = {
+        'departure_station': str(ticket_search_parameter.departure_station.express_3_id),
+        'arrival_station': str(ticket_search_parameter.arrival_station.express_3_id),
+        'start_date': ticket_search_parameter.start_date.strftime("%Y-%m-%d"),
+        'end_date': ticket_search_parameter.end_date.strftime("%Y-%m-%d"),
+        'train_number': list(
+            str(train_number.train_number) for train_number in ticket_search_parameter.train_number.all()),
+        'wagon_type': list(
+            str(wagon_type.wagon_type) for wagon_type in ticket_search_parameter.wagon_type.all()),
+        'seat_type': list(
+            str(seat_type.seat_type) for seat_type in ticket_search_parameter.seat_type.all()),
+    }
+    return checker_matches_info
+
+
+def get_direction_info_str(ticket_search_parameter: TicketSearchParameter):
+    from_station_name = ticket_search_parameter.departure_station.name
+    to_station_name = ticket_search_parameter.arrival_station.name
+    start_date = ticket_search_parameter.start_date.strftime("%Y-%m-%d")
+    end_date = ticket_search_parameter.end_date.strftime("%Y-%m-%d")
+
+    direction_info_str = f"{from_station_name} - {to_station_name}"
+    if start_date == end_date:
+        direction_info_str += f" ({start_date})"
+    else:
+        direction_info_str += f" ({start_date}  -  {end_date})"
+    return direction_info_str
+
+
 def get_checkers_parameters_list_for_frontend(user):
     parameters = []
-    user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(
+    user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(is_delete=False).filter(
             task_param__param_type__param_category_name="UZ Ticket Checker").all()
     for item in user_checker_tasks_queryset:
         checker_parameter = {}
-        parameter_id = item.task_params.pk
+        parameter_id = item.task_param.pk
         ticket_search_parameter_obj = TicketSearchParameter.objects.get(pk=parameter_id)
 
         checker_parameter['departure_station'] = ticket_search_parameter_obj.departure_station
@@ -53,7 +86,7 @@ def get_checkers_parameters_list_for_frontend(user):
         checker_parameter['seat_types'] = (
             ', '.join(str(seat_type.seat_type_name) for seat_type in ticket_search_parameter_obj.seat_type.all()))
         checker_parameter['update_period'] = item.update_period
-        checker_parameter['last_run_at'] = item.last_run_at
+        checker_parameter['last_run_at'] = item.updated_at
         checker_parameter['is_active'] = item.is_active
         checker_parameter['checker_id'] = item.pk
         parameters.append(checker_parameter)
@@ -144,14 +177,23 @@ def add_new_checker(
             existing_end_date, existing_start_date, param_category,
             seat_types_obj, train_numbers_obj, wagon_types_obj)
 
-    existing_task = CheckerTask.objects.filter(user=user.pk).filter(task_params=ticket_search_parameter_obj).first()
+    existing_task = CheckerTask.objects.filter(user=user.pk).filter(task_param=ticket_search_parameter_obj).first()
     if existing_task is None:
+        if user.personal_setting is not None and user.personal_setting.update_period != 0:
+            update_period = user.personal_setting.update_period
+        elif user.personal_setting is not None and user.personal_setting.is_vip:
+            update_period = settings.VIP_USER_TASK_UPDATE_PERIOD_DEFAULT
+        else:
+            update_period = settings.TASK_UPDATE_PERIOD_DEFAULT
+
         CheckerTask.objects.create(
-            is_active=True,
             user=user,
-            update_period=5,
-            task_params=ticket_search_parameter_obj
+            update_period=update_period,
+            task_param=ticket_search_parameter_obj
         )
+    else:
+        existing_task.is_delete = False
+        existing_task.save()
 
 
 def create_new_ticket_search_parameter_obj(existing_arrival_station, existing_departure_station, existing_end_date,
@@ -168,4 +210,5 @@ def create_new_ticket_search_parameter_obj(existing_arrival_station, existing_de
     ticket_search_parameter_obj.train_number.set(train_numbers_obj)
     ticket_search_parameter_obj.wagon_type.set(wagon_types_obj)
     ticket_search_parameter_obj.seat_type.set(seat_types_obj)
+    ticket_search_parameter_obj.save()
     return ticket_search_parameter_obj

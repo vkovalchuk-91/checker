@@ -18,9 +18,11 @@ def send_feedback_bot_message_to_admins(**kwargs):
     subject = kwargs.get('subject')
     description = kwargs.get('description')
     logger.debug(description)
-    admins = User.objects.filter(is_superuser=True).exclude(telegram_user_id=0).all()
+    admins = User.objects.filter(is_superuser=True, personal_setting__isnull=False).exclude(
+        personal_setting__telegram_user_id=0).all()
+    logger.debug(admins)
     for admin in admins:
-        bot.send_message(admin.telegram_user_id, f"Новий відгук на сервісі Checker!\n"
-                                                 f"Від кого: {contact_info}\n"
-                                                 f"Тема: {subject}\n"
-                                                 f"Опис: {description}")
+        bot.send_message(admin.personal_setting.telegram_user_id, f"Новий відгук на сервісі Checker!\n"
+                                                                  f"Від кого: {contact_info}\n"
+                                                                  f"Тема: {subject}\n"
+                                                                  f"Опис: {description}")

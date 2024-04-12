@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from apps.celery import celery_app as app
 from apps.common.constants import LOCK_EXPIRE_DEFAULT, RUN_ALL_CHECKER_INTERVAL_DEFAULT, \
-    RUN_VIP_CHECKER_INTERVAL_DEFAULT
+    RUN_VIP_CHECKER_INTERVAL_DEFAULT, RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT
 from apps.common.constants import TIME_SLEEP_DEFAULT
 from apps.hotline_ua.tasks import run_checkers as hotline_ua_checkers
 from apps.task_manager.models import CheckerTask
@@ -27,6 +27,10 @@ app.conf.beat_schedule = {
         'task': 'run_with_interval_vip_checkers',
         "schedule": timedelta(seconds=RUN_VIP_CHECKER_INTERVAL_DEFAULT),
         'options': {'expires': TIME_SLEEP_DEFAULT},
+    },
+    'run_uz_ticket_task_with_interval': {
+        'task': 'run_with_interval_uz_ticket_checkers',
+        "schedule": timedelta(seconds=RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT),
     },
 }
 

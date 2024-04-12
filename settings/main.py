@@ -107,6 +107,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.AllowAny',
     ],
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -158,3 +159,14 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 BOT_HANDLERS = [
     'apps.tbot.handlers.check_registration',
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'{REDIS_URL}/1',
+    }
+}
+
+MAX_QUERY_NUMBER_DEFAULT = int(env('MAX_QUERY_NUMBER_DEFAULT'))
+TASK_UPDATE_PERIOD_DEFAULT = int(env('TASK_UPDATE_PERIOD_DEFAULT'))
+VIP_USER_TASK_UPDATE_PERIOD_DEFAULT = int(env('VIP_USER_TASK_UPDATE_PERIOD_DEFAULT'))

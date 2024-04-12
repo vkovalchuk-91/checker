@@ -3,9 +3,9 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User, BaseParameter
 from apps.common import TimeStampedMixin
-from apps.common.constants import TASK_UPDATE_PERIOD_DEFAULT
 from apps.common.models import ActiveStateMixin
 from apps.task_manager.managers import CheckerTaskManager
+from settings.main import TASK_UPDATE_PERIOD_DEFAULT, VIP_USER_TASK_UPDATE_PERIOD_DEFAULT
 
 
 class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):
@@ -60,6 +60,7 @@ class SessionTaskManager:
 
         if user.is_superuser:
             counter['all_count'] = CheckerTask.objects.filter(is_delete=False).count()
+        self.session.modified = True
 
     def clear(self):
         del self.session[self.CLIENT_DATA_KEY][self.CLIENT_COUNTER_KEY]

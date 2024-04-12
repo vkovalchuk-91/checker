@@ -6,6 +6,7 @@ from django.shortcuts import render
 from loguru import logger
 
 from apps.common.constants import STATIONS
+from apps.task_manager.models import SessionTaskManager
 from apps.uz_ticket_checker.tasks import run_tickets_search_task
 
 
@@ -13,7 +14,7 @@ def search_ticket_view(request):
     context = {}
     if request.method == 'GET':
         context['stations'] = STATIONS
-
+    SessionTaskManager(request)
     return render(request, 'uz_ticket_checker/ticket_search_page.html', context)
 
 
