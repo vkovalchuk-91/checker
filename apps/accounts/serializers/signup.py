@@ -45,8 +45,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, email):
-        # email_pattern = r"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-        email_pattern = r"^[a-zA-Z0-9._%+-]{2,64}@[a-zA-Z0-9.-]{4,255}\.[a-zA-Z]{2,}$"
+        email_pattern = r"^[a-zA-Z0-9._%+-]{2,64}@[a-zA-Z0-9.-]{4,255}$"
         if not re.match(email_pattern, email, re.IGNORECASE):
             raise serializers.ValidationError(
                 {'email': _(f'Not valid email {email}.')}
