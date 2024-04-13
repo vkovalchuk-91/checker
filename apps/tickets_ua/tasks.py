@@ -108,7 +108,7 @@ def get_result_message(search_parameter: BaseSearchParameter, trains, buses):
     {from_station}-{to_station} at {date_at} available 
         by trains: {len(trains)} ticket(s) 
         by buses: {len(buses)} ticket(s) 
-    check in ticket.ua
+    check in tickets.ua
     """
     return msg
 
