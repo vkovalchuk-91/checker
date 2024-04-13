@@ -126,9 +126,11 @@ $(document).ready(function () {
                     },
                     () => {
                         target.disabled = true;
+                        $('#load-progressbar').removeAttr("hidden");
                     },
                     () => {
                         target.disabled = false;
+                        $('#load-progressbar').attr("hidden", "hidden");
                     },
                 )
             }

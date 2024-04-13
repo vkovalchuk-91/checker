@@ -6,20 +6,20 @@
     {% if request.user.is_authenticated %}
         <div class="container">
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2">{% translate "Generated new checkers:" %}</h3>
+                <h3 class="pb-2">{% translate "Generated new checkers" %}:</h3>
                 <div class="bg-body rounded shadow-sm py-3">
                     <form class="row g-4 p-3" id="createCheckerForm">
                         <div class="col-md-6 col-sm-12">
                             <div class="col-auto">
                                 <label for="search-from" class="form-label ms-2">{% translate "from" %}</label>
                                 <input type="text" class="form-control" name="from_station" id="search-from"
-                                       placeholder="e.g. Київ...">
+                                       placeholder="{% translate "e.g." %} Київ...">
                                 <ul id="search-from-results" class="position-absolute text-bg-secondary pe-2"></ul>
                             </div>
                             <div class="col-auto py-2">
                                 <label for="search-to" class="form-label ms-2">{% translate "to" %}</label>
                                 <input type="text" class="form-control" name="to_station" id="search-to"
-                                       placeholder="e.g. Львів...">
+                                       placeholder="{% translate "e.g." %} Львів...">
                                 <ul id="search-to-results" class="position-absolute text-bg-secondary pe-2"></ul>
                             </div>
                             <div class="col-auto">
@@ -49,25 +49,30 @@
                             </div>
                         </div>
                     </form>
+                    <div class="px-0 progress " role="progressbar" aria-label="Animated load"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                        <div id="load-progressbar" class="progress-bar progress-bar-striped progress-bar-animated"
+                             hidden="hidden" style="width: 100%"></div>
+                    </div>
                 </div>
             </div>
 
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2">Yours checkers:</h3>
+                <h3 class="pb-2">{% translate "Yours checkers" %}:</h3>
                 <div class="bg-body rounded shadow-sm">
                     <table class="table">
                         <thead>
                         <tr class="text-center">
-                            <th class="col-auto text-primary-emphasis">from</th>
-                            <th class="col-auto text-primary-emphasis">to</th>
-                            <th class="col-auto text-primary-emphasis">date</th>
-                            <th class="col-1 text-primary-emphasis">time</th>
-                            <th class="col-1 text-primary-emphasis">active</th>
-                            <th class="col-auto text-primary-emphasis">checked</th>
+                            <th class="col-auto text-primary-emphasis">{% translate "from" %}</th>
+                            <th class="col-auto text-primary-emphasis">{% translate "to" %}</th>
+                            <th class="col-auto text-primary-emphasis">{% translate "date" %}</th>
+                            <th class="col-1 text-primary-emphasis">{% translate "time" %}</th>
+                            <th class="col-1 text-primary-emphasis">{% translate "active" %}</th>
+                            <th class="col-auto text-primary-emphasis">{% translate "checked" %}</th>
                             <th class="col-1"></th>
                         </tr>
                         </thead>
-                    
+
                         <tbody class="text-center" id="checkersBodyTable">
                         {% if checkers %}
                             {% for checker in checkers %}
@@ -92,10 +97,10 @@
 
                                             {% if checker.is_available %}
                                                 <i class="p-2 text-success fs-5 bi bi-check2-all"
-                                                   title="available"></i>
+                                                   title="{% translate "available" %}"></i>
                                             {% else %}
                                                 <i class="p-2 text-danger bi bi-ban"
-                                                   title="not available"></i>
+                                                   title="{% translate "not" %} {% translate "available" %}"></i>
                                             {% endif %}
                                         </div>
                                     </td>

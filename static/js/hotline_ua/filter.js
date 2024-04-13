@@ -64,10 +64,12 @@ function update_filter() {
             $selectBase.disabled = true;
             $selectBrand.disabled = true;
             $selectShop.disabled = true;
+            $('#load-progressbar').removeAttr("hidden");
         },
         () => {
             // $selectBrand.disabled = false;
             // $selectShop.disabled = false;
+            $('#load-progressbar').attr("hidden", "hidden");
         },
     )
 }

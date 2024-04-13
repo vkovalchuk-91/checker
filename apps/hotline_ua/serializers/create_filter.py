@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
 
 from apps.common.constants import TITLE_REGEX_DEFAULT
@@ -7,6 +8,21 @@ from apps.hotline_ua.serializers.base_category import CategorySerializer
 from apps.hotline_ua.tasks import scraping_categories_filters
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Request Value',
+            value={
+                "category": {
+                    "title": "",
+                    "path": "string"
+                }
+            },
+            request_only=True,
+            response_only=False,
+        ),
+    ]
+)
 class FilterCreateSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     code = serializers.IntegerField(required=False, allow_null=True)

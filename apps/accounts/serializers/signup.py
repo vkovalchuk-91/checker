@@ -8,8 +8,24 @@ from apps.accounts.models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(required=True, min_length=3, )
-    confirm = serializers.CharField(required=False, min_length=3, )
+    first_name = serializers.RegexField(
+        regex=r'^[a-zA-Zа-яА-ЯіїІЇєЄ\s\'-]{2,30}$',
+        required=True,
+        error_messages={
+            'invalid': _(
+                'Valid length is from 2 to 30 characters. Only letters of the alphabet (Latin or Cyrillic), spaces, hyphens and apostrophes are allowed.')
+        }
+    )
+    last_name = serializers.RegexField(
+        regex=r'^[a-zA-Zа-яА-ЯіїІЇєЄ\s\'-]{2,30}$',
+        required=True,
+        error_messages={
+            'invalid': _(
+                'Valid length is from 2 to 30 characters. Only letters of the alphabet (Latin or Cyrillic), spaces, hyphens and apostrophes are allowed.')
+        }
+    )
+    password = serializers.CharField(required=True, min_length=8, )
+    confirm = serializers.CharField(required=False, min_length=8, )
 
     class Meta:
         model = User = get_user_model()
@@ -29,7 +45,8 @@ class SignUpSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, email):
-        email_pattern = r"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        # email_pattern = r"^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        email_pattern = r"^[a-zA-Z0-9._%+-]{2,64}@[a-zA-Z0-9.-]{4,255}\.[a-zA-Z]{2,}$"
         if not re.match(email_pattern, email, re.IGNORECASE):
             raise serializers.ValidationError(
                 {'email': _(f'Not valid email {email}.')}

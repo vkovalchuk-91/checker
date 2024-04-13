@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import sleep
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -23,6 +24,8 @@ def send_email_confirmation(user_id: int):
         settings.FRONTEND_HOST,
         settings.FRONTEND_CONFIRM_EMAIL_PATH.format(uid=uid, token=token)
     )
+
+    sleep(1)
     send_email(
         subject='Confirm email',
         body=f'Pleas click on {link} below to confirm your email',

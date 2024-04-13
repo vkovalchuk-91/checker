@@ -6,14 +6,14 @@
     {% if request.user.is_authenticated %}
         <div class="container">
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2">Generated new checkers:</h3>
+                <h3 class="pb-2">{% translate "Generated new checkers" %}:</h3>
                 <div class="bg-body rounded shadow-sm py-3">
                     <form class="row g-4 p-3" id="createCheckerForm">
                         <div class="col-md-6 col-sm-12">
                             <div class="col-auto">
                                 <label for="search-category" class="form-label ms-2">{% translate "Category" %}</label>
                                 <input type="text" class="form-control" name="category" id="search-category"
-                                       placeholder="e.g. Холодильники...">
+                                       data-path="" placeholder="{% translate "e.g." %} Холодильники...">
                                 <ul id="search-category-results"
                                     class="position-absolute text-bg-secondary pe-2 z-3"></ul>
                             </div>
@@ -36,7 +36,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title text-secondary ">{% translate "Search" %}</h5>
                                     <input type="text" class="form-control" name="text" id="search-text"
-                                           placeholder="{% translate "text ..." %}" aria-label="">
+                                           placeholder="{% translate "text" %}..." aria-label="">
                                 </div>
                                 <div class="px-3"
                                      title="{% translate "e.g. 50 000 and more" %}">
@@ -53,6 +53,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="px-0 progress " role="progressbar" aria-label="Animated load"
+                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                            <div id="load-progressbar" class="progress-bar progress-bar-striped progress-bar-animated"
+                                 hidden="hidden" style="width: 100%"></div>
+                        </div>
                         <div class=" col-xs-12 col-sm-12">
                             <div class="card h-100">
                                 <div class="card-body">
@@ -66,7 +71,7 @@
                                         </div>
                                         <div class="pt-2">
                                             <label for="dselect-shop"
-                                                   class="form-label ps-2 text-secondary">{% translate "shop" %}shop</label>
+                                                   class="form-label ps-2 text-secondary">{% translate "shop" %}</label>
                                             <select class="form-select" name="shop" id="dselect-shop">
                                             </select>
                                         </div>
@@ -79,7 +84,7 @@
             </div>
 
             <div class="my-3 p-3 bg-body rounded shadow-sm">
-                <h3 class="pb-2"> {% translate "Yours checkers:" %}</h3>
+                <h3 class="pb-2"> {% translate "Yours checkers" %}:</h3>
                 <div class="bg-body rounded shadow-sm">
                     <table class="table">
                         <thead>

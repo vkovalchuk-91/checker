@@ -63,9 +63,9 @@ def run_tickets_search_task(**kwargs):
             if not search_direction_text:
                 search_direction_text = current_search_direction
                 if start_date == end_date:
-                    search_dates_text += f" ({start_date.strftime("%Y-%m-%d")})"
+                    search_dates_text += f" ({start_date.strftime('%Y-%m-%d')})"
                 else:
-                    search_dates_text += f" ({start_date.strftime("%Y-%m-%d")} - {end_date.strftime("%Y-%m-%d")})"
+                    search_dates_text += f" ({start_date.strftime('%Y-%m-%d')} - {end_date.strftime('%Y-%m-%d')})"
         current_date += timedelta(days=1)
 
     if dates_result:

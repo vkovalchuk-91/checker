@@ -148,9 +148,9 @@
             $('.nav-link').each(function () {
                 const menuItemUrl = $(this).attr('href');
                 if (currentPageUrl.includes(menuItemUrl)) {
-                    $(this).addClass('text-primary-emphasis active');
+                    $(this).addClass('text-primary active');
                 } else {
-                    $(this).removeClass('text-primary-emphasis')
+                    $(this).removeClass('text-primary')
                 }
             });
         });

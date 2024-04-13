@@ -18,4 +18,11 @@ function checker_count_update(count) {
     let new_count = parseInt($checkerCount.text());
     new_count += count;
     $checkerCount.text(new_count);
+
+    const $allCount = $("#all-checker-count");
+    if ($allCount.length > 0) {
+        new_count = parseInt($allCount.text());
+        new_count += count;
+        $allCount.text(new_count);
+    }
 }

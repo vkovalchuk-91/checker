@@ -1,0 +1,544 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-09 13:52+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+#: .\apps\accounts\models.py:19
+msgid "email address"
+msgstr ""
+
+#: .\apps\accounts\models.py:20
+msgid "first name"
+msgstr ""
+
+#: .\apps\accounts\models.py:21
+msgid "last name"
+msgstr ""
+
+#: .\apps\accounts\models.py:23
+msgid "staff status"
+msgstr ""
+
+#: .\apps\accounts\models.py:25
+msgid "Designates whether the user can log into this admin site."
+msgstr ""
+
+#: .\apps\accounts\models.py:28 .\apps\common\models.py:15
+#: .\apps\hotline_ua\models.py:21 .\templates\hotline_ua\index.html:94
+#: .\templates\tickets_ua\index.html:70
+msgid "active"
+msgstr "активний"
+
+#: .\apps\accounts\models.py:31
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\apps\accounts\models.py:35
+msgid "date joined"
+msgstr ""
+
+#: .\apps\accounts\models.py:36
+msgid "email verified"
+msgstr ""
+
+#: .\apps\accounts\models.py:50
+msgid "user"
+msgstr ""
+
+#: .\apps\accounts\models.py:51
+msgid "users"
+msgstr ""
+
+#: .\apps\accounts\models.py:66
+msgid "telegram user ID"
+msgstr ""
+
+#: .\apps\accounts\models.py:67
+msgid "max query number"
+msgstr ""
+
+#: .\apps\accounts\models.py:68 .\apps\task_manager\models.py:14
+msgid "update period (minutes)"
+msgstr ""
+
+#: .\apps\accounts\models.py:69
+msgid "vip"
+msgstr ""
+
+#: .\apps\accounts\models.py:72
+msgid "personal_setting"
+msgstr ""
+
+#: .\apps\accounts\models.py:73
+msgid "personal_settings"
+msgstr ""
+
+#: .\apps\accounts\models.py:81
+msgid "parameter category name"
+msgstr ""
+
+#: .\apps\accounts\models.py:94
+msgid "parameter type name"
+msgstr ""
+
+#: .\apps\accounts\serializers\confirm_email_complete.py:23
+msgid "Invalid uid"
+msgstr "Недійсний ідентифікатор"
+
+#: .\apps\accounts\serializers\confirm_email_complete.py:29
+msgid "Email is already verified"
+msgstr "Email вже підтверджено"
+
+#: .\apps\accounts\serializers\confirm_email_complete.py:35
+msgid "Invalid token"
+msgstr "Недійсний токен"
+
+#: .\apps\accounts\serializers\signup.py:16
+#: .\apps\accounts\serializers\signup.py:24
+msgid ""
+"Valid length is from 2 to 30 characters. Only letters of the alphabet (Latin "
+"or Cyrillic), spaces, hyphens and apostrophes are allowed."
+msgstr ""
+"Допустима довжина від 2 до 30 символів. Дозволені лише літери алфавіту "
+"(латиниця або кирилиця), пробіли, дефіси та апострофи."
+
+#: .\apps\accounts\serializers\signup.py:52
+#, python-brace-format
+msgid "Not valid email {email}."
+msgstr "Недійсний email {email}."
+
+#: .\apps\accounts\serializers\signup.py:57
+#, python-brace-format
+msgid "User with email {email} exist."
+msgstr "Користувач з email {email} існує у системі."
+
+#: .\apps\accounts\serializers\signup.py:65
+msgid "Password and confirm not equals."
+msgstr "Паролі не співпадають."
+
+#: .\apps\accounts\views\api\confirm_email_complete.py:22
+msgid "Confirm email complete successfully."
+msgstr "Підтвердження email здійснено успішно."
+
+#: .\apps\common\models.py:7
+msgid "created date"
+msgstr ""
+
+#: .\apps\common\models.py:8
+msgid "updated date"
+msgstr ""
+
+#: .\apps\common\models.py:22 .\templates\hotline_ua\index.html:144
+#: .\templates\tickets_ua\index.html:100 .\templates\tickets_ua\index.html:103
+msgid "available"
+msgstr "доступний"
+
+#: .\apps\common\serializer\base.py:26
+#, python-brace-format
+msgid "Invalid identification parameters by id:{id}."
+msgstr "Неможливо визначити параметр по id:{id}."
+
+#: .\apps\common\serializer\base.py:33
+#, fuzzy
+#| msgid "Invalid identification user."
+msgid "Invalid identification base parameter."
+msgstr "Неможливо ідентифікувати користувача."
+
+#: .\apps\common\serializer\base.py:48
+msgid "Invalid identification checker task."
+msgstr "Неможливо визначити завдання на перевірку."
+
+#: .\apps\common\serializer\base.py:57
+msgid "Invalid identification user or permissions."
+msgstr "Неможливо ідентифікувати користувача або доступи."
+
+#: .\apps\common\views\base.py:25
+msgid "Invalid access. Please log in."
+msgstr "Доступ заборонено. Потрібна авторизація."
+
+#: .\apps\common\views\base.py:29
+msgid "User blocked. You can logout."
+msgstr "Доступ заборонено.Змініть користувача."
+
+#: .\apps\hotline_ua\models.py:14 .\apps\hotline_ua\models.py:53
+#: .\apps\tickets_ua\models.py:12
+msgid "code"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:15 .\apps\hotline_ua\models.py:54
+#: .\apps\tickets_ua\models.py:13
+msgid "title"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:16
+msgid "url"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:18
+msgid "token"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:20
+msgid "link"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:36 .\templates\hotline_ua\index.html:92
+msgid "category"
+msgstr "категорія"
+
+#: .\apps\hotline_ua\models.py:37
+msgid "categories"
+msgstr "категорії"
+
+#: .\apps\hotline_ua\models.py:57
+msgid "type"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:74
+msgid "filter"
+msgstr "фільтер"
+
+#: .\apps\hotline_ua\models.py:75 .\templates\hotline_ua\index.html:93
+msgid "filters"
+msgstr "фільтри"
+
+#: .\apps\hotline_ua\models.py:101
+msgid "search_parameter"
+msgstr ""
+
+#: .\apps\hotline_ua\models.py:102 .\apps\tickets_ua\models.py:49
+msgid "search parameters"
+msgstr ""
+
+#: .\apps\hotline_ua\serializers\base_category.py:13
+#: .\apps\hotline_ua\serializers\base_filter_.py:15
+#: .\apps\hotline_ua\serializers\create_category.py:13
+msgid "Invalid title."
+msgstr "Недійсний заголовок."
+
+#: .\apps\hotline_ua\serializers\base_category.py:61
+#: .\apps\hotline_ua\serializers\base_category.py:66
+#: .\apps\hotline_ua\serializers\base_filter_.py:66
+#: .\apps\hotline_ua\serializers\base_filter_.py:91
+#: .\apps\hotline_ua\serializers\base_filter_.py:116
+msgid "Invalid category."
+msgstr "Недійсна категорія."
+
+#: .\apps\hotline_ua\serializers\base_filter_.py:38
+msgid "Invalid type name."
+msgstr "Недійсна назва типу."
+
+#: .\apps\hotline_ua\serializers\base_filter_.py:75
+msgid "Invalid code."
+msgstr "Недійсний код."
+
+#: .\apps\hotline_ua\serializers\base_filter_.py:102
+msgid "Invalid link filter:{attrs[\"title\"]}."
+msgstr "Недійсне поле link фільтру:{attrs[\"title\"]}."
+
+#: .\apps\hotline_ua\serializers\base_filter_.py:128
+msgid "Invalid filter:{attrs[\"title\"]}."
+msgstr "Недійсне фільтр:{attrs[\"title\"]}."
+
+#: .\apps\hotline_ua\serializers\create_checker.py:32
+msgid "Invalid identification user."
+msgstr "Неможливо ідентифікувати користувача."
+
+#: .\apps\hotline_ua\serializers\create_checker.py:38
+msgid "Invalid empty search parameter(s)."
+msgstr "Не задано необхідіні параметри пошуку."
+
+#: .\apps\hotline_ua\serializers\create_checker.py:48
+#: .\apps\tickets_ua\serializers\create_checker.py:74
+#, python-brace-format
+msgid "Cannot create {new_filters_count} search task(s)."
+msgstr "Неможливо створити необхідну кількість ({new_filters_count}) завдань."
+
+#: .\apps\task_manager\models.py:13
+msgid "delete"
+msgstr ""
+
+#: .\apps\task_manager\models.py:21
+msgid "checker task parameters"
+msgstr ""
+
+#: .\apps\task_manager\models.py:32
+msgid "checker_task"
+msgstr ""
+
+#: .\apps\task_manager\models.py:33
+msgid "checker_tasks"
+msgstr ""
+
+#: .\apps\tickets_ua\models.py:14
+msgid "bus name"
+msgstr ""
+
+#: .\apps\tickets_ua\models.py:44
+msgid "at date"
+msgstr ""
+
+#: .\apps\tickets_ua\models.py:45
+msgid "at time"
+msgstr ""
+
+#: .\apps\tickets_ua\models.py:48
+msgid "search_parameters"
+msgstr ""
+
+#: .\apps\tickets_ua\serializers\create_checker.py:20
+#, python-brace-format
+msgid "Period in format \"{DATA_FORMAT_DEFAULT} - {DATA_FORMAT_DEFAULT}\"."
+msgstr "Період у форматі \"{DATA_FORMAT_DEFAULT} - {DATA_FORMAT_DEFAULT}\"."
+
+#: .\apps\tickets_ua\serializers\create_checker.py:37
+msgid "Invalid user."
+msgstr "Недійсний користувач."
+
+#: .\apps\tickets_ua\serializers\create_checker.py:42
+msgid "Stations must be different."
+msgstr "Станції повинні бути різними."
+
+#: .\apps\tickets_ua\serializers\create_checker.py:62
+#, python-brace-format
+msgid "Invalid date in format: {DATA_FORMAT_DEFAULT} (or range)."
+msgstr "Недійсна дата у форматі: {DATA_FORMAT_DEFAULT} (або проміжок дат)."
+
+#: .\apps\tickets_ua\serializers\create_checker.py:68
+msgid "Dates cannot be in past."
+msgstr "Дити не можуть бути у минулому."
+
+#: .\apps\tickets_ua\serializers\create_station.py:29
+msgid "Invalid name."
+msgstr "Недійсне ім'я."
+
+#: .\apps\tickets_ua\serializers\station.py:38
+#: .\apps\tickets_ua\serializers\station.py:46
+msgid "Invalid station."
+msgstr "Станцію не знайдено."
+
+#: .\apps\views.py:14
+msgid "Invalid access. User is blocked. Please try another."
+msgstr "Немає доступу. Користувач заблокований. Спробуйте іншого користувача."
+
+#: .\templates\fragments\color-modes.html:17
+msgid "Light"
+msgstr "Світла"
+
+#: .\templates\fragments\color-modes.html:29
+msgid "Dark"
+msgstr "Темна"
+
+#: .\templates\fragments\color-modes.html:41
+msgid "Auto"
+msgstr "Авто"
+
+#: .\templates\fragments\footer.html:6 .\templates\fragments\navigation.html:4
+msgid "Main"
+msgstr "Головна"
+
+#: .\templates\fragments\footer.html:7
+msgid "schema "
+msgstr "схема"
+
+#: .\templates\fragments\footer.html:8
+msgid "About"
+msgstr "Про"
+
+#: .\templates\fragments\navigation.html:31
+msgid "Administrator"
+msgstr "Адміністратор"
+
+#: .\templates\fragments\navigation.html:49
+msgid "Logout"
+msgstr "Вийти"
+
+#: .\templates\fragments\navigation.html:55
+msgid "Login"
+msgstr "Увійти"
+
+#: .\templates\fragments\navigation.html:59
+#: .\templates\registration\signup.html:59
+msgid "Signup"
+msgstr "Зареєструватись"
+
+#: .\templates\fragments\navigation.html:70
+msgid "user checkers count"
+msgstr "кількість завдань коритувача"
+
+#: .\templates\fragments\navigation.html:76
+msgid "max user checkers count"
+msgstr "максимальна кількість завдань коритувача"
+
+#: .\templates\fragments\navigation.html:81
+msgid "max"
+msgstr "макс."
+
+#: .\templates\fragments\navigation.html:88
+msgid "all checkers count"
+msgstr "кількість усіх завдань"
+
+#: .\templates\hotline_ua\index.html:9 .\templates\tickets_ua\index.html:9
+msgid "Generated new checkers"
+msgstr "Сворити нові відстеження"
+
+#: .\templates\hotline_ua\index.html:14
+msgid "Category"
+msgstr "Категорія"
+
+#: .\templates\hotline_ua\index.html:16 .\templates\tickets_ua\index.html:16
+#: .\templates\tickets_ua\index.html:22
+msgid "e.g."
+msgstr "наприклад"
+
+#: .\templates\hotline_ua\index.html:23
+msgid "Base filters"
+msgstr "Основні фільтри"
+
+#: .\templates\hotline_ua\index.html:31 .\templates\tickets_ua\index.html:27
+msgid "Generated"
+msgstr "Створити"
+
+#: .\templates\hotline_ua\index.html:37
+msgid "Search"
+msgstr "Пошук"
+
+#: .\templates\hotline_ua\index.html:39
+msgid "text"
+msgstr "текст"
+
+#: .\templates\hotline_ua\index.html:42
+msgid "e.g. 50 000 and more"
+msgstr "від 50 000 і більше"
+
+#: .\templates\hotline_ua\index.html:44
+msgid "Price range"
+msgstr "Діапазон цін"
+
+#: .\templates\hotline_ua\index.html:65
+msgid "Others filters"
+msgstr "Інші фільтри"
+
+#: .\templates\hotline_ua\index.html:68
+msgid "brand"
+msgstr "бренд"
+
+#: .\templates\hotline_ua\index.html:74
+msgid "shop"
+msgstr "магазин"
+
+#: .\templates\hotline_ua\index.html:87 .\templates\tickets_ua\index.html:61
+msgid "Yours checkers"
+msgstr "Ваші відстеження"
+
+#: .\templates\hotline_ua\index.html:95 .\templates\tickets_ua\index.html:71
+msgid "checked"
+msgstr "перевірено"
+
+#: .\templates\hotline_ua\index.html:111
+msgid "search product title..."
+msgstr "пошук за текстом..."
+
+#: .\templates\hotline_ua\index.html:138
+msgid "last checked"
+msgstr "остання перевірка"
+
+#: .\templates\hotline_ua\index.html:147
+msgid "not available"
+msgstr "не знайдено"
+
+#: .\templates\hotline_ua\index.html:153
+msgid "trash"
+msgstr "видалити"
+
+#: .\templates\registration\login.html:9
+msgid "Exception"
+msgstr "Помилка"
+
+#: .\templates\registration\login.html:25
+#, fuzzy
+#| msgid "Log in now"
+msgid "Log in"
+msgstr "Увійти"
+
+#: .\templates\registration\login.html:35
+msgid "Email"
+msgstr ""
+
+#: .\templates\registration\login.html:42
+#: .\templates\registration\signup.html:46
+#: .\templates\registration\signup.html:53
+msgid "Password"
+msgstr "Пароль"
+
+#: .\templates\registration\login.html:48
+msgid "Log in now"
+msgstr "Увійти зараз"
+
+#: .\templates\registration\login.html:59
+msgid "or login with"
+msgstr "або увійти за допомогою"
+
+#: .\templates\registration\signup.html:15
+msgid "Registration"
+msgstr "Реєстрація"
+
+#: .\templates\registration\signup.html:25
+msgid "First name"
+msgstr "Ім'я"
+
+#: .\templates\registration\signup.html:32
+msgid "Last name"
+msgstr "Призвіще"
+
+#: .\templates\registration\signup.html:70
+msgid "or signup with"
+msgstr "або зареєструватися за допомогою"
+
+#: .\templates\tickets_ua\index.html:14 .\templates\tickets_ua\index.html:66
+msgid "from"
+msgstr "від"
+
+#: .\templates\tickets_ua\index.html:20 .\templates\tickets_ua\index.html:67
+msgid "to"
+msgstr "до"
+
+#: .\templates\tickets_ua\index.html:34
+msgid "Time at"
+msgstr "Час"
+
+#: .\templates\tickets_ua\index.html:36 .\templates\tickets_ua\index.html:69
+msgid "time"
+msgstr "час"
+
+#: .\templates\tickets_ua\index.html:45
+msgid "Dates"
+msgstr "Дати"
+
+#: .\templates\tickets_ua\index.html:68
+msgid "date"
+msgstr "дата"
+
+#: .\templates\tickets_ua\index.html:103
+msgid "not"
+msgstr "не"

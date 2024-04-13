@@ -17,7 +17,7 @@ class ConfirmEmailSerializer(serializers.Serializer):
 
         try:
             user_id = decode_uid(uid)
-            user = User.objects.get(pk=user_id)
+            user = User.objects.only('email', 'first_name', 'last_name').get(pk=user_id)
         except (User.DoesNotExist, ValueError, TypeError, OverflowError):
             raise serializers.ValidationError(
                 {'uid': _('Invalid uid')},

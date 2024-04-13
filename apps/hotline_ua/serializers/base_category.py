@@ -1,4 +1,3 @@
-from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -14,7 +13,7 @@ class CategorySerializer(serializers.Serializer):
         error_messages={'invalid': _('Invalid title.')},
         allow_blank=True,
     )
-    path = serializers.CharField(required=False, max_length=100)
+    path = serializers.CharField(required=True, allow_blank=True, max_length=100)
 
     class Meta:
         model = Category
@@ -30,24 +29,25 @@ class CategorySerializer(serializers.Serializer):
         }
 
     def validate(self, attrs):
-        if attrs.get('title') == '' and attrs.get('path') is None:
+        if attrs.get('title') == '' and attrs.get('path') == '':
             return attrs
 
         try:
-            category = Category.objects.get(
-                path__iexact=attrs['path'],
-                is_active=True,
-                is_link=False,
-                parent__isnull=False
-            )
-        except MultipleObjectsReturned:
-            category = Category.objects.filter(
-                path__iexact=attrs['path'],
-                is_active=True,
-                is_link=False,
-                parent__isnull=False
-            )[0]
-        except (Category.DoesNotExist, ValueError, TypeError, OverflowError):
+            if attrs['path'] == "":
+                category = Category.objects.filter(
+                    title__iexact=attrs['title'],
+                    is_active=True,
+                    is_link=False,
+                    parent__isnull=False
+                ).first()
+            else:
+                category = Category.objects.filter(
+                    path__iexact=attrs['path'],
+                    is_active=True,
+                    is_link=False,
+                    parent__isnull=False
+                ).first()
+        except (Category.DoesNotExist, ValueError, TypeError, OverflowError, KeyError):
             try:
                 scraping_categories()
                 category = Category.objects.get(
@@ -60,6 +60,11 @@ class CategorySerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     {'category': _(f'Invalid category.')}
                 )
+
+        if not category:
+            raise serializers.ValidationError(
+                {'category': _(f'Invalid category.')}
+            )
 
         attrs['is_link'] = category.is_link
         attrs['title'] = category.title

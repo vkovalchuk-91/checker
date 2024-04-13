@@ -71,7 +71,7 @@ class CheckerCreateSerializer(serializers.ModelSerializer):
         new_filters_count = (end_date - start_date).days
         if not CheckerTask.objects.can_create_new_task(attrs['user_id'], need_count=new_filters_count):
             raise serializers.ValidationError(
-                {'checker': _(f'Cannot create {new_filters_count} checker(s).')}
+                {'checker': _(f'Cannot create {new_filters_count} search task(s).')}
             )
 
         return attrs

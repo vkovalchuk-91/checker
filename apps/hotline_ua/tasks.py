@@ -1,10 +1,12 @@
 import logging
 
+from django.core.cache import cache
 from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.accounts.tasks import send_email_checker_result_msg
 from apps.celery import celery_app as app
+from apps.common.constants import CACHE_SAVE_INTERVAL_DEFAULT
 from apps.common.tasks import BaseTaskWithRetry
 from apps.hotline_ua.enums.filter import FilterType
 from apps.hotline_ua.models import Category, Filter, BaseSearchParameter
@@ -12,6 +14,7 @@ from apps.hotline_ua.scrapers.category import CategoryScraper
 from apps.hotline_ua.scrapers.count import CountScraper
 from apps.hotline_ua.scrapers.filter import FilterScraper
 from apps.hotline_ua.scrapers.text_search import TextSearchScraper
+from apps.tbot.tasks import send_bot_message
 
 logger = logging.getLogger('django')
 
@@ -78,15 +81,19 @@ def run_checkers(ids: list[int]):
         search_parameter.is_available = is_available
         search_parameter.save(update_fields=['updated_at', 'is_available'])
 
-        if is_available:
-            user = User.objects.get(checker_tasks__task_param__hotline_ua_search_parameters__id=search_parameter.id)
-            msg = get_result_message(search_parameter, result_count)
-            if user.is_email_verified:
-                send_email_checker_result_msg.apply_async(args=(user.id, msg,))
-            if user.personal_setting and user.personal_setting.telegram_user_id:
-                # TODO telegram send message
-                ...
+        send_msg(search_parameter, result_count)
 
+
+def send_msg(search_parameter, result_count):
+    msg = get_result_message(search_parameter, result_count)
+    if not update_msg_in_cache(search_parameter.id, msg):
+        return
+
+    user = User.objects.get(checker_tasks__task_param__hotline_ua_search_parameters__id=search_parameter.id)
+    if user.is_email_verified:
+        send_email_checker_result_msg.apply_async(args=(user.id, msg,))
+    if user.personal_setting and user.personal_setting.telegram_user_id:
+        send_bot_message.delay(message=msg, telegram_id=user.personal_setting.telegram_user_id)
 
 def get_result_message(search_parameter: BaseSearchParameter, result_count):
     msg = f"Available {result_count} result(s)"
@@ -99,3 +106,14 @@ def get_result_message(search_parameter: BaseSearchParameter, result_count):
 
     msg += f" check in hotline.ua"
     return msg
+
+
+def update_msg_in_cache(checker_id: int, msg: str) -> bool:
+    cache_key = f'hotline_ua_cache_{checker_id}'
+    cache_value = cache.get(cache_key)
+
+    if cache_value and cache_value.lower() == msg.lower():
+        return False
+
+    cache.set(cache_key, msg, timeout=CACHE_SAVE_INTERVAL_DEFAULT)
+    return True
