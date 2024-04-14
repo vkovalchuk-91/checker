@@ -1,5 +1,108 @@
 {% extends 'fragments/base.html' %}
+{% load static %}
 
-{% block base %}
-    
+{% block main %}
+<style>
+    #about_project {
+        font-size: 18px; /* Змініть значення, якщо потрібно зробити шрифт ще більшим */
+        text-align: justify; /* Вирівнювання тексту по ширині */
+    }
+</style>
+<div class="container-fluid" id="information_block" data-auth="NotAuthenticated">
+    <div class="container">
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h1 class="d-flex justify-content-center mt-4">ПРО ПРОЕКТ</h1>
+            <div id="about_project">
+                <p><b>Checker</b> – це Web-платформа для здійснення періодичних запитів та аналізу інформації
+                    визначеного напряму
+                    та характеру з подальшим сповіщенням користувачів, якщо отримана інформація відповідає заданим
+                    очікуваним критеріям користувача.
+                    На даний момент на платформі реалізовано 3 сервіси:
+                </p>
+                <ol>
+                    <li>
+                        <a href="/uz_ticket/">Сервіс перевірки наявності залізничних квитків Укрзалізниці</a>
+                        (використовуються дані <a href="https://proizd.ua/">proizd.ua</a>) з
+                        подальшим надсиланням сповіщень користувачу через <a href="https://t.me/CheckerGeekHubBot">телеграм-бот</a>
+                        інформації щодо наявних місць на
+                        знайдені за заданими параметрами потягів (в розрізі дат, потягів, типів вагонів, типів місць).
+                        Також
+                        доступна можливість здійснювати пошук наявних квитків безпосередньо на даний момент й за потреби
+                        перейти на proizd.ua для їх купівлі.
+                    </li>
+                    <li>
+                        <a href="/tickets_ua/">Сервіс перевірки залізничних та автобусних квитків</a> (використовуються
+                        дані <a href="https://tickets.ua/">tickets.ua</a>) з подальшим
+                        надсиланням сповіщень користувачу загальної інформації про наявність квитків та їх кількість.
+                    </li>
+                    <li>
+                        <a href="/hotline_ua/">Сервіс перевірки наявності товарів</a> (використовуються дані <a
+                            href="https://hotline.ua/">hotline.ua</a>) з подальшим надсиланням
+                        сповіщень користувачу інформації, щодо їх наявності, що відповідають заданим параметрам (в
+                        розрізі
+                        категорій, підкатегорій, тексту в назві товару, діапазону цін, брендів та магазинів).
+                    </li>
+                </ol>
+                <p>Платформу створено в рамках фінальної роботи проекту <a href="https://geekhub.ck.ua/">GeekHub</a>
+                    випускниками 13 сезону курсів
+                    Python та Quality Assurance.</p>
+                <p>Ви можете вказати свої <a href="/feedback/">пропозиції</a>, щодо покращення роботи платформи, які
+                    будуть надіслані адміністрації
+                    проекту.</p>
+            </div>
+
+
+        </div>
+        <div class="my-3 p-3 bg-body rounded shadow-sm">
+            <h1 class="d-flex justify-content-center mt-4">ПРО АВТОРІВ</h1>
+            <div id="authors">
+                <br>
+                <br>
+                <h3 class="mb-1">1. Автор ідеї проекту та Python-розробник <b>Ковальчук Володимир</b></h3>
+                <p>
+                    <img src="{% static '/logo/linkedin.png' %}" width="30" height="30" alt="LinkedIn logo">
+                    <a href="https://www.linkedin.com/in/volodymyr-kovalchuk-5b211010a/" target="_blank">LinkedIn</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/telegram.png' %}" width="30" height="30" alt="Telegram logo">
+                    <a href="https://t.me/slengpack" target="_blank">Telegram</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/email.png' %}" width="30" height="30" alt="E-mail logo">
+                    <a href="mailto:slengpack@gmail.com" target="_blank">E-mail</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/github.png' %}" width="30" height="30" alt="GitHub logo">
+                    <a href="https://github.com/vkovalchuk-91" target="_blank">GitHub</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/facebook.png' %}" width="30" height="30" alt="Facebook logo">
+                    <a href="https://www.facebook.com/slengpack" target="_blank">Facebook</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/location.png' %}" width="30" height="30" alt="Location logo">
+                    Київ, Україна
+                </p>
+                <h3 class="mb-1">2. Python-розробник <b>Климчук Андрій</b></h3>
+                <p>
+                    <img src="{% static '/logo/linkedin.png' %}" width="30" height="30" alt="LinkedIn logo">
+                    <a href="https://www.linkedin.com/in/andrii-klymchuk/" target="_blank">LinkedIn</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/location.png' %}" width="30" height="30" alt="Location logo">
+                    Черкаси, Україна
+                </p>
+                <h3 class="mb-1">3. QA-manual інженер <b>Ольга Хавроненко</b></h3>
+                <p>
+                    <img src="{% static '/logo/linkedin.png' %}" width="30" height="30" alt="LinkedIn logo">
+                    <a href="https://www.linkedin.com/in/%D0%BElha-khavronenko-1b8146266/" target="_blank">LinkedIn</a>
+                </p>
+                <p>
+                    <img src="{% static '/logo/location.png' %}" width="30" height="30" alt="Location logo">
+                    Черкаси, Україна
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

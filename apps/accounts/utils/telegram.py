@@ -2,7 +2,6 @@ import re
 
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from loguru import logger
 
 from apps.accounts.models import User, PersonalSetting
 from apps.task_manager.models import CheckerTask
@@ -50,7 +49,7 @@ def get_user_checkers_number(user):
     checker_tasks = CheckerTask.objects.filter(user=user).all()
     checkers_number = {}
     for checker_task in checker_tasks:
-        param_category_name = checker_task.task_params.param_type.param_category_name
+        param_category_name = checker_task.task_param.param_type.param_category_name
         if param_category_name in checkers_number:
             checkers_number[param_category_name] = checkers_number[param_category_name] + 1
         else:
