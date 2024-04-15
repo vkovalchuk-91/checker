@@ -18,6 +18,7 @@ class StationsListView(ListView):
             messages.info(request,
                           'Доступ до сторінки списку станцій сервісу "UZ tickets Search" мають лише суперюзери.')
             return redirect(reverse('uz_ticket_checker_app:search_results'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return Station.objects.filter(is_active=1).order_by('-weight')

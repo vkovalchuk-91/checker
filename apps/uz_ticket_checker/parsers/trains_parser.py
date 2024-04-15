@@ -121,7 +121,8 @@ def get_wagon_type_details(departure_station_code, arrival_station_code, departu
     return details
 
 
-def get_checker_matches_by_train_number(checker_matches_info, current_date, train_number):
+def get_checker_matches_by_train_number(checker_matches_info, current_date, train_number, train_start_station,
+                                        train_finish_station, train_departure_station_time):
     request_body = {
         'language': 'uk',
         'supplier': 'uz_train',
@@ -145,6 +146,9 @@ def get_checker_matches_by_train_number(checker_matches_info, current_date, trai
             'arrival_station': response_details.json()['arrivalCode'],
             'departure_date': response_details.json()['departureDate'],
             'train_number': response_details.json()['transNumber'],
+            'train_start_station': train_start_station,
+            'train_finish_station': train_finish_station,
+            'train_departure_station_time': train_departure_station_time,
             'wagon_types': wagon_types,
         })
         for wagon_type in response_details.json()['wagonTypes']:
@@ -199,14 +203,21 @@ def get_all_train_numbers_by_date(departure_station_code, arrival_station_code, 
         'https://de-prod-lb.cashalot.in.ua/rest/supplier/search',
         json=request_body
     )
-    train_numbers = []
+    train_numbers_info = {}
     try:
         for trip in response_search.json()['trips']:
             for leg in trip['legs']:
                 train_number = leg['transInfo']['number']
-                train_numbers.append(train_number)
+                train_start_station = leg['transInfo']['departureStation']['name']
+                train_finish_station = leg['transInfo']['arrivalStation']['name']
+                train_departure_station_time = leg['departureStation']['departureTime'][:5]
+                train_numbers_info[train_number] = {
+                    'train_start_station': train_start_station,
+                    'train_finish_station': train_finish_station,
+                    'train_departure_station_time': train_departure_station_time
+                }
     except Exception as e:
         logger.error(request_body)
         logger.error(response_search.json())
         logger.error(e)
-    return train_numbers
+    return train_numbers_info

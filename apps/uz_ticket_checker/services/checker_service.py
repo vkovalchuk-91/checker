@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from loguru import logger
-from pytz import timezone
 
 from apps.accounts.models import ParameterCategory
 from apps.task_manager.models import CheckerTask
@@ -19,17 +17,26 @@ def get_checker_matches(checker_matches_info):
     tickets_matches = []
     current_date = start_date
     while current_date <= end_date:
+        train_numbers_info = get_all_train_numbers_by_date(
+            checker_matches_info['departure_station'],
+            checker_matches_info['arrival_station'],
+            current_date.strftime("%Y-%m-%d")
+        )
+
         if len(checker_matches_info['train_number']) == 0 or checker_matches_info['train_number'] == ['']:
-            train_numbers = get_all_train_numbers_by_date(
-                checker_matches_info['departure_station'],
-                checker_matches_info['arrival_station'],
-                current_date.strftime("%Y-%m-%d")
-            )
-            for train_number in train_numbers:
-                tickets_matches += get_checker_matches_by_train_number(checker_matches_info, current_date, train_number)
+            for train_number, train_info in train_numbers_info.items():
+                tickets_matches += get_checker_matches_by_train_number(
+                    checker_matches_info, current_date, train_number,
+                    train_numbers_info[train_number]['train_start_station'],
+                    train_numbers_info[train_number]['train_finish_station'],
+                    train_numbers_info[train_number]['train_departure_station_time'])
         else:
             for train_number in checker_matches_info['train_number']:
-                tickets_matches += get_checker_matches_by_train_number(checker_matches_info, current_date, train_number)
+                tickets_matches += get_checker_matches_by_train_number(
+                    checker_matches_info, current_date, train_number,
+                    train_numbers_info[train_number]['train_start_station'],
+                    train_numbers_info[train_number]['train_finish_station'],
+                    train_numbers_info[train_number]['train_departure_station_time'])
         current_date += timedelta(days=1)
     return tickets_matches
 
@@ -67,7 +74,7 @@ def get_direction_info_str(ticket_search_parameter: TicketSearchParameter):
 def get_checkers_parameters_list_for_frontend(user):
     parameters = []
     user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(is_delete=False).filter(
-            task_param__param_type__param_category_name="UZ Ticket Checker").all()
+        task_param__param_type__param_category_name="UZ Ticket Checker").all()
     for item in user_checker_tasks_queryset:
         checker_parameter = {}
         parameter_id = item.task_param.pk

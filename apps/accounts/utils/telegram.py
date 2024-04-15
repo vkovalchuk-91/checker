@@ -46,7 +46,7 @@ def validate_email(email):
 
 
 def get_user_checkers_number(user):
-    checker_tasks = CheckerTask.objects.filter(user=user).all()
+    checker_tasks = CheckerTask.objects.filter(user=user, is_delete=False).all()
     checkers_number = {}
     for checker_task in checker_tasks:
         param_category_name = checker_task.task_param.param_type.param_category_name
