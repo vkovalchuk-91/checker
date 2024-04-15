@@ -18,16 +18,16 @@ from apps.tickets_ua.tasks import run_checkers as tickets_ua_checkers
 celery_logger = get_task_logger(__name__)
 
 app.conf.beat_schedule = {
-    # 'run_task_with_interval': {
-    #     'task': 'run_with_interval_all_checkers',
-    #     "schedule": timedelta(seconds=RUN_ALL_CHECKER_INTERVAL_DEFAULT),
-    #     'options': {'expires': TIME_SLEEP_DEFAULT},
-    # },
-    # 'run_vip_task_with_interval': {
-    #     'task': 'run_with_interval_vip_checkers',
-    #     "schedule": timedelta(seconds=RUN_VIP_CHECKER_INTERVAL_DEFAULT),
-    #     'options': {'expires': TIME_SLEEP_DEFAULT},
-    # },
+    'run_task_with_interval': {
+        'task': 'run_with_interval_all_checkers',
+        "schedule": timedelta(seconds=RUN_ALL_CHECKER_INTERVAL_DEFAULT),
+        'options': {'expires': TIME_SLEEP_DEFAULT},
+    },
+    'run_vip_task_with_interval': {
+        'task': 'run_with_interval_vip_checkers',
+        "schedule": timedelta(seconds=RUN_VIP_CHECKER_INTERVAL_DEFAULT),
+        'options': {'expires': TIME_SLEEP_DEFAULT},
+    },
     'run_uz_ticket_task_with_interval': {
         'task': 'run_with_interval_uz_ticket_checkers',
         "schedule": timedelta(seconds=RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT),
