@@ -41,6 +41,7 @@ def run_hotline_ua_vip_checkers():
         is_active=True,
         is_delete=False,
         task_param__hotline_ua_search_parameters__is_active=True,
+        user__is_active=True,
         user__personal_setting__isnull=False,
         user__personal_setting__is_vip=True,
     ).values('task_param__hotline_ua_search_parameters__id')
@@ -54,6 +55,7 @@ def run_tickets_ua_vip_checkers():
         is_active=True,
         is_delete=False,
         task_param__ticket_ua_search_parameters__is_active=True,
+        user__is_active=True,
         user__personal_setting__isnull=False,
         user__personal_setting__is_vip=True,
     ).values('task_param__ticket_ua_search_parameters__id')
@@ -66,6 +68,7 @@ def run_hotline_ua_checkers():
         is_active=True,
         is_delete=False,
         task_param__hotline_ua_search_parameters__is_active=True,
+        user__is_active=True,
     ).values('task_param__hotline_ua_search_parameters__id')
     hotline_ua_checkers(ids)
 
@@ -77,6 +80,7 @@ def run_tickets_ua_checkers():
         is_active=True,
         is_delete=False,
         task_param__ticket_ua_search_parameters__is_active=True,
+        user__is_active=True,
     ).values('task_param__ticket_ua_search_parameters__id')
     tickets_ua_checkers(ids)
 
@@ -87,6 +91,7 @@ def update_checker_task(*args):
             is_active=True,
             is_delete=False,
             task_param__ticket_ua_search_parameters__is_active=True,
+            user__is_active=True,
     ):
         checker.updated_at = timezone.now()
         checker.save(update_fields=('updated_at',))
@@ -99,6 +104,7 @@ def update_vip_checker_task(*args):
             is_active=True,
             is_delete=False,
             task_param__ticket_ua_search_parameters__is_active=True,
+            user__is_active=True,
             user__personal_setting__isnull=False,
             user__personal_setting__is_vip=True,
     ):
