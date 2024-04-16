@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 13:52+0300\n"
+"POT-Creation-Date: 2024-04-16 09:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,83 +21,83 @@ msgstr ""
 "100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
 "(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-#: .\apps\accounts\models.py:19
+#: .\apps\accounts\models.py:20
 msgid "email address"
 msgstr ""
 
-#: .\apps\accounts\models.py:20
+#: .\apps\accounts\models.py:21
 msgid "first name"
 msgstr ""
 
-#: .\apps\accounts\models.py:21
+#: .\apps\accounts\models.py:22
 msgid "last name"
 msgstr ""
 
-#: .\apps\accounts\models.py:23
+#: .\apps\accounts\models.py:24
 msgid "staff status"
 msgstr ""
 
-#: .\apps\accounts\models.py:25
+#: .\apps\accounts\models.py:26
 msgid "Designates whether the user can log into this admin site."
 msgstr ""
 
-#: .\apps\accounts\models.py:28 .\apps\common\models.py:15
-#: .\apps\hotline_ua\models.py:21 .\templates\hotline_ua\index.html:94
-#: .\templates\tickets_ua\index.html:70
+#: .\apps\accounts\models.py:29 .\apps\common\models.py:15
+#: .\apps\hotline_ua\models.py:21 .\apps\uz_ticket_checker\models.py:27
+#: .\templates\hotline_ua\index.html:94 .\templates\tickets_ua\index.html:70
 msgid "active"
 msgstr "активний"
 
-#: .\apps\accounts\models.py:31
+#: .\apps\accounts\models.py:32
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting accounts."
 msgstr ""
 
-#: .\apps\accounts\models.py:35
+#: .\apps\accounts\models.py:36
 msgid "date joined"
 msgstr ""
 
-#: .\apps\accounts\models.py:36
+#: .\apps\accounts\models.py:37
 msgid "email verified"
 msgstr ""
 
-#: .\apps\accounts\models.py:50
+#: .\apps\accounts\models.py:51
 msgid "user"
 msgstr ""
 
-#: .\apps\accounts\models.py:51
+#: .\apps\accounts\models.py:52
 msgid "users"
 msgstr ""
 
-#: .\apps\accounts\models.py:66
+#: .\apps\accounts\models.py:67
 msgid "telegram user ID"
 msgstr ""
 
-#: .\apps\accounts\models.py:67
+#: .\apps\accounts\models.py:68
 msgid "max query number"
 msgstr ""
 
-#: .\apps\accounts\models.py:68 .\apps\task_manager\models.py:14
+#: .\apps\accounts\models.py:69 .\apps\task_manager\models.py:14
 msgid "update period (minutes)"
 msgstr ""
 
-#: .\apps\accounts\models.py:69
+#: .\apps\accounts\models.py:70
 msgid "vip"
 msgstr ""
 
-#: .\apps\accounts\models.py:72
+#: .\apps\accounts\models.py:73
 msgid "personal_setting"
 msgstr ""
 
-#: .\apps\accounts\models.py:73
+#: .\apps\accounts\models.py:74
 msgid "personal_settings"
 msgstr ""
 
-#: .\apps\accounts\models.py:81
+#: .\apps\accounts\models.py:82
 msgid "parameter category name"
 msgstr ""
 
-#: .\apps\accounts\models.py:94
+#: .\apps\accounts\models.py:95
 msgid "parameter type name"
 msgstr ""
 
@@ -122,23 +122,28 @@ msgstr ""
 "Допустима довжина від 2 до 30 символів. Дозволені лише літери алфавіту "
 "(латиниця або кирилиця), пробіли, дефіси та апострофи."
 
-#: .\apps\accounts\serializers\signup.py:52
+#: .\apps\accounts\serializers\signup.py:51
 #, python-brace-format
 msgid "Not valid email {email}."
 msgstr "Недійсний email {email}."
 
-#: .\apps\accounts\serializers\signup.py:57
+#: .\apps\accounts\serializers\signup.py:56
 #, python-brace-format
 msgid "User with email {email} exist."
 msgstr "Користувач з email {email} існує у системі."
 
-#: .\apps\accounts\serializers\signup.py:65
+#: .\apps\accounts\serializers\signup.py:64
 msgid "Password and confirm not equals."
 msgstr "Паролі не співпадають."
 
 #: .\apps\accounts\views\api\confirm_email_complete.py:22
 msgid "Confirm email complete successfully."
 msgstr "Підтвердження email здійснено успішно."
+
+#: .\apps\accounts\views\login.py:17
+msgid ""
+"Account is inactive. Please contact an administrator for more information."
+msgstr "Ваш обліковий запис був заблокований. Будь ласка, зв'яжіться з адміністратором для отримання додаткової інформації та допомоги. Дякуємо за розуміння."
 
 #: .\apps\common\models.py:7
 msgid "created date"
@@ -337,7 +342,95 @@ msgstr "Недійсне ім'я."
 msgid "Invalid station."
 msgstr "Станцію не знайдено."
 
-#: .\apps\views.py:14
+#: .\apps\uz_ticket_checker\models.py:15
+msgid "EXPRESS-3 ID"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:17
+#, fuzzy
+#| msgid "Last name"
+msgid "station name"
+msgstr "Призвіще"
+
+#: .\apps\uz_ticket_checker\models.py:23 .\apps\uz_ticket_checker\models.py:24
+msgid "country"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:25
+#, fuzzy
+#| msgid "Light"
+msgid "weight"
+msgstr "Світла"
+
+#: .\apps\uz_ticket_checker\models.py:30
+msgid ""
+"Designates whether this user should be treated as active.Unselect this "
+"instead of deleting accounts."
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:39
+#, fuzzy
+#| msgid "Registration"
+msgid "station"
+msgstr "Реєстрація"
+
+#: .\apps\uz_ticket_checker\models.py:40
+#, fuzzy
+#| msgid "Registration"
+msgid "stations"
+msgstr "Реєстрація"
+
+#: .\apps\uz_ticket_checker\models.py:44
+msgid "country name"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:52
+msgid "departures"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:53
+msgid "departure station"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:58
+msgid "arrivals"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:59
+#, fuzzy
+#| msgid "Invalid station."
+msgid "arrival station"
+msgstr "Станцію не знайдено."
+
+#: .\apps\uz_ticket_checker\models.py:60
+msgid "start date"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:61
+#, fuzzy
+#| msgid "date"
+msgid "end date"
+msgstr "дата"
+
+#: .\apps\uz_ticket_checker\models.py:68
+msgid "train number"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:72
+msgid "wagon type"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:76
+msgid "seat type"
+msgstr ""
+
+#: .\apps\uz_ticket_checker\models.py:77
+#, fuzzy
+#| msgid "Invalid type name."
+msgid "seat type name"
+msgstr "Недійсна назва типу."
+
+#: .\apps\views.py:21
 msgid "Invalid access. User is blocked. Please try another."
 msgstr "Немає доступу. Користувач заблокований. Спробуйте іншого користувача."
 
@@ -361,40 +454,42 @@ msgstr "Головна"
 msgid "schema "
 msgstr "схема"
 
-#: .\templates\fragments\footer.html:8
-msgid "About"
-msgstr "Про"
-
-#: .\templates\fragments\navigation.html:31
-msgid "Administrator"
+#: .\templates\fragments\navigation.html:61
+#, fuzzy
+#| msgid "Administrator"
+msgid "Administrator panel"
 msgstr "Адміністратор"
 
-#: .\templates\fragments\navigation.html:49
-msgid "Logout"
-msgstr "Вийти"
+#: .\templates\fragments\navigation.html:67
+msgid "Railway Stations list"
+msgstr ""
 
-#: .\templates\fragments\navigation.html:55
+#: .\templates\fragments\navigation.html:72
+msgid "Additional settings"
+msgstr ""
+
+#: .\templates\fragments\navigation.html:81
 msgid "Login"
 msgstr "Увійти"
 
-#: .\templates\fragments\navigation.html:59
+#: .\templates\fragments\navigation.html:85
 #: .\templates\registration\signup.html:59
 msgid "Signup"
 msgstr "Зареєструватись"
 
-#: .\templates\fragments\navigation.html:70
+#: .\templates\fragments\navigation.html:96
 msgid "user checkers count"
 msgstr "кількість завдань коритувача"
 
-#: .\templates\fragments\navigation.html:76
+#: .\templates\fragments\navigation.html:102
 msgid "max user checkers count"
 msgstr "максимальна кількість завдань коритувача"
 
-#: .\templates\fragments\navigation.html:81
+#: .\templates\fragments\navigation.html:107
 msgid "max"
 msgstr "макс."
 
-#: .\templates\fragments\navigation.html:88
+#: .\templates\fragments\navigation.html:114
 msgid "all checkers count"
 msgstr "кількість усіх завдань"
 
@@ -542,3 +637,9 @@ msgstr "дата"
 #: .\templates\tickets_ua\index.html:103
 msgid "not"
 msgstr "не"
+
+#~ msgid "About"
+#~ msgstr "Про"
+
+#~ msgid "Logout"
+#~ msgstr "Вийти"

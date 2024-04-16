@@ -84,7 +84,7 @@ def send_tickets(tg_id, checker_id, direction_info, tickets_matches):
                     menu_dict[date_str][train_number_str]['keyboard'].add(back_to_trains_menu_button)
 
     text = (f"<b>Знайдено дати на які доступні квитки за напрямком {direction_info}:</b>\n"
-            f"<i>* Актуально на {timezone.now().strftime("%Y-%m-%d %H:%M")}</i>")
+            f"<i>* Актуально на {timezone.now().strftime('%Y-%m-%d %H:%M')}</i>")
     menu_dict['main_text'] = text
     bot.send_message(tg_id, text, reply_markup=menu_dict['keyboard'])
     return menu_dict
