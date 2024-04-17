@@ -43,8 +43,8 @@
                                 <li class="nav-item">
                                     <form method="post" action="{% url 'accounts:logout' %}?next={{ request.path }}">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn">&nbsp;Logout <i
-                                                class="bi bi-box-arrow-left"></i></button>
+                                        <button type="submit" class="btn">&nbsp;{% translate "Logout" %} 
+                                            <i class="bi bi-box-arrow-left"></i></button>
                                     </form>
                                 </li>
                                 <li><a class="dropdown-item" href="{% url 'accounts:link_unlink_telegram' %}">

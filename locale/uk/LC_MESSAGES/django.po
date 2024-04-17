@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-16 09:49+0300\n"
+"POT-Creation-Date: 2024-04-17 09:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,10 +140,13 @@ msgstr "Паролі не співпадають."
 msgid "Confirm email complete successfully."
 msgstr "Підтвердження email здійснено успішно."
 
-#: .\apps\accounts\views\login.py:17
+#: .\apps\accounts\views\login.py:16
 msgid ""
 "Account is inactive. Please contact an administrator for more information."
-msgstr "Ваш обліковий запис був заблокований. Будь ласка, зв'яжіться з адміністратором для отримання додаткової інформації та допомоги. Дякуємо за розуміння."
+msgstr ""
+"Ваш обліковий запис був заблокований. Будь ласка, зв'яжіться з "
+"адміністратором для отримання додаткової інформації та допомоги. Дякуємо за "
+"розуміння."
 
 #: .\apps\common\models.py:7
 msgid "created date"
@@ -454,6 +457,10 @@ msgstr "Головна"
 msgid "schema "
 msgstr "схема"
 
+#: .\templates\fragments\navigation.html:46
+msgid "Logout"
+msgstr "Вийти"
+
 #: .\templates\fragments\navigation.html:61
 #, fuzzy
 #| msgid "Administrator"
@@ -492,6 +499,10 @@ msgstr "макс."
 #: .\templates\fragments\navigation.html:114
 msgid "all checkers count"
 msgstr "кількість усіх завдань"
+
+#: .\templates\fragments\notify.html:47
+msgid "Registration success. Please login."
+msgstr "Реєстрація успішна. Будь ласка, авторизуйтесь."
 
 #: .\templates\hotline_ua\index.html:9 .\templates\tickets_ua\index.html:9
 msgid "Generated new checkers"
@@ -640,6 +651,3 @@ msgstr "не"
 
 #~ msgid "About"
 #~ msgstr "Про"
-
-#~ msgid "Logout"
-#~ msgstr "Вийти"

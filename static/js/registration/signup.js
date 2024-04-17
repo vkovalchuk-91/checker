@@ -12,7 +12,7 @@ $(document).ready(function () {
                     'POST',
                     data,
                     (result) => {
-                        window.location.href = "/accounts/login/";
+                        window.location.href = "/?message=Registration+success";
                     },
                     () => {
                         target.disabled = true;
