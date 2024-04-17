@@ -29,13 +29,14 @@ def send_tickets(tg_id, checker_id, direction_info, tickets_matches):
                 menu_dict[date_str]['keyboard'] = InlineKeyboardMarkup()
 
             if train_number_str not in menu_dict[date_str]:
-                button = InlineKeyboardButton(
-                    text=f"\U000023F0 {ticket['train_departure_station_time']}   \U0001F682 {train_number_str} {ticket['train_start_station']} - {ticket['train_finish_station']}",
-                    callback_data=f"{checker_id}_{'wagon-types'}_{date_str}~{train_number_str.replace(' ', '')}")
-                menu_dict[date_str]['keyboard'].add(button)
+                if len(wagon_types_list) > 0:
+                    button = InlineKeyboardButton(
+                        text=f"\U000023F0 {ticket['train_departure_station_time']}   \U0001F682 {train_number_str} {ticket['train_start_station']} - {ticket['train_finish_station']}",
+                        callback_data=f"{checker_id}_{'wagon-types'}_{date_str}~{train_number_str.replace(' ', '')}")
+                    menu_dict[date_str]['keyboard'].add(button)
 
-                menu_dict[date_str][train_number_str] = {}
-                menu_dict[date_str][train_number_str]['keyboard'] = InlineKeyboardMarkup()
+                    menu_dict[date_str][train_number_str] = {}
+                    menu_dict[date_str][train_number_str]['keyboard'] = InlineKeyboardMarkup()
 
             for wagon_type in wagon_types_list:
                 wagon_type_str = wagon_type['wagon_type']
@@ -44,32 +45,33 @@ def send_tickets(tg_id, checker_id, direction_info, tickets_matches):
                 seats_list = wagon_type['seats']
 
                 if wagon_type_str not in menu_dict[date_str][train_number_str]:
-                    wagon_type_index = WAGON_TYPES.index(wagon_type_str)
-                    button = InlineKeyboardButton(
-                        text=f"{wagon_type_str}, від {min_price_str} грн, місць - {available_seats_str}",
-                        callback_data=f"{checker_id}_{'seat-types'}_{date_str}~{train_number_str.replace(' ', '')}~{wagon_type_index}")
-                    menu_dict[date_str][train_number_str]['keyboard'].add(button)
+                    if len(seats_list) > 0:
+                        wagon_type_index = WAGON_TYPES.index(wagon_type_str)
+                        button = InlineKeyboardButton(
+                            text=f"{wagon_type_str}, від {min_price_str} грн, місць - {available_seats_str}",
+                            callback_data=f"{checker_id}_{'seat-types'}_{date_str}~{train_number_str.replace(' ', '')}~{wagon_type_index}")
+                        menu_dict[date_str][train_number_str]['keyboard'].add(button)
 
-                    menu_dict[date_str][train_number_str][wagon_type_str] = {}
-                    menu_dict[date_str][train_number_str][wagon_type_str]['keyboard'] = InlineKeyboardMarkup()
+                        menu_dict[date_str][train_number_str][wagon_type_str] = {}
+                        menu_dict[date_str][train_number_str][wagon_type_str]['keyboard'] = InlineKeyboardMarkup()
 
-                    menu_dict[date_str][train_number_str][wagon_type_str][
-                        'text'] = f"<b>Місця доступні у вагонах типу '{wagon_type_str}' для потягу {train_number_str} на {date_str}:</b>\n\n"
-
-                    for seat in seats_list:
-                        seat_type_str = seat['seat_type']
-                        seat_type_name_str = None
-                        for seat_type_item in SEAT_TYPES:
-                            if seat_type_item['seat_type'] == seat_type_str:
-                                seat_type_name_str = seat_type_item['seat_type_name']
-                        available_seats = seat['available_seats']
                         menu_dict[date_str][train_number_str][wagon_type_str][
-                            'text'] += f"{seat_type_name_str} - {available_seats}\n"
+                            'text'] = f"<b>Місця доступні у вагонах типу '{wagon_type_str}' для потягу {train_number_str} на {date_str}:</b>\n\n"
 
-                    back_to_wagon_types_menu_button = InlineKeyboardButton(
-                        text="\U000025C0 Повернутися до вибору типів вагонів",
-                        callback_data=f"{checker_id}_{'wagon-types'}_{date_str}~{train_number_str.replace(' ', '')}")
-                    menu_dict[date_str][train_number_str][wagon_type_str]['keyboard'].add(back_to_wagon_types_menu_button)
+                        for seat in seats_list:
+                            seat_type_str = seat['seat_type']
+                            seat_type_name_str = None
+                            for seat_type_item in SEAT_TYPES:
+                                if seat_type_item['seat_type'] == seat_type_str:
+                                    seat_type_name_str = seat_type_item['seat_type_name']
+                            available_seats = seat['available_seats']
+                            menu_dict[date_str][train_number_str][wagon_type_str][
+                                'text'] += f"{seat_type_name_str} - {available_seats}\n"
+
+                        back_to_wagon_types_menu_button = InlineKeyboardButton(
+                            text="\U000025C0 Повернутися до вибору типів вагонів",
+                            callback_data=f"{checker_id}_{'wagon-types'}_{date_str}~{train_number_str.replace(' ', '')}")
+                        menu_dict[date_str][train_number_str][wagon_type_str]['keyboard'].add(back_to_wagon_types_menu_button)
 
         back_to_dates_menu_button = InlineKeyboardButton(
             text="\U000025C0 Повернутися до вибору дат",
