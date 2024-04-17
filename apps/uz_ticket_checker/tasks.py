@@ -123,6 +123,7 @@ def run_with_interval_uz_ticket_checkers():
     active_uz_ticket_checker_tasks = CheckerTask.objects.filter(
         is_active=True,
         is_delete=False,
+        user__is_active=True,
         task_param__param_type__param_category_name="UZ Ticket Checker",
     ).all()
     counter = 0
@@ -153,22 +154,25 @@ def run_with_interval_uz_ticket_checkers():
 
 @app.task(name='execute_checker_task')
 def execute_and_update_checker_task(**kwargs):
-    checker_id = kwargs.get('checker_id')
-    update_period = kwargs.get('update_period')
-    tg_id = kwargs.get('tg_id')
-    direction_info = kwargs.get('direction_info')
-    checker_matches_info = kwargs.get('checker_matches_info')
+    try:
+        checker_id = kwargs.get('checker_id')
+        update_period = kwargs.get('update_period')
+        tg_id = kwargs.get('tg_id')
+        direction_info = kwargs.get('direction_info')
+        checker_matches_info = kwargs.get('checker_matches_info')
 
-    tickets_matches = get_checker_matches(checker_matches_info)
-    cache_tickets_matches_info = cache.get(str(checker_id) + 'tickets_matches')
-    cache.set(str(checker_id) + 'tickets_matches', tickets_matches, TICKETS_MATCHES_CASH_EXPIRE_RATIO * update_period)
+        tickets_matches = get_checker_matches(checker_matches_info)
+        cache_tickets_matches_info = cache.get(str(checker_id) + 'tickets_matches')
+        cache.set(str(checker_id) + 'tickets_matches', tickets_matches, TICKETS_MATCHES_CASH_EXPIRE_RATIO * update_period)
 
-    if cache_tickets_matches_info is None or cache_tickets_matches_info != tickets_matches:
-        menu_dict = send_tickets(tg_id, checker_id, direction_info, tickets_matches)
-        cache.set(checker_id, menu_dict, TG_MENUS_EXPIRE_TIME)
-    else:
-        logger.info(f"{direction_info} - оновлень не виявлено!")
+        if cache_tickets_matches_info is None or cache_tickets_matches_info != tickets_matches:
+            menu_dict = send_tickets(tg_id, checker_id, direction_info, tickets_matches)
+            cache.set(checker_id, menu_dict, TG_MENUS_EXPIRE_TIME)
+        else:
+            logger.info(f"{direction_info} - оновлень не виявлено!")
 
-    checker_task = CheckerTask.objects.filter(id=checker_id).first()
-    checker_task.updated_at = timezone.now()
-    checker_task.save()
+        checker_task = CheckerTask.objects.filter(id=checker_id).first()
+        checker_task.updated_at = timezone.now()
+        checker_task.save()
+    except Exception as e:
+        logger.error(e)

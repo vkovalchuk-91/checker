@@ -113,24 +113,3 @@ def checker_change_is_active(request, pk):
         change_object.is_active = not is_active
         change_object.save()
     return redirect(reverse('uz_ticket_checker_app:checker'))
-
-
-def checker_check(request):  # testing endpoint
-    if request.user and not request.user.is_authenticated:
-        previous_page = request.META.get('HTTP_REFERER', '/')
-        return HttpResponseRedirect(previous_page)
-
-    if request.method == 'GET':
-        user = request.user
-        user_checker_tasks_queryset = CheckerTask.objects.filter(user=user.pk).filter(
-            task_param__param_type__param_category_name="UZ Ticket Checker", is_active=True,
-            is_delete=False).all()
-        for item in user_checker_tasks_queryset:
-            parameter_id = item.task_param.pk
-            ticket_search_parameter_obj = TicketSearchParameter.objects.get(pk=parameter_id)
-            checker_matches_info = get_checker_matches_info_dict(ticket_search_parameter_obj)
-            tickets_matches = get_checker_matches(checker_matches_info)
-            direction_info = get_direction_info_str(ticket_search_parameter_obj)
-            send_tickets(396264878, item.pk, direction_info, tickets_matches)
-
-    return render(request, 'uz_ticket_checker/checker.html')
