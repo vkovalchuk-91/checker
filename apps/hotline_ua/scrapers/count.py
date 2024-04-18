@@ -52,7 +52,7 @@ class CountScraper(_BaseScraper):
             parser = self.parser_class(data=json_data['data'])
             return parser.result_items
         except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError):
-            logger.error(f'Invalid scraping "{self.data}" count search result.')
+            logger.warning(f'Empty result of searching count: "{self.data}".')
             return 0
         finally:
             self.session.close()

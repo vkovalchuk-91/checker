@@ -36,5 +36,5 @@ class TrainStationScraper(_TransportScraper):
             stations = parser.result_items
             return stations
         except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError) as e:
-            logger.error(f"Can't scraping or empty: {self.data}: {e}")
+            logger.warning(f"Empty result of scraping trains stations: {self.data}: {e}")
             return []

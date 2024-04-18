@@ -35,5 +35,5 @@ class TextSearchScraper(_BaseScraper):
             parser = self.parser_class(data=json_data['result'])
             return parser.result_items
         except (requests.RequestException, ValueError, TypeError):
-            logger.error(f'Invalid scraping "{self.data}" search result.')
+            logger.warning(f'Empty result of searching text: "{self.data}".')
             return []

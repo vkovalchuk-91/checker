@@ -25,5 +25,5 @@ class FilterScraper(_BaseScraper):
             instances = parser.result_items
             return instances
         except (requests.RequestException, ValueError, TypeError):
-            logger.error("Invalid scraping filters.")
+            logger.warning("Empty result of scraping filters.")
             return []

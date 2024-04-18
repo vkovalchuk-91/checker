@@ -29,5 +29,5 @@ class CategoryScraper(_BaseScraper):
 
             return instances
         except (requests.RequestException, json.decoder.JSONDecodeError, ValueError, TypeError, KeyError):
-            logger.error("Invalid scraping categories.")
+            logger.warning("Empty result scraping categories.")
             return []
