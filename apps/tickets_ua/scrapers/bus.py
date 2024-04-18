@@ -50,7 +50,7 @@ class BusScraper(_TransportScraper):
     def scraper_items(self):
         session = requests.Session()
         try:
-            response = session.get(self.MAIN_URL)
+            response = session.get(self.MAIN_URL, cookies=self._COOKIES, headers=self._HEADERS)
             response.raise_for_status()
             csrf_token = self._get_token(response.text)
 
