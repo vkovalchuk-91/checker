@@ -54,8 +54,7 @@ def feedback(request):
 def additional_settings(request):
     if request.user and not request.user.is_superuser:
         messages.info(request, 'Доступ до сторінки додаткових налаштувань мають лише суперюзери.')
-        previous_page = request.META.get('HTTP_REFERER', '/')
-        return HttpResponseRedirect(previous_page)
+        return redirect("index")
 
     SessionTaskManager(request)
 
@@ -68,8 +67,7 @@ def additional_settings(request):
 def change_max_query_number(request):
     if request.user and not request.user.is_superuser:
         messages.info(request, 'Доступ до зміни додаткових налаштувань мають лише суперюзери.')
-        previous_page = request.META.get('HTTP_REFERER', '/')
-        return HttpResponseRedirect(previous_page)
+        return redirect("index")
 
     if request.method == 'POST':
         form = MaxQueryNumberForm(request.POST)
@@ -88,8 +86,7 @@ def change_max_query_number(request):
 def change_regular_users_update_period(request):
     if request.user and not request.user.is_superuser:
         messages.info(request, 'Доступ до зміни додаткових налаштувань мають лише суперюзери.')
-        previous_page = request.META.get('HTTP_REFERER', '/')
-        return HttpResponseRedirect(previous_page)
+        return redirect("index")
 
     if request.method == 'POST':
         form = RegularUsersUpdatePeriodForm(request.POST)
@@ -108,8 +105,7 @@ def change_regular_users_update_period(request):
 def change_vip_users_update_period(request):
     if request.user and not request.user.is_superuser:
         messages.info(request, 'Доступ до зміни додаткових налаштувань мають лише суперюзери.')
-        previous_page = request.META.get('HTTP_REFERER', '/')
-        return HttpResponseRedirect(previous_page)
+        return redirect("index")
 
     if request.method == 'POST':
         form = VipUsersUpdatePeriodForm(request.POST)
