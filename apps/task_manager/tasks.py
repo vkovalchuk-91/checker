@@ -18,16 +18,16 @@ from apps.tickets_ua.tasks import run_checkers as tickets_ua_checkers
 celery_logger = get_task_logger(__name__)
 
 app.conf.beat_schedule = {
-    # 'run_task_with_interval': {
-    #     'task': 'run_with_interval_all_checkers',
-    #     "schedule": timedelta(seconds=RUN_ALL_CHECKER_INTERVAL_DEFAULT),
-    #     'options': {'expires': TIME_SLEEP_DEFAULT},
-    # },
-    # 'run_vip_task_with_interval': {
-    #     'task': 'run_with_interval_vip_checkers',
-    #     "schedule": timedelta(seconds=RUN_VIP_CHECKER_INTERVAL_DEFAULT),
-    #     'options': {'expires': TIME_SLEEP_DEFAULT},
-    # },
+    'run_task_with_interval': {
+        'task': 'run_with_interval_all_checkers',
+        "schedule": timedelta(seconds=RUN_ALL_CHECKER_INTERVAL_DEFAULT),
+        'options': {'expires': TIME_SLEEP_DEFAULT},
+    },
+    'run_vip_task_with_interval': {
+        'task': 'run_with_interval_vip_checkers',
+        "schedule": timedelta(seconds=RUN_VIP_CHECKER_INTERVAL_DEFAULT),
+        'options': {'expires': TIME_SLEEP_DEFAULT},
+    },
     'run_uz_ticket_task_with_interval': {
         'task': 'run_with_interval_uz_ticket_checkers',
         "schedule": timedelta(seconds=RUN_UZ_TICKET_CELERY_BEAT_INTERVAL_DEFAULT),
@@ -50,7 +50,6 @@ def run_hotline_ua_vip_checkers():
 
 @app.task(name='run_tickets_ua_vip_checkers')
 def run_tickets_ua_vip_checkers():
-    # tasks = CheckerTask.objects.filter(task_param__ticket_ua_search_parameters__is_active=True)
     ids = CheckerTask.objects.filter(
         is_active=True,
         is_delete=False,
@@ -75,7 +74,6 @@ def run_hotline_ua_checkers():
 
 @app.task(name='run_tickets_ua_checkers')
 def run_tickets_ua_checkers():
-    # tasks = CheckerTask.objects.filter(task_param__ticket_ua_search_parameters__is_active=True)
     ids = CheckerTask.objects.filter(
         is_active=True,
         is_delete=False,
@@ -145,8 +143,8 @@ def run_with_interval_all_checkers(self):
 @app.task(name='run_with_interval_vip_checkers', bind=True)
 def run_with_interval_vip_checkers(self):
     celery_logger.info(f"vip start")
-    lock_id = 'run_with_interval_vip_checkers_lock'
-    with memcache_lock(lock_id, self.app.oid) as acquired:
+    vip_lock_id = 'run_with_interval_vip_checkers_lock'
+    with memcache_lock(vip_lock_id, self.app.oid) as acquired:
         if acquired:
             tasks_group = group(
                 run_hotline_ua_vip_checkers.s(),
