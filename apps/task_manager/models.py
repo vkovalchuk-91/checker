@@ -5,7 +5,7 @@ from apps.accounts.models import User, BaseParameter
 from apps.common import TimeStampedMixin
 from apps.common.models import ActiveStateMixin
 from apps.task_manager.managers import CheckerTaskManager
-from settings.main import TASK_UPDATE_PERIOD_DEFAULT, VIP_USER_TASK_UPDATE_PERIOD_DEFAULT
+from settings.main import TASK_UPDATE_PERIOD_DEFAULT
 
 
 class CheckerTask(TimeStampedMixin, ActiveStateMixin, models.Model):

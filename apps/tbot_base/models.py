@@ -45,7 +45,7 @@ class BotConfig(models.Model):
 
     def set_hook(self, tbot):
         webhook_url = f"{self.server_url}/get_tel_hook/"
-        result = tbot.set_webhook(webhook_url, drop_pending_updates=True, timeout=10)
+        result = tbot.set_webhook(webhook_url, drop_pending_updates=False, timeout=10)
         logger.info(f"Webhook: {result}")
 
     def set_active_config(self):
