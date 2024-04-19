@@ -32,7 +32,7 @@ class FilterParser:
         soup = BeautifulSoup(self.data, 'html.parser')
         instances = []
         for div in soup.find_all('div', {'class': 'sidebar-filters__item sidebar-filters__item--top'}):
-            if len([j for j in div.find_all('div', {'data-v-f03a99b4': True}) if j.find('b', string=text)]) == 0:
+            if len([j for j in div.find_all('div', {'data-v-9833f90a': True}) if j.find('b', string=text)]) == 0:
                 continue
 
             for a_element in div.find_all(tag, class_='filter-checklist__item-name'):
